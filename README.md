@@ -13,4 +13,4 @@ comp help
 ### License
 The `comp` interpreter is available under the MIT License. The MIT License is a permissive free software license with very limited restrictions on reuse. The full license text can be found in the [`LICENSE.md`][1] file.
 
-[1]: ./LICENSE.md
+[1]: ./LICENSE

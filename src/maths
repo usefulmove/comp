@@ -1,0 +1,21 @@
+       5 4 3 2 1 cls
+       10 ! 2 % 
+       5 +_ sqrt 2 ^ sqrt
+   1 - 2 /
+1000 x sc
+      pi cos acos 4 /
+tan atan sin asin 4 x
+
+          100 2 x_ c swap
+1 0 -9 chs chs proot drop 
+swap drop
+
+ 20 1 7 / atan x 8 3 79 /
+                 atan x +
+                 
+        -55 abs dtor rtod
+dup + 10 - 10 / e swap ^
+e 10 exp - 50 + 10 gcd 3
+mod e ln - 27.0 3 throot
+- swap sa - round a roll
+roll roll roll

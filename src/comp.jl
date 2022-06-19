@@ -106,206 +106,6 @@ end
 
 commands = Dict{String, Symbol}()
 
-# -- math operations -----------------------------------------------------------
-
-# - add
-commands["+"] = :c_add!
-function c_add!(s::Vector{Float64})
-  s[end-1] += pop!(s)
-end
-
-commands["+_"] = :c_add_all!
-function c_add_all!(s::Vector{Float64})
-  while length(s) > 1
-    s[end-1] += pop!(s)
-  end
-end
-
-# - subtract
-commands["-"] = :c_sub!
-function c_sub!(s::Vector{Float64})
-  s[end-1] -= pop!(s)
-end
-
-# - multiply
-commands["x"] = :c_mult!
-function c_mult!(s::Vector{Float64})
-  s[end-1] *= pop!(s)
-end
-
-commands["x_"] = :c_mult_all!
-function c_mult_all!(s::Vector{Float64})
-  while length(s) > 1
-    s[end-1] *= pop!(s)
-  end
-end
-
-# - divide
-commands["/"] = :c_div!
-function c_div!(s::Vector{Float64})
-  s[end-1] /= pop!(s)
-end
-
-# - square root
-commands["sqrt"] = :c_sqrt!
-function c_sqrt!(s::Vector{Float64})
-  s[end] = sqrt(s[end])
-end
-
-# - invert
-commands["inv"] = :c_inv!
-function c_inv!(s::Vector{Float64})
-  s[end] = 1 / s[end]
-end
-
-# - change sign
-commands["chs"] = :c_chs!
-function c_chs!(s::Vector{Float64})
-  s[end] = -1 * s[end]
-end
-
-# - exponentiation
-commands["exp"] = :c_exp!
-commands["^"] = :c_exp!
-function c_exp!(s::Vector{Float64})
-  s[end-1] ^= pop!(s)
-end
-
-# - modulus
-commands["%"] = :c_mod!
-commands["mod"] = :c_mod!
-function c_mod!(s::Vector{Float64})
-  divisor = pop!(s)
-  s[end] = s[end] % divisor
-end
-
-# - sine
-commands["sin"] = :c_sin!
-function c_sin!(s::Vector{Float64})
-  s[end] = sin(s[end])
-end
-
-# - cosine
-commands["cos"] = :c_cos!
-function c_cos!(s::Vector{Float64})
-  s[end] = cos(s[end])
-end
-
-# - tangent
-commands["tan"] = :c_tan!
-function c_tan!(s::Vector{Float64})
-  s[end] = tan(s[end])
-end
-
-# - arcsine
-commands["asin"] = :c_asin!
-function c_asin!(s::Vector{Float64})
-  s[end] = asin(s[end])
-end
-
-# - arccosine
-commands["acos"] = :c_acos!
-function c_acos!(s::Vector{Float64})
-  s[end] = acos(s[end])
-end
-
-# - arctangent
-commands["atan"] = :c_atan!
-function c_atan!(s::Vector{Float64})
-  s[end] = atan(s[end])
-end
-
-# - π
-commands["pi"] = :c_pi!
-function c_pi!(s::Vector{Float64})
-  push!(s, π)
-end
-
-# - Euler's number (ℯ)
-commands["e"] = :c_euler!
-function c_euler!(s::Vector{Float64})
-  push!(s, ℯ)
-end
-
-# - log 10
-commands["log"] = :c_log10!
-commands["log10"] = :c_log10!
-function c_log10!(s::Vector{Float64})
-  s[end] = log10(s[end])
-end
-
-# - natural log
-commands["ln"] = :c_ln!
-function c_ln!(s::Vector{Float64})
-  s[end] = log(s[end])
-end
-
-# - degrees to radians
-commands["dtor"] = :c_dtor!
-function c_dtor!(s::Vector{Float64})
-  s[end] = s[end] * π / 180
-end
-
-# - radians to degrees
-commands["rtod"] = :c_rtod!
-function c_rtod!(s::Vector{Float64})
-  s[end] = s[end] * 180 / π
-end
-
-# - factorial
-commands["!"] = :c_factorial!
-function c_factorial!(s::Vector{Float64})
-  s[end] = factorial( Int64(s[end]) )
-end
-
-# - absolute value
-commands["abs"] = :c_abs!
-function c_abs!(s::Vector{Float64})
-  s[end] = abs(s[end])
-end
-
-# - nth root
-commands["gcd"] = :c_gcd!
-function c_gcd!(s::Vector{Float64})
-  a = pop!(s)
-  b = pop!(s)
-
-  push!(s, gcd(Int64(a), Int64(b)))
-end
-
-# - principal roots
-commands["proot"] = :c_proot!
-function c_proot!(s::Vector{Float64})
-  c = pop!(s)
-  b = pop!(s)
-  a = pop!(s)
-
-  if (b^2 - 4a*c) < 0 # complex solution
-    push!(s, -b/2a) # root 1 real
-    push!(s, sqrt(4a*c - b^2)/2a) # root 1 imag
-    push!(s, -b/2a) # root 2 real
-    push!(s, -1*sqrt(4a*c - b^2)/2a) # root 2 imag
-  else
-    push!(s, (-b+sqrt(b^2-4a*c))/2a) # root 1 real
-    push!(s, 0) # root 1 imag
-    push!(s, (-b-sqrt(b^2-4a*c))/2a) # root 2 real
-    push!(s, 0) # root 2 imag
-  end
-end
-
-# - greatest common denominator
-commands["throot"] = :c_throot!
-function c_throot!(s::Vector{Float64})
-  s[end-1] ^= 1 / pop!(s)
-end
-
-# - round (convert to integer)
-commands["round"] = :c_round!
-commands["int"] = :c_round!
-function c_round!(s::Vector{Float64})
-  s[end] = round(s[end])
-end
-
 # -- stack manipulation --------------------------------------------------------
 
 # - drop
@@ -384,6 +184,208 @@ end
 commands["c"] = :c_push_c!
 function c_push_c!(s::Vector{Float64})
   push!(s, stor_c)
+end
+
+# -- math operations -----------------------------------------------------------
+
+# - add
+commands["+"] = :c_add!
+function c_add!(s::Vector{Float64})
+  s[end-1] += pop!(s)
+end
+
+# - add all
+commands["+_"] = :c_add_all!
+function c_add_all!(s::Vector{Float64})
+  while length(s) > 1
+    s[end-1] += pop!(s)
+  end
+end
+
+# - subtract
+commands["-"] = :c_sub!
+function c_sub!(s::Vector{Float64})
+  s[end-1] -= pop!(s)
+end
+
+# - multiply
+commands["x"] = :c_mult!
+function c_mult!(s::Vector{Float64})
+  s[end-1] *= pop!(s)
+end
+
+# - multiply all
+commands["x_"] = :c_mult_all!
+function c_mult_all!(s::Vector{Float64})
+  while length(s) > 1
+    s[end-1] *= pop!(s)
+  end
+end
+
+# - divide
+commands["/"] = :c_div!
+function c_div!(s::Vector{Float64})
+  s[end-1] /= pop!(s)
+end
+
+# - change sign
+commands["chs"] = :c_chs!
+function c_chs!(s::Vector{Float64})
+  s[end] = -1 * s[end]
+end
+
+# - absolute value
+commands["abs"] = :c_abs!
+function c_abs!(s::Vector{Float64})
+  s[end] = abs(s[end])
+end
+
+# - round (convert to integer)
+commands["round"] = :c_round!
+commands["int"] = :c_round!
+function c_round!(s::Vector{Float64})
+  s[end] = round(s[end])
+end
+
+# - invert
+commands["inv"] = :c_inv!
+function c_inv!(s::Vector{Float64})
+  s[end] = 1 / s[end]
+end
+
+# - square root
+commands["sqrt"] = :c_sqrt!
+function c_sqrt!(s::Vector{Float64})
+  s[end] = sqrt(s[end])
+end
+
+# - nth root
+commands["throot"] = :c_throot!
+function c_throot!(s::Vector{Float64})
+  s[end-1] ^= 1 / pop!(s)
+end
+
+# - principal roots
+commands["proot"] = :c_proot!
+function c_proot!(s::Vector{Float64})
+  c = pop!(s)
+  b = pop!(s)
+  a = pop!(s)
+
+  if (b^2 - 4a*c) < 0 # complex solution
+    push!(s, -b/2a) # root 1 real
+    push!(s, sqrt(4a*c - b^2)/2a) # root 1 imag
+    push!(s, -b/2a) # root 2 real
+    push!(s, -1*sqrt(4a*c - b^2)/2a) # root 2 imag
+  else
+    push!(s, (-b+sqrt(b^2-4a*c))/2a) # root 1 real
+    push!(s, 0) # root 1 imag
+    push!(s, (-b-sqrt(b^2-4a*c))/2a) # root 2 real
+    push!(s, 0) # root 2 imag
+  end
+end
+
+# - exponentiation
+commands["exp"] = :c_exp!
+commands["^"] = :c_exp!
+function c_exp!(s::Vector{Float64})
+  s[end-1] ^= pop!(s)
+end
+
+# - modulus
+commands["%"] = :c_mod!
+commands["mod"] = :c_mod!
+function c_mod!(s::Vector{Float64})
+  divisor = pop!(s)
+  s[end] = s[end] % divisor
+end
+
+# - factorial
+commands["!"] = :c_factorial!
+function c_factorial!(s::Vector{Float64})
+  s[end] = factorial( Int64(s[end]) )
+end
+
+# - greatest common denominator
+commands["gcd"] = :c_gcd!
+function c_gcd!(s::Vector{Float64})
+  a = pop!(s)
+  b = pop!(s)
+
+  push!(s, gcd(Int64(a), Int64(b)))
+end
+
+# - π
+commands["pi"] = :c_pi!
+function c_pi!(s::Vector{Float64})
+  push!(s, π)
+end
+
+# - Euler's number (ℯ)
+commands["e"] = :c_euler!
+function c_euler!(s::Vector{Float64})
+  push!(s, ℯ)
+end
+
+# - degrees to radians
+commands["dtor"] = :c_dtor!
+function c_dtor!(s::Vector{Float64})
+  s[end] = s[end] * π / 180
+end
+
+# - radians to degrees
+commands["rtod"] = :c_rtod!
+function c_rtod!(s::Vector{Float64})
+  s[end] = s[end] * 180 / π
+end
+
+# - sine
+commands["sin"] = :c_sin!
+function c_sin!(s::Vector{Float64})
+  s[end] = sin(s[end])
+end
+
+# - arcsine
+commands["asin"] = :c_asin!
+function c_asin!(s::Vector{Float64})
+  s[end] = asin(s[end])
+end
+
+# - cosine
+commands["cos"] = :c_cos!
+function c_cos!(s::Vector{Float64})
+  s[end] = cos(s[end])
+end
+
+# - arccosine
+commands["acos"] = :c_acos!
+function c_acos!(s::Vector{Float64})
+  s[end] = acos(s[end])
+end
+
+# - tangent
+commands["tan"] = :c_tan!
+function c_tan!(s::Vector{Float64})
+  s[end] = tan(s[end])
+end
+
+# - arctangent
+commands["atan"] = :c_atan!
+function c_atan!(s::Vector{Float64})
+  s[end] = atan(s[end])
+end
+
+# - log 10
+commands["log"] = :c_log10!
+commands["log10"] = :c_log10!
+function c_log10!(s::Vector{Float64})
+  s[end] = log10(s[end])
+end
+
+# - natural log
+commands["ln"] = :c_ln!
+function c_ln!(s::Vector{Float64})
+  s[end] = log(s[end])
 end
 
 # -- mona ----------------------------------------------------------------------

@@ -31,7 +31,6 @@ fn main() {
 
   let args: Vec<String> = env::args().collect();
 
-  //println!("{}", fib(args[1].parse::<i64>().unwrap()));
   //println!("{:?}", args);
 
   let ops = &args[1..]; // operations list
@@ -40,17 +39,9 @@ fn main() {
 
   let mut cstack: Vec<f64> = Vec::new(); // computation stack
 
-  ops.iter().map(|op| println!("{}", op)).collect::<Vec<_>>();
+  ops.iter().map(|op| processnode(&cstack, &op)).collect::<Vec<_>>();
 }
 
-fn fib(n: i64) -> i64 {
-  if n <= 0 {
-    return 0;
-  } else if n < 3 {
-    return 1;
-  } else {
-    return fib(n-1) + fib(n-2);
-  }
+fn processnode(stack: &Vec<f64>, cmdval: &String) {
+  println!("op = {}", cmdval);
 }
-
-

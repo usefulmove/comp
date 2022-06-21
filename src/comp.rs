@@ -46,18 +46,52 @@ fn main() {
   }
 }
 
-fn processnode(s: &mut Vec<f64>, cmdval: &String) {
-  //println!("original stack contents: {:?}", s); // debug
+fn processnode(stack: &mut Vec<f64>, cmdval: &String) {
+  //println!("original stack contents: {:?}", stack); // debug
   //println!("op = {}", cmdval); // debug
 
   if cmdval == "+" {
-    //println!("add"); // debug
-    let ssize: usize = s.len(); // initial stack size
-    let val: f64 = s.pop().unwrap();
-    s[ssize-2] += val;
+    c_add(stack);
+  } else if cmdval == "-" {
+    c_sub(stack);
+  } else if cmdval == "x" {
+    c_mult(stack);
+  } else if cmdval == "/" {
+    c_div(stack);
+  } else if cmdval == "sqrt" {
+    c_sqrt(stack);
   } else {
-    s.push(cmdval.parse::<f64>().unwrap()); // TODO this temporarily just pushes values onto the stack
+    stack.push(cmdval.parse::<f64>().unwrap()); // TODO this temporarily just pushes values onto the stack
   }
 
-  //println!("final stack contents: {:?}", s); // debug
+  //println!("final stack contents: {:?}", stack); // debug
+}
+
+fn c_add(s: &mut Vec<f64>) {
+  let ssize: usize = s.len(); // initial stack size
+  let val: f64 = s.pop().unwrap();
+  s[ssize-2] += val;
+}
+
+fn c_sub(s: &mut Vec<f64>) {
+  let ssize: usize = s.len(); // initial stack size
+  let val: f64 = s.pop().unwrap();
+  s[ssize-2] -= val;
+}
+
+fn c_mult(s: &mut Vec<f64>) {
+  let ssize: usize = s.len(); // initial stack size
+  let val: f64 = s.pop().unwrap();
+  s[ssize-2] *= val;
+}
+
+fn c_div(s: &mut Vec<f64>) {
+  let ssize: usize = s.len(); // initial stack size
+  let val: f64 = s.pop().unwrap();
+  s[ssize-2] /= val;
+}
+
+fn c_sqrt(s: &mut Vec<f64>) {
+  let ssize: usize = s.len(); // initial stack size
+  s[ssize-1] = f64::sqrt(s[ssize-1]);
 }

@@ -38,7 +38,7 @@ fn main() {
   let mut cstack: Vec<f64> = Vec::new();
 
   // map process node function over operations list
-  ops.iter().map(|op| processnode(&mut cstack, &op)).collect::<Vec<_>>();
+  ops.iter().map(|op| processnode(&mut cstack, &op)).for_each(drop);
 
   // display updated stack
   for e in cstack {

@@ -31,17 +31,33 @@ fn main() {
 
   let args: Vec<String> = env::args().collect();
 
-  //println!("{:?}", args);
-
   let ops = &args[1..]; // operations list
-  println!("{:?}", ops);
-  //println!("{}", ops[0]);
+  //println!("{:?}", ops); // debug
 
-  let mut cstack: Vec<f64> = Vec::new(); // computation stack
+  // create computation stack
+  let mut cstack: Vec<f64> = Vec::new();
 
-  ops.iter().map(|op| processnode(&cstack, &op)).collect::<Vec<_>>();
+  // map process node function over operations list
+  ops.iter().map(|op| processnode(&mut cstack, &op)).collect::<Vec<_>>();
+
+  // display updated stack
+  for e in cstack {
+    println!("{}", e);
+  }
 }
 
-fn processnode(stack: &Vec<f64>, cmdval: &String) {
-  println!("op = {}", cmdval);
+fn processnode(s: &mut Vec<f64>, cmdval: &String) {
+  //println!("original stack contents: {:?}", s); // debug
+  //println!("op = {}", cmdval); // debug
+
+  if cmdval == "+" {
+    //println!("add"); // debug
+    let ssize: usize = s.len(); // initial stack size
+    let val: f64 = s.pop().unwrap();
+    s[ssize-2] += val;
+  } else {
+    s.push(cmdval.parse::<f64>().unwrap()); // TODO this temporarily just pushes values onto the stack
+  }
+
+  //println!("final stack contents: {:?}", s); // debug
 }

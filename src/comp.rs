@@ -27,9 +27,39 @@ use std::env;
 */
 
 fn main() {
-  const COMP_VERSION: &str = "0.15.0";
+  const COMP_VERSION: &str = "0.15.1";
 
-  let args: Vec<String> = env::args().collect();
+  let mut args: Vec<String> = env::args().collect();
+
+  if args.len() <= 1 {
+    args.push("help".to_string());
+  }
+
+  if args[1] == "--help" || args[1] == "help" {
+    println!("usage: comp [version] [help]");
+    println!("       comp <list>");
+    //println!("       comp -f <file>");
+    println!();
+    println!("where <list> represents a sequence of reverse Polish notion (rpn) \
+    postfix operations or <file> is a file containing a similar sequence of \
+    operations. Each operation must be either a command (symbol) or value. As \
+    examples, 'comp 3 4 +' adds the values 3 and 4 and '3 dup x 4 dup x +' \
+    computes the sum of the squares of 3 and 4. The available commands are \
+    listed below.");
+    println!();
+    println!("commands:");
+    println!("{}", CMDS);
+
+    return;
+  } else if args[1] == "--version" || args[1] == "version" {
+    println!("comp {}", COMP_VERSION);
+
+    return;
+  } else if args[1] == "mona" {
+    println!("{}", MONA);
+
+    return;
+  }
 
   let ops = &args[1..]; // operations list
   //println!("{:?}", ops); // debug
@@ -78,39 +108,39 @@ fn processnode(cs: &mut CompositeStack, cmdval: &str) {
     ".c"     => c_store_c(cs), // store
     "c"      => c_push_c(cs),  // retrieve
     // math operations
-    "+"      => c_add(cs),
-    "+_"     => c_add_all(cs),
-    "-"      => c_sub(cs),
-    "x"      => c_mult(cs),
-    "x_"     => c_mult_all(cs),
-    "/"      => c_div(cs),
-    "chs"    => c_chs(cs),
-    "abs"    => c_abs(cs),
-    "round"  => c_round(cs),
+    "+"      => c_add(cs),       // add
+    "+_"     => c_add_all(cs),   // add all
+    "-"      => c_sub(cs),       // subtract
+    "x"      => c_mult(cs),      // multiply
+    "x_"     => c_mult_all(cs),  // multiply all
+    "/"      => c_div(cs),       // divide
+    "chs"    => c_chs(cs),       // change sign
+    "abs"    => c_abs(cs),       // absolute value
+    "round"  => c_round(cs),     // round
     "int"    => c_round(cs),
-    "inv"    => c_inv(cs),
-    "sqrt"   => c_sqrt(cs),
-    "throot" => c_throot(cs),
-    "proot"  => c_proot(cs),
-    "^"      => c_exp(cs),
+    "inv"    => c_inv(cs),       // invert (1/x)
+    "sqrt"   => c_sqrt(cs),      // square root
+    "throot" => c_throot(cs),    // nth root
+    "proot"  => c_proot(cs),     // find principal roots
+    "^"      => c_exp(cs),       // exponenation
     "exp"    => c_exp(cs),
-    "%"      => c_mod(cs),
-    "mod"      => c_mod(cs),
-    "!"      => c_fact(cs),
-    "gcd"    => c_gcd(cs),
-    "pi"     => c_pi(cs),
-    "e"      => c_euler(cs),
-    "dtor"   => c_dtor(cs),
-    "rtod"   => c_rtod(cs),
-    "sin"    => c_sin(cs),
-    "asin"   => c_asin(cs),
-    "cos"    => c_cos(cs),
-    "acos"   => c_acos(cs),
-    "tan"    => c_tan(cs),
-    "atan"   => c_atan(cs),
-    "log"    => c_log10(cs),
+    "%"      => c_mod(cs),       // modulus
+    "mod"    => c_mod(cs),
+    "!"      => c_fact(cs),      // factorial
+    "gcd"    => c_gcd(cs),       // greatest common divisor
+    "pi"     => c_pi(cs),        // pi
+    "e"      => c_euler(cs),     // Euler's constant
+    "dtor"   => c_dtor(cs),      // degrees to radians
+    "rtod"   => c_rtod(cs),      // radians to degrees
+    "sin"    => c_sin(cs),       // sine
+    "asin"   => c_asin(cs),      // arcsine
+    "cos"    => c_cos(cs),       // cosine
+    "acos"   => c_acos(cs),      // arccosine
+    "tan"    => c_tan(cs),       // tangent
+    "atan"   => c_atan(cs),      // arctangent
+    "log"    => c_log10(cs),     // log (base 10)
     "log10"  => c_log10(cs),
-    "ln"     => c_ln(cs),
+    "ln"     => c_ln(cs),        // natural log
     _ => cs.stack.push(cmdval.parse::<f64>().unwrap()), // push value onto stack
   }
 }
@@ -353,3 +383,57 @@ fn factorial(n: u64) -> u64 {
     return n * factorial(n-1);
   }
 }
+
+// -- command list -------------------------------------------------------------
+
+const CMDS: &str = "drop dup swap cls clr roll sa .a a sb .b b sc .c c + +_ - x \
+x_ / chs abs round int inv sqrt throot proot ^ exp % mod ! gcd pi e dtor rtod \
+sin asin cos acos tan atan log log10 ln";
+
+// -- mona ---------------------------------------------------------------------
+
+const MONA: &str = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>''''''<!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\
+       !!!!!!!!!!!!!!!!!!!!!!!!!!!!'''''`             ``'!!!!!!!!!!!!!!!!!!!!!!!!\n\
+       !!!!!!!!!!!!!!!!!!!!!!!!''`          .....         `'!!!!!!!!!!!!!!!!!!!!!\n\
+       !!!!!!!!!!!!!!!!!!!!!'`      .      :::::'            `'!!!!!!!!!!!!!!!!!!\n\
+       !!!!!!!!!!!!!!!!!!!'     .   '     .::::'                `!!!!!!!!!!!!!!!!\n\
+       !!!!!!!!!!!!!!!!!'      :          `````                   `!!!!!!!!!!!!!!\n\
+       !!!!!!!!!!!!!!!!        .,cchcccccc,,.                       `!!!!!!!!!!!!\n\
+       !!!!!!!!!!!!!!!     .-\"?$$$$$$$$$$$$$$c,                      `!!!!!!!!!!!\n\
+       !!!!!!!!!!!!!!    ,ccc$$$$$$$$$$$$$$$$$$$,                     `!!!!!!!!!!\n\
+       !!!!!!!!!!!!!    z$$$$$$$$$$$$$$$$$$$$$$$$;.                    `!!!!!!!!!\n\
+       !!!!!!!!!!!!    <$$$$$$$$$$$$$$$$$$$$$$$$$$:.                    `!!!!!!!!\n\
+       !!!!!!!!!!!     $$$$$$$$$$$$$$$$$$$$$$$$$$$h;:.                   !!!!!!!!\n\
+       !!!!!!!!!!'     $$$$$$$$$$$$$$$$$$$$$$$$$$$$$h;.                   !!!!!!!\n\
+       !!!!!!!!!'     <$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$                   !!!!!!!\n\
+       !!!!!!!!'      `$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$F                   `!!!!!!\n\
+       !!!!!!!!        c$$$$???$$$$$$$P\"\"  \"\"\"??????\"                      !!!!!!\n\
+       !!!!!!!         `\"\" .,.. \"$$$$F    .,zcr                            !!!!!!\n\
+       !!!!!!!         .  dL    .?$$$   .,cc,      .,z$h.                  !!!!!!\n\
+       !!!!!!!!        <. $$c= <$d$$$   <$$$$=-=+\"$$$$$$$                  !!!!!!\n\
+       !!!!!!!         d$$$hcccd$$$$$   d$$$hcccd$$$$$$$F                  `!!!!!\n\
+       !!!!!!         ,$$$$$$$$$$$$$$h d$$$$$$$$$$$$$$$$                   `!!!!!\n\
+       !!!!!          `$$$$$$$$$$$$$$$<$$$$$$$$$$$$$$$$'                    !!!!!\n\
+       !!!!!          `$$$$$$$$$$$$$$$$\"$$$$$$$$$$$$$P>                     !!!!!\n\
+       !!!!!           ?$$$$$$$$$$$$??$c`$$$$$$$$$$$?>'                     `!!!!\n\
+       !!!!!           `?$$$$$$I7?\"\"    ,$$$$$$$$$?>>'                       !!!!\n\
+       !!!!!.           <<?$$$$$$c.    ,d$$?$$$$$F>>''                       `!!!\n\
+       !!!!!!            <i?$P\"??$$r--\"?\"\"  ,$$$$h;>''                       `!!!\n\
+       !!!!!!             $$$hccccccccc= cc$$$$$$$>>'                         !!!\n\
+       !!!!!              `?$$$$$$F\"\"\"\"  `\"$$$$$>>>''                         `!!\n\
+       !!!!!                \"?$$$$$cccccc$$$$??>>>>'                           !!\n\
+       !!!!>                  \"$$$$$$$$$$$$$F>>>>''                            `!\n\
+       !!!!!                    \"$$$$$$$$???>'''                                !\n\
+       !!!!!>                     `\"\"\"\"\"                                        `\n\
+       !!!!!!;                       .                                          `\n\
+       !!!!!!!                       ?h.\n\
+       !!!!!!!!                       $$c,\n\
+       !!!!!!!!>                      ?$$$h.              .,c\n\
+       !!!!!!!!!                       $$$$$$$$$hc,.,,cc$$$$$\n\
+       !!!!!!!!!                  .,zcc$$$$$$$$$$$$$$$$$$$$$$\n\
+       !!!!!!!!!               .z$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\
+       !!!!!!!!!             ,d$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$          .\n\
+       !!!!!!!!!           ,d$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$         !!\n\
+       !!!!!!!!!         ,d$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$        ,!'\n\
+       !!!!!!!!>        c$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$.\n\
+       !!!!!!''       ,d$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$      allen mullen";

@@ -1,4 +1,5 @@
 use std::env;
+use std::collections::HashMap;
 
 /*
 
@@ -46,26 +47,29 @@ fn main() {
   }
 }
 
-fn processnode(stack: &mut Vec<f64>, cmdval: &String) {
+fn processnode(stack: &mut Vec<f64>, cmdval: &str) {
   //println!("original stack contents: {:?}", stack); // debug
   //println!("op = {}", cmdval); // debug
 
-  if cmdval == "+" {
-    c_add(stack);
-  } else if cmdval == "-" {
-    c_sub(stack);
-  } else if cmdval == "x" {
-    c_mult(stack);
-  } else if cmdval == "/" {
-    c_div(stack);
-  } else if cmdval == "sqrt" {
-    c_sqrt(stack);
-  } else {
-    stack.push(cmdval.parse::<f64>().unwrap()); // TODO this temporarily just pushes values onto the stack
+  match cmdval {
+    "+"    => c_add(stack),
+    "-"    => c_sub(stack),
+    "x"    => c_mult(stack),
+    "/"    => c_div(stack),
+    "sqrt" => c_sqrt(stack),
+    _ => stack.push(cmdval.parse::<f64>().unwrap()), // push value onto stack
   }
 
   //println!("final stack contents: {:?}", stack); // debug
 }
+
+// -- Commands -----------------------------------------------------------------
+
+// -- stack manipulation -------------------------------------------------------
+
+//TODO
+
+// -- math operations ----------------------------------------------------------
 
 fn c_add(s: &mut Vec<f64>) {
   let ssize: usize = s.len(); // initial stack size

@@ -186,7 +186,7 @@ comp 5 !
 120.0
 ```
 
-### `greatest common devisor`
+### `greatest common divisor`
 ```
 comp 10 55 gcd
 5.0

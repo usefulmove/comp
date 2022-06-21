@@ -1,5 +1,4 @@
 use std::env;
-use std::collections::HashMap;
 
 /*
 
@@ -48,54 +47,120 @@ fn main() {
 }
 
 fn processnode(stack: &mut Vec<f64>, cmdval: &str) {
-  //println!("original stack contents: {:?}", stack); // debug
-  //println!("op = {}", cmdval); // debug
-
   match cmdval {
+    // stack manipulatgion
+    "drop" => c_drop(stack), // drop
+    "dup"  => c_dup(stack),  // duplicate
+    "swap" => c_swap(stack), // swap x and y
+    "cls"  => c_cls(stack),  // clear stack
+    "roll" => c_roll(stack), // roll stack
+    // memory usage
+    //TODO"sa"   => c_store_a(stack), // store
+    //TODO"a"    => c_push_a(stack),  // retrieve
+    //TODO"sb"   => c_store_b(stack), // store
+    //TODO"b"    => c_push_b(stack),  // retrieve
+    //TODO"sc"   => c_store_c(stack), // store
+    //TODO"c"    => c_push_c(stack),  // retrieve
+    // math operations
     "+"    => c_add(stack),
+    "+_"   => c_add_all(stack),
     "-"    => c_sub(stack),
     "x"    => c_mult(stack),
+    "x_"   => c_mult_all(stack),
     "/"    => c_div(stack),
+    "chs"  => c_chs(stack),
+    "abs"  => c_abs(stack),
     "sqrt" => c_sqrt(stack),
+    "inv"  => c_inv(stack),
     _ => stack.push(cmdval.parse::<f64>().unwrap()), // push value onto stack
   }
-
-  //println!("final stack contents: {:?}", stack); // debug
 }
 
 // -- Commands -----------------------------------------------------------------
 
 // -- stack manipulation -------------------------------------------------------
 
+fn c_drop(s: &mut Vec<f64>) {
+  s.pop().unwrap();
+}
+
+fn c_dup(s: &mut Vec<f64>) {
+  let end: usize = s.len() - 1;
+  s.push(s[end]);
+}
+
+fn c_swap(s: &mut Vec<f64>) {
+  let end: usize = s.len() - 1;
+  let o: f64 = s[end];
+  s[end] = s[end-1];
+  s[end-1] = o;
+}
+
+fn c_cls(s: &mut Vec<f64>) {
+  s.clear();
+}
+
+fn c_roll(s: &mut Vec<f64>) {
+  let o: f64 = s.pop().unwrap();
+  s.splice(0..0, [o]);
+}
+
+// -- memory usage -------------------------------------------------------------
+
 //TODO
 
 // -- math operations ----------------------------------------------------------
 
 fn c_add(s: &mut Vec<f64>) {
-  let ssize: usize = s.len(); // initial stack size
-  let val: f64 = s.pop().unwrap();
-  s[ssize-2] += val;
+  let end: usize = s.len() - 1;
+  s[end-1] += s.pop().unwrap();
+}
+
+fn c_add_all(s: &mut Vec<f64>) {
+  while s.len() > 1 {
+    let end: usize = s.len() - 1;
+    s[end-1] += s.pop().unwrap();
+  }
 }
 
 fn c_sub(s: &mut Vec<f64>) {
-  let ssize: usize = s.len(); // initial stack size
-  let val: f64 = s.pop().unwrap();
-  s[ssize-2] -= val;
+  let end: usize = s.len() - 1;
+  s[end-1] -= s.pop().unwrap();
 }
 
 fn c_mult(s: &mut Vec<f64>) {
-  let ssize: usize = s.len(); // initial stack size
-  let val: f64 = s.pop().unwrap();
-  s[ssize-2] *= val;
+  let end: usize = s.len() - 1;
+  s[end-1] *= s.pop().unwrap();
+}
+
+fn c_mult_all(s: &mut Vec<f64>) {
+  while s.len() > 1 {
+    let end: usize = s.len() - 1;
+    s[end-1] *= s.pop().unwrap();
+  }
 }
 
 fn c_div(s: &mut Vec<f64>) {
-  let ssize: usize = s.len(); // initial stack size
-  let val: f64 = s.pop().unwrap();
-  s[ssize-2] /= val;
+  let end: usize = s.len() - 1;
+  s[end-1] /= s.pop().unwrap();
+}
+
+fn c_abs(s: &mut Vec<f64>) {
+  let end: usize = s.len() - 1;
+  s[end] = f64::abs(s[end]);
+}
+
+fn c_chs(s: &mut Vec<f64>) {
+  let end: usize = s.len() - 1;
+  s[end] = -1.0 * s[end];
 }
 
 fn c_sqrt(s: &mut Vec<f64>) {
-  let ssize: usize = s.len(); // initial stack size
-  s[ssize-1] = f64::sqrt(s[ssize-1]);
+  let end: usize = s.len() - 1;
+  s[end] = f64::sqrt(s[end]);
+}
+
+fn c_inv(s: &mut Vec<f64>) {
+  let end: usize = s.len() - 1;
+  s[end] = 1.0 / s[end];
 }

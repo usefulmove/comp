@@ -49,11 +49,11 @@ fn main() {
 fn processnode(stack: &mut Vec<f64>, cmdval: &str) {
   match cmdval {
     // stack manipulatgion
-    "drop" => c_drop(stack), // drop
-    "dup"  => c_dup(stack),  // duplicate
-    "swap" => c_swap(stack), // swap x and y
-    "cls"  => c_cls(stack),  // clear stack
-    "roll" => c_roll(stack), // roll stack
+    "drop"   => c_drop(stack), // drop
+    "dup"    => c_dup(stack),  // duplicate
+    "swap"   => c_swap(stack), // swap x and y
+    "cls"    => c_cls(stack),  // clear stack
+    "roll"   => c_roll(stack), // roll stack
     // memory usage
     //TODO"sa"   => c_store_a(stack), // store
     //TODO"a"    => c_push_a(stack),  // retrieve
@@ -62,16 +62,20 @@ fn processnode(stack: &mut Vec<f64>, cmdval: &str) {
     //TODO"sc"   => c_store_c(stack), // store
     //TODO"c"    => c_push_c(stack),  // retrieve
     // math operations
-    "+"    => c_add(stack),
-    "+_"   => c_add_all(stack),
-    "-"    => c_sub(stack),
-    "x"    => c_mult(stack),
-    "x_"   => c_mult_all(stack),
-    "/"    => c_div(stack),
-    "chs"  => c_chs(stack),
-    "abs"  => c_abs(stack),
-    "sqrt" => c_sqrt(stack),
-    "inv"  => c_inv(stack),
+    "+"      => c_add(stack),
+    "+_"     => c_add_all(stack),
+    "-"      => c_sub(stack),
+    "x"      => c_mult(stack),
+    "x_"     => c_mult_all(stack),
+    "/"      => c_div(stack),
+    "chs"    => c_chs(stack),
+    "abs"    => c_abs(stack),
+    "inv"    => c_inv(stack),
+    "sqrt"   => c_sqrt(stack),
+    "throot" => c_throot(stack),
+    "^"      => c_exp(stack),
+    "%"      => c_mod(stack),
+    "!"      => c_fact(stack),
     _ => stack.push(cmdval.parse::<f64>().unwrap()), // push value onto stack
   }
 }
@@ -155,12 +159,43 @@ fn c_chs(s: &mut Vec<f64>) {
   s[end] = -1.0 * s[end];
 }
 
+fn c_inv(s: &mut Vec<f64>) {
+  let end: usize = s.len() - 1;
+  s[end] = 1.0 / s[end];
+}
+
 fn c_sqrt(s: &mut Vec<f64>) {
   let end: usize = s.len() - 1;
   s[end] = f64::sqrt(s[end]);
 }
 
-fn c_inv(s: &mut Vec<f64>) {
+fn c_throot(s: &mut Vec<f64>) {
   let end: usize = s.len() - 1;
-  s[end] = 1.0 / s[end];
+  let o: f64 = s.pop().unwrap();
+  s[end-1] = s[end-1].powf(1.0/o);
+}
+
+fn c_exp(s: &mut Vec<f64>) {
+  let end: usize = s.len() - 1;
+  let o: f64 = s.pop().unwrap();
+  s[end-1] = s[end-1].powf(o);
+}
+
+fn c_mod(s: &mut Vec<f64>) {
+  let end: usize = s.len() - 1;
+  let o: f64 = s.pop().unwrap();
+  s[end-1] = s[end-1] % o;
+}
+
+fn c_fact(s: &mut Vec<f64>) {
+  let end: usize = s.len() - 1;
+  s[end] = factorial(s[end] as u64) as f64;
+}
+
+fn factorial(n: u64) -> u64 {
+  if n < 2 {
+    return 1;
+  } else {
+    return n * factorial(n-1);
+  }
 }

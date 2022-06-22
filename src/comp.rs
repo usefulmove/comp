@@ -1,8 +1,9 @@
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
+use std::path::Path;
 
-const COMP_VERSION: &str = "0.15.2";
+const COMP_VERSION: &str = "0.15.3";
 
 /*
 
@@ -66,13 +67,18 @@ fn main() {
   } else if args[1] == "-f" || args[1] == "--file" {
     // read operations list input from file
     print!("reading command input from '{}' file ... ", args[2].to_string()); // debug
-    let mut file = match File::open("maths") {
-                 Err(why) => panic!("couldn't open file: {}", why),
+
+    let filename = args[2].to_string();
+    let path = Path::new(&filename); // TODO - debug this line
+    let display = path.display();
+
+    let mut file = match File::open(&path) {
+                 Err(why) => panic!("couldn't open {}: {}", display, why),
                  Ok(file) => file,
                };
     let mut contents = String::new();
     match file.read_to_string(&mut contents) {
-      Err(why) => panic!("couldn't read file: {}", why),
+      Err(why) => panic!("couldn't read {}: {}", display, why),
       Ok(_) => println!("success"),
     };
 

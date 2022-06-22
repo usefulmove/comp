@@ -1,4 +1,8 @@
 use std::env;
+use std::fs::File;
+use std::io::prelude::*;
+
+const COMP_VERSION: &str = "0.15.2";
 
 /*
 
@@ -27,18 +31,19 @@ use std::env;
 */
 
 fn main() {
-  const COMP_VERSION: &str = "0.15.1";
-
   let mut args: Vec<String> = env::args().collect();
+
+  let mut ops: Vec<String> = vec!["6.18".to_string()]; // i'm not sure why this is necessary to make the compiler happy.
 
   if args.len() <= 1 {
     args.push("help".to_string());
   }
 
   if args[1] == "--help" || args[1] == "help" {
+    // display command usage information
     println!("usage: comp [version] [help]");
     println!("       comp <list>");
-    //println!("       comp -f <file>");
+    println!("       comp -f <file>");
     println!();
     println!("where <list> represents a sequence of reverse Polish notion (rpn) \
     postfix operations or <file> is a file containing a similar sequence of \
@@ -52,19 +57,39 @@ fn main() {
 
     return;
   } else if args[1] == "--version" || args[1] == "version" {
+    // display version information
     println!("comp {}", COMP_VERSION);
-
     return;
   } else if args[1] == "mona" {
     println!("{}", MONA);
-
     return;
+  } else if args[1] == "-f" || args[1] == "--file" {
+    // read operations list input from file
+    print!("reading command input from '{}' file ... ", args[2].to_string()); // debug
+    let mut file = match File::open("maths") {
+                 Err(why) => panic!("couldn't open file: {}", why),
+                 Ok(file) => file,
+               };
+    let mut contents = String::new();
+    match file.read_to_string(&mut contents) {
+      Err(why) => panic!("couldn't read file: {}", why),
+      Ok(_) => println!("success"),
+    };
+
+    let temp_ops: Vec<&str> = contents.split_whitespace().collect();
+
+    // create operations list vector
+    ops = Vec::new();
+    for op in temp_ops {
+      ops.push(op.to_string());
+    }
+  } else {
+    // read operations list input from command line arguments
+    ops = (&args[1..]).to_vec(); //remove
   }
+  // println!("{:?}", ops); // debug message
 
-  let ops = &args[1..]; // operations list
-  //println!("{:?}", ops); // debug
-
-  // create computation stack and memory
+  // create composite computation stack with memory locations
   let mut cstack = CompositeStack{
                      stack: Vec::new(),
                      mem_a: 0.0,

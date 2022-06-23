@@ -120,7 +120,7 @@ struct CompositeStack {
 
 fn processnode(cs: &mut CompositeStack, cmdval: &str) {
   match cmdval {
-    // stack manipulatgion
+    // stack manipulation
     "drop"   => c_drop(cs), // drop
     "dup"    => c_dup(cs),  // duplicate
     "swap"   => c_swap(cs), // swap x and y

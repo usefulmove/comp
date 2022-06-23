@@ -34,7 +34,7 @@ const COMP_VERSION: &str = "0.15.3";
 fn main() {
   let mut args: Vec<String> = env::args().collect();
 
-  let mut ops: Vec<String> = vec!["6.18".to_string()]; // i'm not sure why this is necessary to make the compiler happy.
+  let mut ops: Vec<String> = vec!["6.18".to_string()]; // TODO not sure why this is necessary to make the compiler happy
 
   if args.len() <= 1 {
     args.push("help".to_string());
@@ -66,16 +66,16 @@ fn main() {
     return;
   } else if args[1] == "-f" || args[1] == "--file" {
     // read operations list input from file
-    print!("reading command input from '{}' file ... ", args[2].to_string()); // debug
+    print!("reading command input from '{}' file .. ", args[2].to_string()); // debug
 
     let filename = args[2].to_string();
-    let path = Path::new(&filename); // TODO - debug this line
+    let path = Path::new(&filename);
     let display = path.display();
 
     let mut file = match File::open(&path) {
-                 Err(why) => panic!("couldn't open {}: {}", display, why),
-                 Ok(file) => file,
-               };
+                     Err(why) => panic!("couldn't open {}: {}", display, why),
+                     Ok(file) => file,
+                   };
     let mut contents = String::new();
     match file.read_to_string(&mut contents) {
       Err(why) => panic!("couldn't read {}: {}", display, why),
@@ -270,7 +270,7 @@ fn c_div(cs: &mut CompositeStack) {
 
 fn c_chs(cs: &mut CompositeStack) {
   let end: usize = cs.stack.len() - 1;
-  cs.stack[end] = -1.0 * cs.stack[end];
+  cs.stack[end] *= -1.0;
 }
 
 fn c_abs(cs: &mut CompositeStack) {

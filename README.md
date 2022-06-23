@@ -3,8 +3,30 @@ A clean, reverse Polish notation (RPN) calculation interface. The interface was 
 
 For more information, see the comp command documentation below.
 
+---
+
 ## License
 The `comp` interpreter is available under the MIT License. The MIT License is a permissive free software license with very limited restrictions on reuse. The full license text can be found in the [`LICENSE.md`][1] file.
+
+---
+
+## Installation
+
+### source code
+Use git to clone the `comp` source code using the following command.
+
+```
+git clone https://github.com/usefulmove/comp.git
+```
+
+### rustc compiler
+The comp binary can be built using the Rust compiler. Rust can be installed for your operating system using the [instructions][2] at the Rust language website. From the base directory of the comp clone, compile the source code using the `rustc` command.
+
+```
+rustc ./src/comp.rs
+```
+
+The compiler will create a `comp` executable in the current working directory. You can add the executable to your PATH and run the comp command from the command line.
 
 ---
 
@@ -14,8 +36,6 @@ comp help
 ```
 
 ![](https://raw.githubusercontent.com/usefulmove/comp/main/usage.png)
-
----
 
 ## Commands (stack manipulation)
 
@@ -68,9 +88,6 @@ comp 1 2 3 4 roll
 3
 ```
 
-
----
-
 ## Commands (memory usage)
 
 ### `store and retrieve`
@@ -80,9 +97,6 @@ comp 1 2 3 sa drop a
 1
 3
 ```
-
-
----
 
 ## Commands (math operations)
 
@@ -257,3 +271,4 @@ comp e ln
 
 
 [1]: ./LICENSE
+[2]: https://rust-lang.org/tools/install

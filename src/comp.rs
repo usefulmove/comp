@@ -46,7 +46,7 @@ fn main() {
     println!("       comp <list>");
     println!("       comp -f <file>");
     println!();
-    println!("where <list> represents a sequence of reverse Polish notion (rpn) \
+    println!("where <list> represents a sequence of reverse Polish notion (RPN) \
     postfix operations or <file> is a file containing a similar sequence of \
     operations. Each operation must be either a command (symbol) or value. As \
     examples, 'comp 3 4 +' adds the values 3 and 4 and '3 dup x 4 dup x +' \

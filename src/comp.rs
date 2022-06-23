@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-const COMP_VERSION: &str = "0.15.3";
+const COMP_VERSION: &str = "0.15.4";
 
 /*
 
@@ -34,7 +34,7 @@ const COMP_VERSION: &str = "0.15.3";
 fn main() {
   let mut args: Vec<String> = env::args().collect();
 
-  let mut ops: Vec<String> = vec!["6.18".to_string()]; // TODO not sure why this is necessary to make the compiler happy
+  let mut ops = Vec::new();
 
   if args.len() <= 1 {
     args.push("help".to_string());
@@ -85,7 +85,6 @@ fn main() {
     let temp_ops: Vec<&str> = contents.split_whitespace().collect();
 
     // create operations list vector
-    ops = Vec::new();
     for op in temp_ops {
       ops.push(op.to_string());
     }

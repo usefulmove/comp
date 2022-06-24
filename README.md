@@ -1,5 +1,5 @@
 # comp
-A fast, reverse Polish notation (RPN) calculation interface. The interface was initially developed as a personal project to build a basic lisp interpreter in the Julia programming language. It was later rewritten in Rust. It implements a postfix notation similar to the Forth language and the interface implemented on the original Hewlett-Packard scientific calculators. The interface accepts a sequence of postfix operations. Each operation is either a value or a command. As examples, `comp 3 4 +` adds the values 3 and 4 and `comp 3 dup x 4 dup x +` computes the sum of the squares of 3 and 4.
+A simple and fast, reverse Polish notation (RPN) calculation interface. The interface was initially developed as a personal project to build a basic lisp interpreter in the Julia programming language. It was later rewritten in Rust. It implements a postfix notation similar to the Forth language and the interface implemented on the original Hewlett-Packard scientific calculators. The interface accepts a sequence of postfix operations. Each operation is either a value or a command. As examples, `comp 3 4 +` adds the values 3 and 4 and `comp 3 dup x 4 dup x +` computes the sum of the squares of 3 and 4.
 
 For more information, see the comp command documentation below.
 

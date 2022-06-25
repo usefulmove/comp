@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-const COMP_VERSION: &str = "0.15.4";
+const COMP_VERSION: &str = "0.15.5";
 
 /*
 
@@ -475,3 +475,192 @@ const MONA: &str = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>''''''<!!!!!!!!!!!!!!
        !!!!!!!!!         ,d$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$        ,!'\n\
        !!!!!!!!>        c$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$.\n\
        !!!!!!''       ,d$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$      allen mullen";
+
+
+// -- unit and regression tests ------------------------------------------------
+
+#[cfg(test)]
+
+mod comp_tests {
+
+  #[test]
+  fn test_core() {
+    let mut testcs = super::CompositeStack{
+                       stack: Vec::new(),
+                       mem_a: 20.0,
+                       mem_b: 6.18,
+                       mem_c: -123.45,
+                     };
+
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+
+    super::c_dtor(&mut testcs);
+    super::c_cos(&mut testcs);
+    super::c_acos(&mut testcs);
+    super::c_sin(&mut testcs);
+    super::c_asin(&mut testcs);
+    super::c_tan(&mut testcs);
+    super::c_atan(&mut testcs);
+    super::c_rtod(&mut testcs);
+    super::c_round(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_dup(&mut testcs);
+    super::c_drop(&mut testcs);
+    super::c_swap(&mut testcs);
+    super::c_swap(&mut testcs);
+    super::c_add(&mut testcs);
+    super::c_sub(&mut testcs);
+    super::c_div(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == -0.2);
+  }
+
+  #[test]
+  fn test_support() {
+    assert!(super::gcd(55, 10) == 5);
+    assert!(super::factorial(10) == 3628800);
+  }
+
+  #[test]
+  fn test_roots() {
+    let mut testcs = super::CompositeStack{
+                       stack: Vec::new(),
+                       mem_a: 0.1,
+                       mem_b: 0.2,
+                       mem_c: 0.3,
+                     };
+
+    testcs.stack.push(2.0);
+    super::c_dup(&mut testcs);
+    super::c_sqrt(&mut testcs);
+    super::c_swap(&mut testcs);
+    testcs.stack.push(32.0);
+    super::c_exp(&mut testcs);
+    testcs.stack.push(32.0 * 2.0);
+    super::c_throot(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == testcs.stack.pop().unwrap());
+
+    testcs.stack.push(1.0);
+    testcs.stack.push(-2.0);
+    super::c_chs(&mut testcs);
+    super::c_chs(&mut testcs);
+    super::c_pi(&mut testcs);
+    super::c_mult(&mut testcs);
+    super::c_pi(&mut testcs);
+    testcs.stack.push(2.0);
+    super::c_exp(&mut testcs);
+    testcs.stack.push(1.0);
+    super::c_add(&mut testcs);
+    super::c_proot(&mut testcs);
+    super::c_add_all(&mut testcs);
+    testcs.stack.push(2.0);
+    super::c_div(&mut testcs);
+    super::c_pi(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == testcs.stack.pop().unwrap());
+  }
+
+  #[test]
+  #[should_panic]
+  fn test_cls() {
+    let mut testcs = super::CompositeStack{
+                       stack: Vec::new(),
+                       mem_a: 3.3,
+                       mem_b: 4.4,
+                       mem_c: 5.5,
+                     };
+
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    super::c_cls(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == 0.0);
+  }
+
+  #[test]
+  fn test_mem() {
+    let mut testcs = super::CompositeStack{
+                       stack: Vec::new(),
+                       mem_a: 8.88888,
+                       mem_b: 8.88888,
+                       mem_c: 8.88888,
+                     };
+
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    super::c_chs(&mut testcs);
+    super::c_abs(&mut testcs);
+    super::c_inv(&mut testcs);
+    super::c_inv(&mut testcs);
+    super::c_pi(&mut testcs);
+    super::c_euler(&mut testcs);
+    testcs.stack.push(0.0);
+    super::c_store_b(&mut testcs); // 0
+    super::c_store_a(&mut testcs); // e
+    super::c_store_c(&mut testcs); // pi
+    super::c_cls(&mut testcs);
+    super::c_push_b(&mut testcs); // 0
+    super::c_push_c(&mut testcs); // pi
+    super::c_add(&mut testcs);
+    super::c_push_a(&mut testcs); // e
+    super::c_add(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == std::f64::consts::PI + std::f64::consts::E);
+  }
+
+  #[test]
+  fn test_cmp() {
+      let mut testcs = super::CompositeStack{
+                         stack: Vec::new(),
+                         mem_a: 0.0,
+                         mem_b: 0.0,
+                         mem_c: 0.0,
+                       };
+
+    testcs.stack.push(10.0);
+    super::c_log10(&mut testcs);
+    super::c_euler(&mut testcs);
+    super::c_ln(&mut testcs);
+    testcs.stack.push(105.0);
+    testcs.stack.push(2.0);
+    super::c_mod(&mut testcs);
+    testcs.stack.push(3049.0);
+    testcs.stack.push(1009.0);
+    super::c_gcd(&mut testcs);
+    super::c_mult_all(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == 1.0);
+
+    testcs.stack.push(20.0);
+    super::c_fact(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == 2432902008176640000.0);
+  }
+}

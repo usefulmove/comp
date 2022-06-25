@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-const COMP_VERSION: &str = "0.15.4";
+const COMP_VERSION: &str = "0.15.5";
 
 /*
 
@@ -475,3 +475,30 @@ const MONA: &str = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>''''''<!!!!!!!!!!!!!!
        !!!!!!!!!         ,d$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$        ,!'\n\
        !!!!!!!!>        c$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$.\n\
        !!!!!!''       ,d$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$      allen mullen";
+
+
+// -- unit tests ---------------------------------------------------------------
+
+#[cfg(test)]
+
+mod comp_tests {
+
+  #[test]
+  fn test_base() {
+    let mut testcs = super::CompositeStack{
+                       stack: Vec::new(),
+                       mem_a: 20.0,
+                       mem_b: 6.18,
+                       mem_c: -123.45,
+                     };
+                             
+    // TODO
+  }
+
+  #[test]
+  fn test_support() {
+    assert!(super::gcd(55, 10) == 5);
+    assert!(super::factorial(10) == 3628800);
+  }
+
+}

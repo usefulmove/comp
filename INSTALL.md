@@ -1,4 +1,4 @@
-# Installation Instructions
+# Installation
 
 ## Install Rust and Cargo
 Install `rustup` using the [installation instructions][1] at the Rust language website. The installation will install the `rustc` compiler and `cargo` build management system.

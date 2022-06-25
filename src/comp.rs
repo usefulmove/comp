@@ -31,6 +31,13 @@ const COMP_VERSION: &str = "0.15.4";
 
 */
 
+// -- command list -------------------------------------------------------------
+
+const CMDS: &str = "drop dup swap cls clr roll sa .a a sb .b b sc .c c + +_ - x \
+x_ / chs abs round int inv sqrt throot proot ^ exp % mod ! gcd pi e dtor rtod \
+sin asin cos acos tan atan log log10 ln";
+
+
 fn main() {
   let mut args: Vec<String> = env::args().collect();
 
@@ -118,25 +125,26 @@ struct CompositeStack {
   mem_c: f64,
 }
 
-fn processnode(cs: &mut CompositeStack, cmdval: &str) {
-  match cmdval {
+
+fn processnode(cs: &mut CompositeStack, op: &str) {
+  match op {
     // stack manipulation
-    "drop"   => c_drop(cs), // drop
-    "dup"    => c_dup(cs),  // duplicate
-    "swap"   => c_swap(cs), // swap x and y
-    "cls"    => c_cls(cs),  // clear stack
-    "clr"    => c_cls(cs),  // clear stack
-    "roll"   => c_roll(cs), // roll stack
+    "drop"   => c_drop(cs),      // drop
+    "dup"    => c_dup(cs),       // duplicate
+    "swap"   => c_swap(cs),      // swap x and y
+    "cls"    => c_cls(cs),       // clear stack
+    "clr"    => c_cls(cs),       // clear stack
+    "roll"   => c_roll(cs),      // roll stack
     // memory usage
-    "sa"     => c_store_a(cs), // store (pop value off stack and store)
-    ".a"     => c_store_a(cs), // store (pop value off stack and store)
-    "a"      => c_push_a(cs),  // retrieve (push stored value onto the stack)
-    "sb"     => c_store_b(cs), // store
-    ".b"     => c_store_b(cs), // store
-    "b"      => c_push_b(cs),  // retrieve
-    "sc"     => c_store_c(cs), // store
-    ".c"     => c_store_c(cs), // store
-    "c"      => c_push_c(cs),  // retrieve
+    "sa"     => c_store_a(cs),   // store (pop value off stack and store)
+    ".a"     => c_store_a(cs),   // store (pop value off stack and store)
+    "a"      => c_push_a(cs),    // retrieve (push stored value onto the stack)
+    "sb"     => c_store_b(cs),   // store
+    ".b"     => c_store_b(cs),   // store
+    "b"      => c_push_b(cs),    // retrieve
+    "sc"     => c_store_c(cs),   // store
+    ".c"     => c_store_c(cs),   // store
+    "c"      => c_push_c(cs),    // retrieve
     // math operations
     "+"      => c_add(cs),       // add
     "+_"     => c_add_all(cs),   // add all
@@ -171,13 +179,14 @@ fn processnode(cs: &mut CompositeStack, cmdval: &str) {
     "log"    => c_log10(cs),     // log (base 10)
     "log10"  => c_log10(cs),
     "ln"     => c_ln(cs),        // natural log
-    _ => cs.stack.push(cmdval.parse::<f64>().unwrap()), // push value onto stack
+    _ => cs.stack.push(op.parse::<f64>().unwrap()), // push value onto stack
   }
 }
 
-// -- Commands -----------------------------------------------------------------
 
-// -- stack manipulation -------------------------------------------------------
+// -- command functions --------------------------------------------------------
+
+// ---- stack manipulation -----------------------------------------------------
 
 fn c_drop(cs: &mut CompositeStack) {
   cs.stack.pop().unwrap();
@@ -204,7 +213,8 @@ fn c_roll(cs: &mut CompositeStack) {
   cs.stack.splice(0..0, [o]);
 }
 
-// -- memory usage -------------------------------------------------------------
+
+// ---- memory usage -----------------------------------------------------------
 
 fn c_store_a(cs: &mut CompositeStack) {
   cs.mem_a = cs.stack.pop().unwrap();
@@ -340,14 +350,6 @@ fn c_gcd(cs: &mut CompositeStack) {
   cs.stack.push(g);
 }
 
-fn gcd(a: u64, b: u64) -> u64 {
-  if b != 0 {
-    return gcd(b, a % b)
-  } else {
-    return a
-  }
-}
-
 fn c_pi(cs: &mut CompositeStack) {
   cs.stack.push(std::f64::consts::PI);
 }
@@ -358,12 +360,12 @@ fn c_euler(cs: &mut CompositeStack) {
 
 fn c_dtor(cs: &mut CompositeStack) {
   let end: usize = cs.stack.len() - 1;
-  cs.stack[end] *= std::f64::consts::PI / 180.0;
+  cs.stack[end] = cs.stack[end].to_radians();
 }
 
 fn c_rtod(cs: &mut CompositeStack) {
   let end: usize = cs.stack.len() - 1;
-  cs.stack[end] *= 180.0 / std::f64::consts::PI;
+  cs.stack[end] = cs.stack[end].to_degrees();
 }
 
 fn c_sin(cs: &mut CompositeStack) {
@@ -406,6 +408,9 @@ fn c_ln(cs: &mut CompositeStack) {
   cs.stack[end] = cs.stack[end].ln();
 }
 
+
+// -- support functions --------------------------------------------------------
+
 fn factorial(n: u64) -> u64 {
   if n < 2 {
     return 1;
@@ -414,11 +419,14 @@ fn factorial(n: u64) -> u64 {
   }
 }
 
-// -- command list -------------------------------------------------------------
+fn gcd(a: u64, b: u64) -> u64 {
+  if b != 0 {
+    return gcd(b, a % b)
+  } else {
+    return a
+  }
+}
 
-const CMDS: &str = "drop dup swap cls clr roll sa .a a sb .b b sc .c c + +_ - x \
-x_ / chs abs round int inv sqrt throot proot ^ exp % mod ! gcd pi e dtor rtod \
-sin asin cos acos tan atan log log10 ln";
 
 // -- mona ---------------------------------------------------------------------
 

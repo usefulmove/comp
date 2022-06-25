@@ -3,20 +3,20 @@
 
 ## Commands (stack manipulation)
 
-### `push onto stack`
+### push onto stack
 ```
 comp 3 4
 3
 4
 ```
 
-### `drop`
+### drop
 ```
 comp 3 4 drop
 3
 ```
 
-### `duplicate`
+### duplicate
 duplicate last element
 ```
 comp 3 4 dup
@@ -25,7 +25,7 @@ comp 3 4 dup
 4
 ```
 
-### `swap`
+### swap
 reverse order of last two elements
 ```
 comp 1 2 3 4 swap
@@ -35,14 +35,14 @@ comp 1 2 3 4 swap
 3pm 
 ```
 
-### `clear stack`
+### clear stack
 reverse order of last two elements
 ```
 comp 1 2 3 4 cls
 
 ```
 
-### `roll stack`
+### roll stack
 rotate stack elements such that the last element becomes the first
 ```
 comp 1 2 3 4 roll
@@ -56,7 +56,7 @@ comp 1 2 3 4 roll
 ---
 ## Commands (memory usage)
 
-### `store and retrieve`
+### store and retrieve
 The values `a b c` can be stored using the store command (e.g, `sa`) into memory for retrieval (e.g., `a`) in subsequent opertions. The stored value is removed from the stack when the store command is executed.
 ```
 comp 1 2 3 sa drop a
@@ -67,79 +67,79 @@ comp 1 2 3 sa drop a
 
 ## Commands (math operations)
 
-### `add`
+### add
 ```
 comp 3 4 +
 7
 ```
 
-### `subtract`
+### subtract
 ```
 comp 3 4 -
 -1
 ```
 
-### `multiply`
+### multiply
 ```
 comp 3 4 x
 12
 ```
 
-### `divide`
+### divide
 ```
 comp 3 4 /
 0.75
 ```
 
-### `add all`
+### add all
 ```
 comp 1 2 3 4 +_
 10
 ```
 
-### `multiply all`
+### multiply all
 ```
 comp 1 2 3 4 x_
 24
 ```
 
-### `change sign`
+### change sign
 ```
 comp 3 chs
 -3
 ```
 
-### `absolute value`
+### absolute value
 ```
 comp -3 abs
 3
 ```
 
-### `round`
+### round
 ```
 comp 10.2 round
 10
 ```
 
-### `invert (1/x)`
+### invert (1/x)
 ```
 comp 3 inv
 0.3333333333333333
 ```
 
-### `square root`
+### square root
 ```
 comp 2 sqrt
 1.4142135623730951
 ```
 
-### `nth root`
+### nth root
 ```
 comp 9 2 throot
 3
 ```
 
-### `find principal roots`
+### find principal roots
 For this operation, the coefficients `a b c` of the quadratic equation `ax^2 + bx + c = 0` are pushed onto the stack. The real and imaginary components of the principal roots (root1 and root2) of the equation are returned to the stack in the order `real1 imag1 real2 imag2`. The example below finds the roots of the equation `x^2 - 9 = 0`.
 ```
 comp 1 0 -9 proot
@@ -149,43 +149,43 @@ comp 1 0 -9 proot
 0
 ```
 
-### `exponetiation`
+### exponetiation
 ```
 comp 2 4 ^
 16
 ```
 
-### `modulus`
+### modulus
 ```
 comp 5 2 %
 1
 ```
 
-### `factorial`
+### factorial
 ```
 comp 5 !
 120
 ```
 
-### `greatest common divisor`
+### greatest common divisor
 ```
 comp 10 55 gcd
 5
 ```
 
-### `pi`
+### pi
 ```
 comp pi
 3.141592653589793
 ```
 
-### `Euler's number (e)`
+### Euler's number (e)
 ```
 comp e
 2.718281828459045
 ```
 
-### `convert degrees to radians / arcsine`
+### convert degrees to radians / arcsine
 ```
 comp pi 2 /
 1.5707963267948966
@@ -197,7 +197,7 @@ comp 90 dtor
 1.5707963267948966
 ```
 
-### `sine / arcsine`
+### sine / arcsine
 ```
 comp pi 2 / sin
 1
@@ -206,7 +206,7 @@ comp pi 2 / sin asin
 1.5707963267948966
 ```
 
-### `cosine / arcosine`
+### cosine / arcosine
 ```
 comp 0 cos
 1
@@ -215,7 +215,7 @@ comp 0 cos acos
 0
 ```
 
-### `tangent / arctangent`
+### tangent / arctangent
 ```
 comp pi 4 / tan
 0.9999999999999999
@@ -224,13 +224,13 @@ comp pi 4 / tan atan 4 x
 3.141592653589793
 ```
 
-### `log (base 10)`
+### log (base 10)
 ```
 comp 10 2 ^ log
 2
 ```
 
-### `natural log`
+### natural log
 ```
 comp e ln
 1
@@ -240,7 +240,7 @@ comp e ln
 ---
 ## Commands (file usage)
 
-### `--file` flag
+### --file flag
 The file flag allows the use of commands defined within a source file.
 ```
 comp --file <filename>

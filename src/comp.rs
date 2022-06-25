@@ -491,8 +491,36 @@ mod comp_tests {
                        mem_b: 6.18,
                        mem_c: -123.45,
                      };
-                             
-    // TODO
+
+    let g: f64 = 6.18033;
+
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+
+    super::c_dtor(&mut testcs);
+    super::c_cos(&mut testcs);
+    super::c_acos(&mut testcs);
+    super::c_sin(&mut testcs);
+    super::c_asin(&mut testcs);
+    super::c_tan(&mut testcs);
+    super::c_atan(&mut testcs);
+    super::c_rtod(&mut testcs);
+    super::c_round(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_dup(&mut testcs);
+    super::c_drop(&mut testcs);
+    super::c_swap(&mut testcs);
+    super::c_swap(&mut testcs);
+    super::c_add(&mut testcs);
+    super::c_sub(&mut testcs);
+    super::c_div(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == -0.2);
   }
 
   #[test]
@@ -501,4 +529,24 @@ mod comp_tests {
     assert!(super::factorial(10) == 3628800);
   }
 
+  #[test]
+  fn test_roots() {
+    let mut testcs = super::CompositeStack{
+                       stack: Vec::new(),
+                       mem_a: 0.1,
+                       mem_b: 0.2,
+                       mem_c: 0.3,
+                     };
+
+    testcs.stack.push(2.0);
+    super::c_dup(&mut testcs);
+    super::c_sqrt(&mut testcs);
+    super::c_swap(&mut testcs);
+    testcs.stack.push(32.0);
+    super::c_exp(&mut testcs);
+    testcs.stack.push(32.0 * 2.0);
+    super::c_throot(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == testcs.stack.pop().unwrap());
+  }
 }

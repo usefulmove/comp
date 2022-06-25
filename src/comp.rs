@@ -492,8 +492,6 @@ mod comp_tests {
                        mem_c: -123.45,
                      };
 
-    let g: f64 = 6.18033;
-
     testcs.stack.push(1.0);
     testcs.stack.push(2.0);
     testcs.stack.push(3.0);
@@ -548,5 +546,86 @@ mod comp_tests {
     super::c_throot(&mut testcs);
 
     assert!(testcs.stack.pop().unwrap() == testcs.stack.pop().unwrap());
+
+    testcs.stack.push(1.0);
+    testcs.stack.push(-2.0);
+    super::c_pi(&mut testcs);
+    super::c_mult(&mut testcs);
+    super::c_pi(&mut testcs);
+    testcs.stack.push(2.0);
+    super::c_exp(&mut testcs);
+    testcs.stack.push(1.0);
+    super::c_add(&mut testcs);
+    super::c_proot(&mut testcs);
+    super::c_add_all(&mut testcs);
+    testcs.stack.push(2.0);
+    super::c_div(&mut testcs);
+    super::c_pi(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == testcs.stack.pop().unwrap());
+  }
+
+  #[test]
+  #[should_panic]
+  fn test_cls() {
+    let mut testcs = super::CompositeStack{
+                       stack: Vec::new(),
+                       mem_a: 3.3,
+                       mem_b: 4.4,
+                       mem_c: 5.5,
+                     };
+
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    super::c_cls(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == 0.0);
+  }
+
+  #[test]
+  fn test_mem() {
+    let mut testcs = super::CompositeStack{
+                       stack: Vec::new(),
+                       mem_a: 8.88888,
+                       mem_b: 8.88888,
+                       mem_c: 8.88888,
+                     };
+
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    testcs.stack.push(1.0);
+    testcs.stack.push(2.0);
+    testcs.stack.push(3.0);
+    testcs.stack.push(4.0);
+    super::c_pi(&mut testcs);
+    super::c_euler(&mut testcs);
+    testcs.stack.push(0.0);
+    super::c_store_b(&mut testcs); // 0
+    super::c_store_a(&mut testcs); // e
+    super::c_store_c(&mut testcs); // pi
+    super::c_cls(&mut testcs);
+    super::c_push_b(&mut testcs); // 0
+    super::c_push_c(&mut testcs); // pi
+    super::c_add(&mut testcs);
+    super::c_push_a(&mut testcs); // e
+    super::c_add(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == std::f64::consts::PI + std::f64::consts::E);
   }
 }

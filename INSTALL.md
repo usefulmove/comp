@@ -17,9 +17,9 @@ cd comp
 cargo build --release
 ```
 
-This will create a `comp` binary executable in a `target/release` folder. The executable can be run from this location by direct reference or added to your `sbin` system folder as a symbolic link to be accessed from the command line anywhere.
+This will create a `comp` binary executable in a `target/release` folder. The executable can be run from this location by direct reference or added to your `/usr/local/bin` folder as a symbolic link to be accessed from the command line anywhere.
 ```
-sudo ln -s ./target/release/comp /sbin/
+sudo ln -sr ./target/release/comp /usr/local/bin
 ```
 
 You can check that the installation was successful by running the `comp version` command.

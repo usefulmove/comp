@@ -13,13 +13,13 @@ The comp interpreter is available under the MIT License. The MIT License is a pe
 ---
 
 ## Installation
-The comp interpreter can be installed by installing the [`Rustup`][2] toolchain installer and using the `cargo` build management system to build comp from source on your system. Detailed instructions can be found in [INSTALL.md][3].
+The comp interpreter can be installed by installing the [`Rustup`][2] toolchain installer and using the `cargo` build management system to build comp from source on your system. Detailed instructions can be found in [`INSTALL.md`][3].
 
 
 ---
 
 ## Usage
-The basic usage of the comp interpreter can be accessed in the output of the `comp help` command. More detailed usage information and descriptions of each available command can be found in [USAGE.md][4].
+The basic usage of the comp interpreter can be accessed in the output of the `comp help` command. More detailed usage information and descriptions of each available command can be found in [`USAGE.md`][4].
 ```
 comp help
 ```

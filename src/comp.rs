@@ -477,14 +477,14 @@ const MONA: &str = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>''''''<!!!!!!!!!!!!!!
        !!!!!!''       ,d$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$      allen mullen";
 
 
-// -- unit tests ---------------------------------------------------------------
+// -- unit and regression tests ------------------------------------------------
 
 #[cfg(test)]
 
 mod comp_tests {
 
   #[test]
-  fn test_base() {
+  fn test_core() {
     let mut testcs = super::CompositeStack{
                        stack: Vec::new(),
                        mem_a: 20.0,
@@ -549,6 +549,8 @@ mod comp_tests {
 
     testcs.stack.push(1.0);
     testcs.stack.push(-2.0);
+    super::c_chs(&mut testcs);
+    super::c_chs(&mut testcs);
     super::c_pi(&mut testcs);
     super::c_mult(&mut testcs);
     super::c_pi(&mut testcs);
@@ -613,6 +615,10 @@ mod comp_tests {
     testcs.stack.push(2.0);
     testcs.stack.push(3.0);
     testcs.stack.push(4.0);
+    super::c_chs(&mut testcs);
+    super::c_abs(&mut testcs);
+    super::c_inv(&mut testcs);
+    super::c_inv(&mut testcs);
     super::c_pi(&mut testcs);
     super::c_euler(&mut testcs);
     testcs.stack.push(0.0);
@@ -627,5 +633,34 @@ mod comp_tests {
     super::c_add(&mut testcs);
 
     assert!(testcs.stack.pop().unwrap() == std::f64::consts::PI + std::f64::consts::E);
+  }
+
+  #[test]
+  fn test_cmp() {
+      let mut testcs = super::CompositeStack{
+                         stack: Vec::new(),
+                         mem_a: 0.0,
+                         mem_b: 0.0,
+                         mem_c: 0.0,
+                       };
+
+    testcs.stack.push(10.0);
+    super::c_log10(&mut testcs);
+    super::c_euler(&mut testcs);
+    super::c_ln(&mut testcs);
+    testcs.stack.push(105.0);
+    testcs.stack.push(2.0);
+    super::c_mod(&mut testcs);
+    testcs.stack.push(3049.0);
+    testcs.stack.push(1009.0);
+    super::c_gcd(&mut testcs);
+    super::c_mult_all(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == 1.0);
+
+    testcs.stack.push(20.0);
+    super::c_fact(&mut testcs);
+
+    assert!(testcs.stack.pop().unwrap() == 2432902008176640000.0);
   }
 }

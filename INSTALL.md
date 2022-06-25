@@ -1,4 +1,4 @@
-# Installation
+# Installation (macOS and Linux)
 
 ## Install Rust and Cargo
 Install the Rustup toolchain installer using the [installation instructions][1] at the Rust language website. The Rustup installation will install the `rustc` compiler and `cargo` build management system.

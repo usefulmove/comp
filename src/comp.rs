@@ -502,40 +502,41 @@ mod comp_tests {
 
   #[test]
   fn test_core() {
-    let mut testcs = super::Processor{
-                       stack: Vec::new(),
-                       mem_a: 20.0,
-                       mem_b: 6.18,
-                       mem_c: -123.45,
-                     };
+    let mut test_proc = super::Processor{
+                          stack: Vec::new(),
+                          mem_a: 20.0,
+                          mem_b: 6.18,
+                          mem_c: -123.45,
+                          ops: Vec::new(),
+                        };
 
-    testcs.stack.push(1.0);
-    testcs.stack.push(2.0);
-    testcs.stack.push(3.0);
-    testcs.stack.push(4.0);
+    test_proc.stack.push(1.0);
+    test_proc.stack.push(2.0);
+    test_proc.stack.push(3.0);
+    test_proc.stack.push(4.0);
 
-    super::c_dtor(&mut testcs);
-    super::c_cos(&mut testcs);
-    super::c_acos(&mut testcs);
-    super::c_sin(&mut testcs);
-    super::c_asin(&mut testcs);
-    super::c_tan(&mut testcs);
-    super::c_atan(&mut testcs);
-    super::c_rtod(&mut testcs);
-    super::c_round(&mut testcs);
-    super::c_roll(&mut testcs);
-    super::c_roll(&mut testcs);
-    super::c_roll(&mut testcs);
-    super::c_roll(&mut testcs);
-    super::c_dup(&mut testcs);
-    super::c_drop(&mut testcs);
-    super::c_swap(&mut testcs);
-    super::c_swap(&mut testcs);
-    super::c_add(&mut testcs);
-    super::c_sub(&mut testcs);
-    super::c_div(&mut testcs);
+    test_proc.c_dtor();
+    test_proc.c_cos();
+    test_proc.c_acos();
+    test_proc.c_sin();
+    test_proc.c_asin();
+    test_proc.c_tan();
+    test_proc.c_atan();
+    test_proc.c_rtod();
+    test_proc.c_round();
+    test_proc.c_roll();
+    test_proc.c_roll();
+    test_proc.c_roll();
+    test_proc.c_roll();
+    test_proc.c_dup();
+    test_proc.c_drop();
+    test_proc.c_swap();
+    test_proc.c_swap();
+    test_proc.c_add();
+    test_proc.c_sub();
+    test_proc.c_div();
 
-    assert!(testcs.stack.pop().unwrap() == -0.2);
+    assert!(test_proc.stack.pop().unwrap() == -0.2);
   }
 
   #[test]
@@ -546,138 +547,142 @@ mod comp_tests {
 
   #[test]
   fn test_roots() {
-    let mut testcs = super::Processor{
-                       stack: Vec::new(),
-                       mem_a: 0.1,
-                       mem_b: 0.2,
-                       mem_c: 0.3,
-                     };
+    let mut test_proc = super::Processor{
+                          stack: Vec::new(),
+                          mem_a: 0.1,
+                          mem_b: 0.2,
+                          mem_c: 0.3,
+                          ops: Vec::new(),
+                        };
 
-    testcs.stack.push(2.0);
-    super::c_dup(&mut testcs);
-    super::c_sqrt(&mut testcs);
-    super::c_swap(&mut testcs);
-    testcs.stack.push(32.0);
-    super::c_exp(&mut testcs);
-    testcs.stack.push(32.0 * 2.0);
-    super::c_throot(&mut testcs);
+    test_proc.stack.push(2.0);
+    test_proc.c_dup();
+    test_proc.c_sqrt();
+    test_proc.c_swap();
+    test_proc.stack.push(32.0);
+    test_proc.c_exp();
+    test_proc.stack.push(32.0 * 2.0);
+    test_proc.c_throot();
 
-    assert!(testcs.stack.pop().unwrap() == testcs.stack.pop().unwrap());
+    assert!(test_proc.stack.pop().unwrap() == test_proc.stack.pop().unwrap());
 
-    testcs.stack.push(1.0);
-    testcs.stack.push(-2.0);
-    super::c_chs(&mut testcs);
-    super::c_chs(&mut testcs);
-    super::c_pi(&mut testcs);
-    super::c_mult(&mut testcs);
-    super::c_pi(&mut testcs);
-    testcs.stack.push(2.0);
-    super::c_exp(&mut testcs);
-    testcs.stack.push(1.0);
-    super::c_add(&mut testcs);
-    super::c_proot(&mut testcs);
-    super::c_add_all(&mut testcs);
-    testcs.stack.push(2.0);
-    super::c_div(&mut testcs);
-    super::c_pi(&mut testcs);
+    test_proc.stack.push(1.0);
+    test_proc.stack.push(-2.0);
+    test_proc.c_chs();
+    test_proc.c_chs();
+    test_proc.c_pi();
+    test_proc.c_mult();
+    test_proc.c_pi();
+    test_proc.stack.push(2.0);
+    test_proc.c_exp();
+    test_proc.stack.push(1.0);
+    test_proc.c_add();
+    test_proc.c_proot();
+    test_proc.c_add_all();
+    test_proc.stack.push(2.0);
+    test_proc.c_div();
+    test_proc.c_pi();
 
-    assert!(testcs.stack.pop().unwrap() == testcs.stack.pop().unwrap());
+    assert!(test_proc.stack.pop().unwrap() == test_proc.stack.pop().unwrap());
   }
 
   #[test]
   #[should_panic]
   fn test_cls() {
-    let mut testcs = super::Processor{
-                       stack: Vec::new(),
-                       mem_a: 3.3,
-                       mem_b: 4.4,
-                       mem_c: 5.5,
-                     };
+    let mut test_proc = super::Processor{
+                          stack: Vec::new(),
+                          mem_a: 3.3,
+                          mem_b: 4.4,
+                          mem_c: 5.5,
+                          ops: Vec::new(),
+                        };
 
-    testcs.stack.push(1.0);
-    testcs.stack.push(2.0);
-    testcs.stack.push(3.0);
-    testcs.stack.push(4.0);
-    testcs.stack.push(1.0);
-    testcs.stack.push(2.0);
-    testcs.stack.push(3.0);
-    testcs.stack.push(4.0);
-    testcs.stack.push(1.0);
-    testcs.stack.push(2.0);
-    testcs.stack.push(3.0);
-    testcs.stack.push(4.0);
-    super::c_cls(&mut testcs);
+    test_proc.stack.push(1.0);
+    test_proc.stack.push(2.0);
+    test_proc.stack.push(3.0);
+    test_proc.stack.push(4.0);
+    test_proc.stack.push(1.0);
+    test_proc.stack.push(2.0);
+    test_proc.stack.push(3.0);
+    test_proc.stack.push(4.0);
+    test_proc.stack.push(1.0);
+    test_proc.stack.push(2.0);
+    test_proc.stack.push(3.0);
+    test_proc.stack.push(4.0);
+    test_proc.c_cls();
 
-    assert!(testcs.stack.pop().unwrap() == 0.0);
+    assert!(test_proc.stack.pop().unwrap() == 0.0);
   }
 
   #[test]
   fn test_mem() {
-    let mut testcs = super::Processor{
-                       stack: Vec::new(),
-                       mem_a: 8.88888,
-                       mem_b: 8.88888,
-                       mem_c: 8.88888,
-                     };
+    let mut test_proc = super::Processor{
+                          stack: Vec::new(),
+                          mem_a: 8.88888,
+                          mem_b: 8.88888,
+                          mem_c: 8.88888,
+                          ops: Vec::new(),
+                        };
 
-    testcs.stack.push(1.0);
-    testcs.stack.push(2.0);
-    testcs.stack.push(3.0);
-    testcs.stack.push(4.0);
-    testcs.stack.push(1.0);
-    testcs.stack.push(2.0);
-    testcs.stack.push(3.0);
-    testcs.stack.push(4.0);
-    testcs.stack.push(1.0);
-    testcs.stack.push(2.0);
-    testcs.stack.push(3.0);
-    testcs.stack.push(4.0);
-    super::c_chs(&mut testcs);
-    super::c_abs(&mut testcs);
-    super::c_inv(&mut testcs);
-    super::c_inv(&mut testcs);
-    super::c_pi(&mut testcs);
-    super::c_euler(&mut testcs);
-    testcs.stack.push(0.0);
-    super::c_store_b(&mut testcs); // 0
-    super::c_store_a(&mut testcs); // e
-    super::c_store_c(&mut testcs); // pi
-    super::c_cls(&mut testcs);
-    super::c_push_b(&mut testcs); // 0
-    super::c_push_c(&mut testcs); // pi
-    super::c_add(&mut testcs);
-    super::c_push_a(&mut testcs); // e
-    super::c_add(&mut testcs);
+    test_proc.stack.push(1.0);
+    test_proc.stack.push(2.0);
+    test_proc.stack.push(3.0);
+    test_proc.stack.push(4.0);
+    test_proc.stack.push(1.0);
+    test_proc.stack.push(2.0);
+    test_proc.stack.push(3.0);
+    test_proc.stack.push(4.0);
+    test_proc.stack.push(1.0);
+    test_proc.stack.push(2.0);
+    test_proc.stack.push(3.0);
+    test_proc.stack.push(4.0);
+    test_proc.c_chs();
+    test_proc.c_abs();
+    test_proc.c_inv();
+    test_proc.c_inv();
+    test_proc.c_pi();
+    test_proc.c_euler();
+    test_proc.stack.push(0.0);
+    test_proc.c_store_b(); // 0
+    test_proc.c_store_a(); // e
+    test_proc.c_store_c(); // pi
+    test_proc.c_cls();
+    test_proc.c_push_b(); // 0
+    test_proc.c_push_c(); // pi
+    test_proc.c_add();
+    test_proc.c_push_a(); // e
+    test_proc.c_add();
 
-    assert!(testcs.stack.pop().unwrap() == std::f64::consts::PI + std::f64::consts::E);
+    assert!(test_proc.stack.pop().unwrap() == std::f64::consts::PI + std::f64::consts::E);
   }
 
   #[test]
   fn test_cmp() {
-      let mut testcs = super::Processor{
-                         stack: Vec::new(),
-                         mem_a: 0.0,
-                         mem_b: 0.0,
-                         mem_c: 0.0,
-                       };
+    let mut test_proc = super::Processor{
+                          stack: Vec::new(),
+                          mem_a: 0.0,
+                          mem_b: 0.0,
+                          mem_c: 0.0,
+                          ops: Vec::new(),
+                        };
 
-    testcs.stack.push(10.0);
-    super::c_log10(&mut testcs);
-    super::c_euler(&mut testcs);
-    super::c_ln(&mut testcs);
-    testcs.stack.push(105.0);
-    testcs.stack.push(2.0);
-    super::c_mod(&mut testcs);
-    testcs.stack.push(3049.0);
-    testcs.stack.push(1009.0);
-    super::c_gcd(&mut testcs);
-    super::c_mult_all(&mut testcs);
+    test_proc.stack.push(10.0);
+    test_proc.c_log10();
+    test_proc.c_euler();
+    test_proc.c_ln();
+    test_proc.stack.push(105.0);
+    test_proc.stack.push(2.0);
+    test_proc.c_mod();
+    test_proc.stack.push(3049.0);
+    test_proc.stack.push(1009.0);
+    test_proc.c_gcd();
+    test_proc.c_mult_all();
 
-    assert!(testcs.stack.pop().unwrap() == 1.0);
+    assert!(test_proc.stack.pop().unwrap() == 1.0);
 
-    testcs.stack.push(20.0);
-    super::c_fact(&mut testcs);
+    test_proc.stack.push(20.0);
+    test_proc.c_fact();
 
-    assert!(testcs.stack.pop().unwrap() == 2432902008176640000.0);
+    assert!(test_proc.stack.pop().unwrap() == 2432902008176640000.0);
   }
 }

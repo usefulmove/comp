@@ -131,8 +131,7 @@ impl Processor {
     //println!("process_ops() - self.ops = {:?}", self.ops); // debug message
 
     while self.ops.len() >= 1 {
-      //let operation: String = self.ops.pop().unwrap().clone();
-      let operation: String = self.ops.remove(0);
+      let operation: String = self.ops.remove(0); // remove first operation
       self.processnode(operation.as_str());
     }
   }
@@ -192,6 +191,8 @@ impl Processor {
       "log"    => self.c_log10(),     // log (base 10)
       "log10"  => self.c_log10(),
       "ln"     => self.c_ln(),        // natural log
+      // control flow
+      "fn"     => self.c_defn(),        // function definition
       _ => self.stack.push(op.parse::<f64>().unwrap()), // push value onto stack
     }
   }
@@ -422,6 +423,13 @@ impl Processor {
     self.stack[end] = self.stack[end].ln();
   }
 
+  // -- control flow -------------------------------------------------------------
+  
+  fn c_defn(&mut self) { // TODO
+    while self.ops[0] != "end" {
+      //TODO
+    }
+  }
 
 }
 

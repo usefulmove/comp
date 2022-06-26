@@ -497,6 +497,15 @@ mod comp_tests {
     testcs.stack.push(3.0);
     testcs.stack.push(4.0);
 
+    super::c_swap(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_swap(&mut testcs);
+    super::c_swap(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_roll(&mut testcs);
+    super::c_swap(&mut testcs);
+
     super::c_dtor(&mut testcs);
     super::c_cos(&mut testcs);
     super::c_acos(&mut testcs);

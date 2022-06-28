@@ -4,13 +4,13 @@
 Install the Rustup toolchain installer using the [installation instructions][1] at the Rust language website. The Rustup installation will install the `rustc` compiler and `cargo` build management system.
 
 
-## Copy Source
+## Get source code
 Use `git` to clone the comp source code using the following command.
 ```
 git clone https://github.com/usefulmove/comp.git
 ```
 
-## Build
+## Build from source
 Build the comp binary for your operating system from source using `cargo`.
 ```
 cd comp

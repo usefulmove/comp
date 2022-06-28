@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-const COMP_VERSION: &str = "0.18.0a";
+const COMP_VERSION: &str = "0.18.0b";
 
 /*
 
@@ -200,7 +200,12 @@ impl Processor {
       "ln"     => self.c_ln(),        // natural log
       // control flow
       "fn"     => self.c_defn(),        // function definition
-      _ => self.stack.push(op.parse::<f64>().unwrap()), // push value onto stack
+      _ => if self.isuserfunction(op) {
+             // copy user function ops (fops) list into man ops list
+             //TODO
+           } else {
+             self.stack.push(op.parse::<f64>().unwrap()) // push value onto stack
+           },
     }
   }
 
@@ -451,6 +456,10 @@ impl Processor {
     self.ops.remove(0); // remove "end" op
   }
 
+  fn isuserfunction(&mut self, op: &str) -> bool { // TODO define check
+    //TODO
+    return false;
+  }
 }
 
 

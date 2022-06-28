@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-const COMP_VERSION: &str = "0.18.0";
+const COMP_VERSION: &str = "0.18.0a";
 
 /*
 
@@ -42,12 +42,13 @@ fn main() {
   let mut args: Vec<String> = env::args().collect();
 
   // create computation processor with stack, memory slots and an operations list
-  let mut processor = Processor{
+  let mut proc = Processor {
                      stack: Vec::new(),
                      mem_a: 0.0,
                      mem_b: 0.0,
                      mem_c: 0.0,
                      ops: Vec::new(),
+                     fns: Vec::new(),
                    };
 
 
@@ -101,19 +102,19 @@ fn main() {
 
     // create operations list vector
     for op in temp_ops {
-      processor.ops.push(op.to_string());
+      proc.ops.push(op.to_string());
     }
   } else {
     // read operations list input from command line arguments
-    processor.ops = (&args[1..]).to_vec(); //remove
+    proc.ops = (&args[1..]).to_vec(); //remove
   }
-  //println!("{:?}", processor.ops); // debug message
+  //println!("{:?}", proc.ops); // debug message
 
   // process operations list
-  processor.process_ops();
+  proc.process_ops();
 
   // display resulting computation stack
-  for element in processor.stack {
+  for element in proc.stack {
     println!("{}", element);
   }
 }
@@ -123,6 +124,12 @@ struct Processor {
   mem_a: f64,
   mem_b: f64,
   mem_c: f64,
+  ops: Vec<String>,
+  fns: Vec<Function>,
+}
+
+struct Function {
+  name: String,
   ops: Vec<String>,
 }
 
@@ -426,6 +433,9 @@ impl Processor {
   // -- control flow -------------------------------------------------------------
   
   fn c_defn(&mut self) { // TODO
+    // get function name
+    //TODO
+
     while self.ops[0] != "end" {
       //TODO
     }
@@ -510,12 +520,13 @@ mod comp_tests {
 
   #[test]
   fn test_core() {
-    let mut test_proc = super::Processor{
+    let mut test_proc = super::Processor {
                           stack: Vec::new(),
                           mem_a: 20.0,
                           mem_b: 6.18,
                           mem_c: -123.45,
                           ops: Vec::new(),
+                          fns: Vec::new(),
                         };
 
     test_proc.stack.push(1.0);
@@ -555,12 +566,13 @@ mod comp_tests {
 
   #[test]
   fn test_roots() {
-    let mut test_proc = super::Processor{
+    let mut test_proc = super::Processor {
                           stack: Vec::new(),
                           mem_a: 0.1,
                           mem_b: 0.2,
                           mem_c: 0.3,
                           ops: Vec::new(),
+                          fns: Vec::new(),
                         };
 
     test_proc.stack.push(2.0);
@@ -597,12 +609,13 @@ mod comp_tests {
   #[test]
   #[should_panic]
   fn test_cls() {
-    let mut test_proc = super::Processor{
+    let mut test_proc = super::Processor {
                           stack: Vec::new(),
                           mem_a: 3.3,
                           mem_b: 4.4,
                           mem_c: 5.5,
                           ops: Vec::new(),
+                          fns: Vec::new(),
                         };
 
     test_proc.stack.push(1.0);
@@ -624,12 +637,13 @@ mod comp_tests {
 
   #[test]
   fn test_mem() {
-    let mut test_proc = super::Processor{
+    let mut test_proc = super::Processor {
                           stack: Vec::new(),
                           mem_a: 8.88888,
                           mem_b: 8.88888,
                           mem_c: 8.88888,
                           ops: Vec::new(),
+                          fns: Vec::new(),
                         };
 
     test_proc.stack.push(1.0);
@@ -666,12 +680,13 @@ mod comp_tests {
 
   #[test]
   fn test_cmp() {
-    let mut test_proc = super::Processor{
+    let mut test_proc = super::Processor {
                           stack: Vec::new(),
                           mem_a: 0.0,
                           mem_b: 0.0,
                           mem_c: 0.0,
                           ops: Vec::new(),
+                          fns: Vec::new(),
                         };
 
     test_proc.stack.push(10.0);

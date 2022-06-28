@@ -475,9 +475,9 @@ fn factorial(n: u64) -> u64 {
 
 fn gcd(a: u64, b: u64) -> u64 {
   if b != 0 {
-    return gcd(b, a % b)
+    return gcd(b, a % b);
   } else {
-    return a
+    return a;
   }
 }
 

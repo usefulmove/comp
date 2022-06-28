@@ -130,7 +130,7 @@ struct Processor {
 
 struct Function {
   name: String,
-  ops: Vec<String>,
+  fops: Vec<String>,
 }
 
 impl Processor {
@@ -432,13 +432,23 @@ impl Processor {
 
   // -- control flow -------------------------------------------------------------
   
-  fn c_defn(&mut self) { // TODO
+  fn c_defn(&mut self) {
     // get function name
-    //TODO
+    let fn_name: String = self.ops.remove(0);
 
+    // create new function instance and assign function name
+    self.fns.push(Function { name: fn_name,
+                             fops: Vec::new(),
+                           });
+    let fpos = self.fns.len() - 1; // added function position in function vector
+    println!("defining function: {}", self.fns[fpos].name); // debug message
+
+    // build out function operations my reading from processor ops
     while self.ops[0] != "end" {
-      //TODO
+      println!("adding fop: {}", self.ops[0]); // debug message
+      self.fns[fpos].fops.push(self.ops.remove(0));
     }
+    self.ops.remove(0); // remove "end" op
   }
 
 }

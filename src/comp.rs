@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-const COMP_VERSION: &str = "0.18.0b";
+const COMP_VERSION: &str = "0.18.0c";
 
 /*
 
@@ -456,8 +456,12 @@ impl Processor {
     self.ops.remove(0); // remove "end" op
   }
 
-  fn isuserfunction(&mut self, op: &str) -> bool { // TODO define check
-    //TODO
+  fn isuserfunction(&mut self, op: &str) -> bool {
+    for i in 0..self.fns.len()-1 {
+      if self.fns[i].name == op {
+        return true;
+      }
+    }
     return false;
   }
 }

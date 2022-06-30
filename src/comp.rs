@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-const COMP_VERSION: &str = "0.18.0c";
+const COMP_VERSION: &str = "0.18.0d";
 
 /*
 
@@ -199,12 +199,16 @@ impl Processor {
       "log10"  => self.c_log10(),
       "ln"     => self.c_ln(),        // natural log
       // control flow
-      "fn"     => self.c_defn(),        // function definition
-      _ => if self.isuserfunction(op) {
-             // copy user function ops (fops) list into man ops list
-             //TODO
-           } else {
-             self.stack.push(op.parse::<f64>().unwrap()) // push value onto stack
+      "fn"     => self.c_defn(),      // function definition
+      _ => { let ind: i32 = self.isuserfunction(op);
+             if ind != -1 { // user-defined function?
+               // copy user function ops (fops) list into man ops list
+               println!("user-defined function call: {}", op); // debug message
+               //self.fns[ind].fops //TODO
+               println!("{:?}", self.fns[ind as usize].fops); //TODO
+             } else {
+               self.stack.push(op.parse::<f64>().unwrap()) // push value onto stack
+             }
            },
     }
   }
@@ -456,13 +460,18 @@ impl Processor {
     self.ops.remove(0); // remove "end" op
   }
 
-  fn isuserfunction(&mut self, op: &str) -> bool {
-    for i in 0..self.fns.len()-1 {
+  fn isuserfunction(&mut self, op: &str) -> i32 {
+    if self.fns.len() == 0 {
+      return -1;
+    }
+
+    for i in 0..(self.fns.len()) {
       if self.fns[i].name == op {
-        return true;
+        return i as i32;
       }
     }
-    return false;
+
+    return -1;
   }
 }
 

@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-const COMP_VERSION: &str = "0.18.0d";
+const COMP_VERSION: &str = "0.18.0";
 
 /*
 
@@ -108,7 +108,6 @@ fn main() {
     // read operations list input from command line arguments
     proc.ops = (&args[1..]).to_vec(); //remove
   }
-  //println!("{:?}", proc.ops); // debug message
 
   // process operations list
   proc.process_ops();
@@ -135,8 +134,6 @@ struct Function {
 
 impl Processor {
   fn process_ops(&mut self) {
-    //println!("process_ops() - self.ops = {:?}", self.ops); // debug message
-
     while self.ops.len() >= 1 {
       let operation: String = self.ops.remove(0); // remove first operation
       self.processnode(operation.as_str());
@@ -144,8 +141,6 @@ impl Processor {
   }
 
   fn processnode(&mut self, op: &str) {
-    //println!("processnode() - op = {}, self.stack = {:?}", op, self.stack); // debug message
-
     match op {
       // stack manipulation
       "drop"   => self.c_drop(),      // drop
@@ -202,10 +197,12 @@ impl Processor {
       "fn"     => self.c_defn(),      // function definition
       _ => { let ind: i32 = self.isuserfunction(op);
              if ind != -1 { // user-defined function?
-               // copy user function ops (fops) list into man ops list
-               println!("user-defined function call: {}", op); // debug message
-               //self.fns[ind].fops //TODO
-               println!("{:?}", self.fns[ind as usize].fops); //TODO
+               // copy user function operations list (fops) into man operations list
+               for i in (0..self.fns[ind as usize].fops.len()).rev() {
+                 let fop = self.fns[ind as usize].fops[i].clone();
+                 self.ops.insert(0, fop);
+               }
+
              } else {
                self.stack.push(op.parse::<f64>().unwrap()) // push value onto stack
              }
@@ -273,8 +270,6 @@ impl Processor {
   // -- math operations ----------------------------------------------------------
   
   fn c_add(&mut self) {
-    //println!("c_add() - self.stack = {:?}", self.stack); // debug message
-    //println!("c_add() - self.ops = {:?}", self.ops); // debug message
     let end: usize = self.stack.len() - 1;
     self.stack[end-1] += self.stack.pop().unwrap();
   }
@@ -450,11 +445,9 @@ impl Processor {
                              fops: Vec::new(),
                            });
     let fpos = self.fns.len() - 1; // added function position in function vector
-    println!("defining function: {}", self.fns[fpos].name); // debug message
 
     // build out function operations my reading from processor ops
     while self.ops[0] != "end" {
-      println!("adding fop: {}", self.ops[0]); // debug message
       self.fns[fpos].fops.push(self.ops.remove(0));
     }
     self.ops.remove(0); // remove "end" op
@@ -465,7 +458,7 @@ impl Processor {
       return -1;
     }
 
-    for i in 0..(self.fns.len()) {
+    for i in 0..self.fns.len() {
       if self.fns[i].name == op {
         return i as i32;
       }

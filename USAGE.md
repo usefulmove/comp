@@ -240,7 +240,7 @@ comp e ln
 ---
 ## Commands (file usage)
 
-### --file flag
+### --file flag (also -f)
 The file flag allows the use of commands defined within a source file.
 ```
 comp --file <filename>

@@ -251,8 +251,12 @@ comp --file <filename>
 ## Commands (control flow)
 
 ### user-defined functions
-User-defined functions can be defined by indicating the start of a function with the `fn` keyword followed by the function name then a list of operations and terminated with the `end` keyword. The user function is executed by calling the function name as shown in the example below.
+User-defined functions can be defined by indicating the start of a function with the `fn` keyword followed by the function name then a list of operations and terminated with the `end` keyword. The user function is executed by calling the function name as shown in the examples below. Note that functions are most useful when used with the file option above.
 ```
-comp fn dbl 2 x end 50 dbl
+comp fn square dup x end 5 square
+25
+```
+```
+comp fn double 2 x end 50 double
 100
 ```

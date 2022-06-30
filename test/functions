@@ -1,0 +1,14 @@
+fn sub1
+  1 -
+end
+
+fn div2
+ 2 /
+end
+
+fn square_root
+  sqrt
+end
+
+5 square_root
+sub1 div2

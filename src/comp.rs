@@ -35,7 +35,7 @@ const COMP_VERSION: &str = "0.18.0";
 
 const CMDS: &str = "drop dup swap cls clr roll sa .a a sb .b b sc .c c + +_ - x \
 x_ / chs abs round int inv sqrt throot proot ^ exp % mod ! gcd pi e dtor rtod \
-sin asin cos acos tan atan log log10 ln";
+sin asin cos acos tan atan log log10 ln fn";
 
 
 fn main() {

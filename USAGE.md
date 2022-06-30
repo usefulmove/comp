@@ -245,3 +245,14 @@ The file flag allows the use of commands defined within a source file.
 ```
 comp --file <filename>
 ```
+
+
+---
+## Commands (control flow)
+
+### user-defined functions
+User-defined functions can be defined by indicating the start of a function with the `fn` keyword followed by the function name then a list of operations and terminated with the `end` keyword. The user function is executed by calling the function name as shown in the example below.
+```
+comp fn dbl 2 x end 50 dbl
+100
+```

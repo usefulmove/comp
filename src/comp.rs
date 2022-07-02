@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-const COMP_VERSION: &str = "0.18.1";
+const COMP_VERSION: &str = "0.18.2b";
 
 /*
 
@@ -43,13 +43,13 @@ fn main() {
 
   // create computation processor with stack, memory slots and an operations list
   let mut proc = Processor {
-                     stack: Vec::new(),
-                     mem_a: 0.0,
-                     mem_b: 0.0,
-                     mem_c: 0.0,
-                     ops: Vec::new(),
-                     fns: Vec::new(),
-                   };
+                   stack: Vec::new(),
+                   mem_a: 0.0,
+                   mem_b: 0.0,
+                   mem_c: 0.0,
+                   ops: Vec::new(),
+                   fns: Vec::new(),
+                 };
 
 
   if args.len() <= 1 {
@@ -70,31 +70,31 @@ fn main() {
     listed below.");
     println!();
     println!("commands:");
-    println!("{}", CMDS);
+    println!("{CMDS}");
 
     return;
   } else if args[1] == "--version" || args[1] == "version" {
     // display version information
-    println!("comp {}", COMP_VERSION);
+    println!("comp {COMP_VERSION}");
     return;
   } else if args[1] == "mona" {
-    println!("{}", MONA);
+    println!("{MONA}");
     return;
   } else if args[1] == "-f" || args[1] == "--file" {
     // read operations list input from file
-    print!("reading command input from '{}' file .. ", args[2]); // debug
+    print!("reading command input from '{}' file .. ", args[2]);
 
     let filename = args[2].to_string();
     let path = Path::new(&filename);
     let display = path.display();
 
     let mut file = match File::open(&path) {
-                     Err(why) => panic!("couldn't open {}: {}", display, why),
+                     Err(why) => panic!("couldn't open {display}: {why}"),
                      Ok(file) => file,
                    };
     let mut contents = String::new();
     match file.read_to_string(&mut contents) {
-      Err(why) => panic!("couldn't read {}: {}", display, why),
+      Err(why) => panic!("couldn't read {display}: {why}"),
       Ok(_) => println!("success"),
     };
 
@@ -114,7 +114,7 @@ fn main() {
 
   // display resulting computation stack
   for element in proc.stack {
-    println!("{}", element);
+    println!("{element}");
   }
 
   std::process::exit(0);
@@ -138,11 +138,11 @@ impl Processor {
   fn process_ops(&mut self) {
     while !self.ops.is_empty() {
       let operation: String = self.ops.remove(0); // remove first operation
-      self.processnode(operation.as_str());
+      self.process_node(operation.as_str());
     }
   }
 
-  fn processnode(&mut self, op: &str) {
+  fn process_node(&mut self, op: &str) {
     match op {
       // stack manipulation
       "drop"   => self.c_drop(),      // drop
@@ -197,7 +197,7 @@ impl Processor {
       "ln"     => self.c_ln(),        // natural log
       // control flow
       "fn"     => self.c_defn(),      // function definition
-      _ => { let ind: i32 = self.isuserfunction(op);
+      _ => { let ind: i32 = self.is_user_function(op);
              if ind != -1 { // user-defined function?
                // copy user function operations list (fops) into man operations list
                for i in (0..self.fns[ind as usize].fops.len()).rev() {
@@ -212,9 +212,9 @@ impl Processor {
     }
   }
 
-  // -- command functions --------------------------------------------------------
+  // -- command functions ------------------------------------------------------
   
-  // ---- stack manipulation -----------------------------------------------------
+  // ---- stack manipulation ---------------------------------------------------
   
   fn c_drop(&mut self) {
     self.stack.pop().unwrap();
@@ -240,7 +240,7 @@ impl Processor {
   }
   
   
-  // ---- memory usage -----------------------------------------------------------
+  // ---- memory usage ---------------------------------------------------------
   
   fn c_store_a(&mut self) {
     self.mem_a = self.stack.pop().unwrap();
@@ -267,7 +267,7 @@ impl Processor {
   }
   
   
-  // -- math operations ----------------------------------------------------------
+  // -- math operations --------------------------------------------------------
   
   fn c_add(&mut self) {
     let end: usize = self.stack.len() - 1;
@@ -434,7 +434,8 @@ impl Processor {
     self.stack[end] = self.stack[end].ln();
   }
 
-  // -- control flow -------------------------------------------------------------
+
+  // -- control flow -----------------------------------------------------------
   
   fn c_defn(&mut self) {
     // get function name
@@ -453,7 +454,7 @@ impl Processor {
     self.ops.remove(0); // remove "end" op
   }
 
-  fn isuserfunction(&mut self, op: &str) -> i32 {
+  fn is_user_function(&mut self, op: &str) -> i32 {
     if self.fns.is_empty() {
       return -1;
     }

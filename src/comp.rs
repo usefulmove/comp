@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-const COMP_VERSION: &str = "0.18.0";
+const COMP_VERSION: &str = "0.18.1";
 
 /*
 
@@ -82,7 +82,7 @@ fn main() {
     return;
   } else if args[1] == "-f" || args[1] == "--file" {
     // read operations list input from file
-    print!("reading command input from '{}' file .. ", args[2].to_string()); // debug
+    print!("reading command input from '{}' file .. ", args[2]); // debug
 
     let filename = args[2].to_string();
     let path = Path::new(&filename);
@@ -116,6 +116,8 @@ fn main() {
   for element in proc.stack {
     println!("{}", element);
   }
+
+  std::process::exit(0);
 }
 
 struct Processor {
@@ -134,7 +136,7 @@ struct Function {
 
 impl Processor {
   fn process_ops(&mut self) {
-    while self.ops.len() >= 1 {
+    while !self.ops.is_empty() {
       let operation: String = self.ops.remove(0); // remove first operation
       self.processnode(operation.as_str());
     }
@@ -225,9 +227,7 @@ impl Processor {
   
   fn c_swap(&mut self) {
     let end: usize = self.stack.len() - 1;
-    let o: f64 = self.stack[end];
-    self.stack[end] = self.stack[end-1];
-    self.stack[end-1] = o;
+    self.stack.swap(end, end-1);
   }
   
   fn c_cls(&mut self) {
@@ -361,7 +361,7 @@ impl Processor {
   fn c_mod(&mut self) {
     let end: usize = self.stack.len() - 1;
     let o: f64 = self.stack.pop().unwrap();
-    self.stack[end-1] = self.stack[end-1] % o;
+    self.stack[end-1] %= o;
   }
   
   fn c_fact(&mut self) {
@@ -454,7 +454,7 @@ impl Processor {
   }
 
   fn isuserfunction(&mut self, op: &str) -> i32 {
-    if self.fns.len() == 0 {
+    if self.fns.is_empty() {
       return -1;
     }
 
@@ -464,7 +464,7 @@ impl Processor {
       }
     }
 
-    return -1;
+    -1
   }
 }
 
@@ -473,17 +473,17 @@ impl Processor {
 
 fn factorial(n: u64) -> u64 {
   if n < 2 {
-    return 1;
+    1
   } else {
-    return n * factorial(n-1);
+    n * factorial(n-1)
   }
 }
 
 fn gcd(a: u64, b: u64) -> u64 {
   if b != 0 {
-    return gcd(b, a % b);
+    gcd(b, a % b)
   } else {
-    return a;
+    a
   }
 }
 

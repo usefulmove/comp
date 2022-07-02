@@ -10,9 +10,9 @@ fn square_root
   sqrt
 end
 
-fn ten5th_round
-  1e5 x round
+fn ten6th_round
+  1e6 x round
 end
 
 5 square_root
-sub1 div2 ten5th_round
+sub1 div2 ten6th_round

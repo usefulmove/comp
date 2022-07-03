@@ -222,7 +222,7 @@ impl Processor {
                  Ok(val) => val,
                  Err(_error) => {
                    eprintln!("error: comp interpreter was passed an unknown \
-                              operation: <{op}> is not a recognized command \
+                              expression: <{op}> is not a recognized operation \
                               or value");
                    std::process::exit(255);
                  },

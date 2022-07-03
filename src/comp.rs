@@ -84,23 +84,31 @@ fn main() {
     std::process::exit(0);
   } else if args[1] == "-f" || args[1] == "--file" {
     // read operations list input from file
-    print!("reading command input from '{}' file .. ", args[2]);
-
     let filename: String = args[2].to_string();
     let path: &Path = Path::new(&filename);
     let display: Display = path.display();
 
+    // open file
     let mut file: File = match File::open(&path) {
       Ok(file) => file,
-      Err(error) => panic!("error: couldn't open {display}: {error}"),
-    };
-    let mut contents: String = String::new();
-    match file.read_to_string(&mut contents) {
-      Ok(_) => println!("success"),
-      Err(error) => panic!("error: couldn't read {display}: {error}"),
+      Err(error) => {
+        eprintln!("error: couldn't open <{display}> file: {error}");
+        std::process::exit(255);
+      },
     };
 
-    let temp_ops: Vec<&str> = contents.split_whitespace().collect();
+    // read file contents
+    let mut file_contents: String = String::new();
+    match file.read_to_string(&mut file_contents) {
+      Ok(_) => print!(""),
+      Err(error) => {
+        eprintln!("error: couldn't read <{display}>: {error}");
+        std::process::exit(255);
+      },
+    };
+
+    // split individual list elements
+    let temp_ops: Vec<&str> = file_contents.split_whitespace().collect();
 
     // create operations list vector
     for op in temp_ops {
@@ -216,7 +224,7 @@ impl Processor {
                    eprintln!("error: comp interpreter was passed an unknown \
                               operation: <{op}> is not a recognized command \
                               or value");
-                   std::process::exit(1);
+                   std::process::exit(255);
                  },
                };
 

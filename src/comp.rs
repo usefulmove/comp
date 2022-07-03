@@ -212,9 +212,12 @@ impl Processor {
                
                let val = match res {
                  Ok(val) => val,
-                 Err(_error) => panic!("error: comp interpreter was passed an \
-                                        unknown operation: <{op}> is not a \
-                                        recognized command or value"),
+                 Err(_error) => {
+                   eprintln!("error: comp interpreter was passed an unknown \
+                              operation: <{op}> is not a recognized command \
+                              or value");
+                   std::process::exit(1);
+                 },
                };
 
                self.stack.push(val);

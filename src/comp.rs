@@ -1,6 +1,7 @@
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
+use std::num::ParseFloatError;
 use std::path::Path;
 use std::path::Display;
 
@@ -40,6 +41,8 @@ sin asin cos acos tan atan log log10 ln fn";
 
 
 fn main() {
+  env::set_var("RUST_BACKTRACE", "0"); // enable or disable backtrace on error
+
   let mut args: Vec<String> = env::args().collect();
 
   // create computation processor with stack, memory slots and an operations list
@@ -88,13 +91,13 @@ fn main() {
     let display: Display = path.display();
 
     let mut file: File = match File::open(&path) {
-      Err(why) => panic!("couldn't open {display}: {why}"),
       Ok(file) => file,
+      Err(error) => panic!("error: couldn't open {display}: {error}"),
     };
     let mut contents: String = String::new();
     match file.read_to_string(&mut contents) {
-      Err(why) => panic!("couldn't read {display}: {why}"),
       Ok(_) => println!("success"),
+      Err(error) => panic!("error: couldn't read {display}: {error}"),
     };
 
     let temp_ops: Vec<&str> = contents.split_whitespace().collect();
@@ -198,17 +201,31 @@ impl Processor {
       "fn"     => self.c_fn(),        // function definition
       _ => { let ind: i32 = self.is_user_function(op);
              if ind != -1 { // user-defined function?
-               // copy user function operations list (fops) into man operations list
+               // copy user function ops (fops) into main ops
                for i in (0..self.fns[ind as usize].fops.len()).rev() {
                  let fop: String = self.fns[ind as usize].fops[i].clone();
                  self.ops.insert(0, fop);
                }
 
              } else {
-               self.stack.push(op.parse::<f64>().unwrap()) // push value onto stack
+               let res: Result<f64, ParseFloatError> = self.parse_value(op);
+               
+               let val = match res {
+                 Ok(val) => val,
+                 Err(_error) => panic!("error: comp interpreter was passed an \
+                                        unknown operation: <{op}> is not a \
+                                        recognized command or value"),
+               };
+
+               self.stack.push(val);
              }
            },
     }
+  }
+
+  fn parse_value(&self, op: &str) -> Result<f64, ParseFloatError> {
+    let value: f64 = op.parse::<f64>()?;
+    Ok(value)
   }
 
   // -- command functions ------------------------------------------------------

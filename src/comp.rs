@@ -1,6 +1,7 @@
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
+use std::num::ParseFloatError;
 use std::path::Path;
 use std::path::Display;
 
@@ -40,6 +41,8 @@ sin asin cos acos tan atan log log10 ln fn";
 
 
 fn main() {
+  env::set_var("RUST_BACKTRACE", "0"); // enable or disable backtrace on error
+
   let mut args: Vec<String> = env::args().collect();
 
   // create computation processor with stack, memory slots and an operations list
@@ -81,23 +84,31 @@ fn main() {
     std::process::exit(0);
   } else if args[1] == "-f" || args[1] == "--file" {
     // read operations list input from file
-    print!("reading command input from '{}' file .. ", args[2]);
-
     let filename: String = args[2].to_string();
     let path: &Path = Path::new(&filename);
     let display: Display = path.display();
 
+    // open file
     let mut file: File = match File::open(&path) {
-      Err(why) => panic!("couldn't open {display}: {why}"),
       Ok(file) => file,
-    };
-    let mut contents: String = String::new();
-    match file.read_to_string(&mut contents) {
-      Err(why) => panic!("couldn't read {display}: {why}"),
-      Ok(_) => println!("success"),
+      Err(error) => {
+        eprintln!("error: couldn't open <{display}> file: {error}");
+        std::process::exit(255);
+      },
     };
 
-    let temp_ops: Vec<&str> = contents.split_whitespace().collect();
+    // read file contents
+    let mut file_contents: String = String::new();
+    match file.read_to_string(&mut file_contents) {
+      Ok(_) => (),
+      Err(error) => {
+        eprintln!("error: couldn't read <{display}>: {error}");
+        std::process::exit(255);
+      },
+    };
+
+    // split individual list elements
+    let temp_ops: Vec<&str> = file_contents.split_whitespace().collect();
 
     // create operations list vector
     for op in temp_ops {
@@ -195,20 +206,37 @@ impl Processor {
       "log10"  => self.c_log10(),
       "ln"     => self.c_ln(),        // natural log
       // control flow
-      "fn"     => self.c_defn(),      // function definition
+      "fn"     => self.c_fn(),        // function definition
       _ => { let ind: i32 = self.is_user_function(op);
              if ind != -1 { // user-defined function?
-               // copy user function operations list (fops) into man operations list
+               // copy user function ops (fops) into main ops
                for i in (0..self.fns[ind as usize].fops.len()).rev() {
                  let fop: String = self.fns[ind as usize].fops[i].clone();
                  self.ops.insert(0, fop);
                }
 
              } else {
-               self.stack.push(op.parse::<f64>().unwrap()) // push value onto stack
+               let res: Result<f64, ParseFloatError> = self.parse_value(op);
+               
+               let val = match res {
+                 Ok(val) => val,
+                 Err(_error) => {
+                   eprintln!("error: comp interpreter was passed an unknown \
+                              operation: <{op}> is not a recognized command \
+                              or value");
+                   std::process::exit(255);
+                 },
+               };
+
+               self.stack.push(val);
              }
            },
     }
+  }
+
+  fn parse_value(&self, op: &str) -> Result<f64, ParseFloatError> {
+    let value: f64 = op.parse::<f64>()?;
+    Ok(value)
   }
 
   // -- command functions ------------------------------------------------------
@@ -436,7 +464,7 @@ impl Processor {
 
   // -- control flow -----------------------------------------------------------
   
-  fn c_defn(&mut self) {
+  fn c_fn(&mut self) {
     // get function name
     let fn_name: String = self.ops.remove(0);
 
@@ -453,7 +481,7 @@ impl Processor {
     self.ops.remove(0); // remove "end" op
   }
 
-  fn is_user_function(&mut self, op: &str) -> i32 {
+  fn is_user_function(&self, op: &str) -> i32 {
     if !self.fns.is_empty() {
       for i in 0..self.fns.len() {
         if self.fns[i].name == op {

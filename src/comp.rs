@@ -195,7 +195,7 @@ impl Processor {
       "log10"  => self.c_log10(),
       "ln"     => self.c_ln(),        // natural log
       // control flow
-      "fn"     => self.c_defn(),      // function definition
+      "fn"     => self.c_fn(),        // function definition
       _ => { let ind: i32 = self.is_user_function(op);
              if ind != -1 { // user-defined function?
                // copy user function operations list (fops) into man operations list
@@ -436,7 +436,7 @@ impl Processor {
 
   // -- control flow -----------------------------------------------------------
   
-  fn c_defn(&mut self) {
+  fn c_fn(&mut self) {
     // get function name
     let fn_name: String = self.ops.remove(0);
 
@@ -453,7 +453,7 @@ impl Processor {
     self.ops.remove(0); // remove "end" op
   }
 
-  fn is_user_function(&mut self, op: &str) -> i32 {
+  fn is_user_function(&self, op: &str) -> i32 {
     if !self.fns.is_empty() {
       for i in 0..self.fns.len() {
         if self.fns[i].name == op {

@@ -2,8 +2,9 @@ use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
+use std::path::Display;
 
-const COMP_VERSION: &str = "0.18.2b";
+const COMP_VERSION: &str = "0.18.2e"; //env!("CARGO_PKG_VERSION");
 
 /*
 
@@ -43,14 +44,13 @@ fn main() {
 
   // create computation processor with stack, memory slots and an operations list
   let mut proc = Processor {
-                   stack: Vec::new(),
-                   mem_a: 0.0,
-                   mem_b: 0.0,
-                   mem_c: 0.0,
-                   ops: Vec::new(),
-                   fns: Vec::new(),
-                 };
-
+    stack: Vec::new(),
+    mem_a: 0.0,
+    mem_b: 0.0,
+    mem_c: 0.0,
+    ops: Vec::new(),
+    fns: Vec::new(),
+  };
 
   if args.len() <= 1 {
     args.push("help".to_string());
@@ -71,28 +71,27 @@ fn main() {
     println!();
     println!("commands:");
     println!("{CMDS}");
-
-    return;
+    std::process::exit(0);
   } else if args[1] == "--version" || args[1] == "version" {
     // display version information
     println!("comp {COMP_VERSION}");
-    return;
+    std::process::exit(0);
   } else if args[1] == "mona" {
     println!("{MONA}");
-    return;
+    std::process::exit(0);
   } else if args[1] == "-f" || args[1] == "--file" {
     // read operations list input from file
     print!("reading command input from '{}' file .. ", args[2]);
 
-    let filename = args[2].to_string();
-    let path = Path::new(&filename);
-    let display = path.display();
+    let filename: String = args[2].to_string();
+    let path: &Path = Path::new(&filename);
+    let display: Display = path.display();
 
-    let mut file = match File::open(&path) {
-                     Err(why) => panic!("couldn't open {display}: {why}"),
-                     Ok(file) => file,
-                   };
-    let mut contents = String::new();
+    let mut file: File = match File::open(&path) {
+      Err(why) => panic!("couldn't open {display}: {why}"),
+      Ok(file) => file,
+    };
+    let mut contents: String = String::new();
     match file.read_to_string(&mut contents) {
       Err(why) => panic!("couldn't read {display}: {why}"),
       Ok(_) => println!("success"),
@@ -106,7 +105,7 @@ fn main() {
     }
   } else {
     // read operations list input from command line arguments
-    proc.ops = (&args[1..]).to_vec(); //remove
+    proc.ops = (&args[1..]).to_vec();
   }
 
   // process operations list
@@ -137,7 +136,7 @@ struct Function {
 impl Processor {
   fn process_ops(&mut self) {
     while !self.ops.is_empty() {
-      let operation: String = self.ops.remove(0); // remove first operation
+      let operation: String = self.ops.remove(0); // pop first operation
       self.process_node(operation.as_str());
     }
   }
@@ -201,7 +200,7 @@ impl Processor {
              if ind != -1 { // user-defined function?
                // copy user function operations list (fops) into man operations list
                for i in (0..self.fns[ind as usize].fops.len()).rev() {
-                 let fop = self.fns[ind as usize].fops[i].clone();
+                 let fop: String = self.fns[ind as usize].fops[i].clone();
                  self.ops.insert(0, fop);
                }
 
@@ -445,7 +444,7 @@ impl Processor {
     self.fns.push(Function { name: fn_name,
                              fops: Vec::new(),
                            });
-    let fpos = self.fns.len() - 1; // added function position in function vector
+    let fpos: usize = self.fns.len() - 1; // added function position in function vector
 
     // build out function operations my reading from processor ops
     while self.ops[0] != "end" {
@@ -455,18 +454,16 @@ impl Processor {
   }
 
   fn is_user_function(&mut self, op: &str) -> i32 {
-    if self.fns.is_empty() {
-      return -1;
-    }
-
-    for i in 0..self.fns.len() {
-      if self.fns[i].name == op {
-        return i as i32;
+    if !self.fns.is_empty() {
+      for i in 0..self.fns.len() {
+        if self.fns[i].name == op {
+          return i as i32;
+        }
       }
     }
-
     -1
   }
+
 }
 
 
@@ -547,13 +544,13 @@ mod comp_tests {
   #[test]
   fn test_core() {
     let mut test_proc = super::Processor {
-                          stack: Vec::new(),
-                          mem_a: 20.0,
-                          mem_b: 6.18,
-                          mem_c: -123.45,
-                          ops: Vec::new(),
-                          fns: Vec::new(),
-                        };
+      stack: Vec::new(),
+      mem_a: 20.0,
+      mem_b: 6.18,
+      mem_c: -123.45,
+      ops: Vec::new(),
+      fns: Vec::new(),
+    };
 
     test_proc.stack.push(1.0);
     test_proc.stack.push(2.0);
@@ -636,13 +633,13 @@ mod comp_tests {
   #[should_panic]
   fn test_cls() {
     let mut test_proc = super::Processor {
-                          stack: Vec::new(),
-                          mem_a: 3.3,
-                          mem_b: 4.4,
-                          mem_c: 5.5,
-                          ops: Vec::new(),
-                          fns: Vec::new(),
-                        };
+      stack: Vec::new(),
+      mem_a: 3.3,
+      mem_b: 4.4,
+      mem_c: 5.5,
+      ops: Vec::new(),
+      fns: Vec::new(),
+    };
 
     test_proc.stack.push(1.0);
     test_proc.stack.push(2.0);
@@ -664,13 +661,13 @@ mod comp_tests {
   #[test]
   fn test_mem() {
     let mut test_proc = super::Processor {
-                          stack: Vec::new(),
-                          mem_a: 8.88888,
-                          mem_b: 8.88888,
-                          mem_c: 8.88888,
-                          ops: Vec::new(),
-                          fns: Vec::new(),
-                        };
+      stack: Vec::new(),
+      mem_a: 8.88888,
+      mem_b: 8.88888,
+      mem_c: 8.88888,
+      ops: Vec::new(),
+      fns: Vec::new(),
+    };
 
     test_proc.stack.push(1.0);
     test_proc.stack.push(2.0);
@@ -707,13 +704,13 @@ mod comp_tests {
   #[test]
   fn test_cmp() {
     let mut test_proc = super::Processor {
-                          stack: Vec::new(),
-                          mem_a: 0.0,
-                          mem_b: 0.0,
-                          mem_c: 0.0,
-                          ops: Vec::new(),
-                          fns: Vec::new(),
-                        };
+      stack: Vec::new(),
+      mem_a: 0.0,
+      mem_b: 0.0,
+      mem_c: 0.0,
+      ops: Vec::new(),
+      fns: Vec::new(),
+    };
 
     test_proc.stack.push(10.0);
     test_proc.c_log10();

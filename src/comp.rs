@@ -100,7 +100,7 @@ fn main() {
     // read file contents
     let mut file_contents: String = String::new();
     match file.read_to_string(&mut file_contents) {
-      Ok(_) => print!(""),
+      Ok(_) => (),
       Err(error) => {
         eprintln!("error: couldn't read <{display}>: {error}");
         std::process::exit(255);

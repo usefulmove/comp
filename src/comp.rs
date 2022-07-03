@@ -4,7 +4,7 @@ use std::io::prelude::*;
 use std::path::Path;
 use std::path::Display;
 
-const COMP_VERSION: &str = "0.18.2e"; //env!("CARGO_PKG_VERSION");
+const COMP_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /*
 

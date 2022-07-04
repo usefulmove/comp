@@ -46,8 +46,8 @@ fn main() {
 
   let mut args: Vec<String> = env::args().collect();
 
-  // create computation processor
-  let mut proc = Processor::new();
+  // construct command interpreter
+  let mut cinter = Interpreter::new();
 
 
   if args.len() <= 1 {
@@ -108,7 +108,7 @@ fn main() {
   
       // create operations list vector
       for op in temp_ops {
-        proc.ops.push(op.to_string());
+        cinter.ops.push(op.to_string());
       }
     } else {
       eprintln!("error: no file path was passed");
@@ -116,28 +116,28 @@ fn main() {
     }
   } else {
     // read operations list input from command line arguments
-    proc.ops = (&args[1..]).to_vec();
+    cinter.ops = (&args[1..]).to_vec();
   }
 
   // process operations list
-  proc.process_ops();
+  cinter.process_ops();
 
   // display resulting computation stack
-  for element in proc.stack {
+  for element in cinter.stack {
     println!("{element}");
   }
 
   std::process::exit(0);
 }
 
-struct Processor {
+struct Interpreter {
   stack: Vec<f64>,
   mem_a: f64,
   mem_b: f64,
   mem_c: f64,
   ops: Vec<String>,
   fns: Vec<Function>,
-  dict: HashMap<String, fn(&mut Processor)>,
+  cmap: HashMap<String, fn(&mut Interpreter)>,
 }
 
 struct Function {
@@ -145,17 +145,17 @@ struct Function {
   fops: Vec<String>,
 }
 
-impl Processor {
+impl Interpreter {
   // constructor
-  fn new() -> Processor {
-    let mut p = Processor {
+  fn new() -> Interpreter {
+    let mut p = Interpreter {
       stack: Vec::new(),
       mem_a: 0.0,
       mem_b: 0.0,
       mem_c: 0.0,
       ops: Vec::new(),
       fns: Vec::new(),
-      dict: HashMap::new(),
+      cmap: HashMap::new(),
     };
 
     p.construct();
@@ -170,69 +170,69 @@ impl Processor {
     }
   }
 
-  fn add_command(&mut self, name: &str, func: fn(&mut Processor)) {
-    self.dict.insert(name.to_string(), func);
+  fn add_command(&mut self, name: &str, func: fn(&mut Interpreter)) {
+    self.cmap.insert(name.to_string(), func);
   }
 
   fn construct(&mut self) {
     // stack manipulation
-    self.add_command("drop",   Processor::c_drop);     // drop
-    self.add_command("dup",    Processor::c_dup);      // duplicate
-    self.add_command("swap",   Processor::c_swap);     // swap x and y
-    self.add_command("cls",    Processor::c_cls);      // clear stack
-    self.add_command("clr",    Processor::c_cls);      // clear stack
-    self.add_command("roll",   Processor::c_roll);     // roll stack
+    self.add_command("drop",   Interpreter::c_drop);     // drop
+    self.add_command("dup",    Interpreter::c_dup);      // duplicate
+    self.add_command("swap",   Interpreter::c_swap);     // swap x and y
+    self.add_command("cls",    Interpreter::c_cls);      // clear stack
+    self.add_command("clr",    Interpreter::c_cls);      // clear stack
+    self.add_command("roll",   Interpreter::c_roll);     // roll stack
     // memory usage
-    self.add_command("sa",     Processor::c_store_a);  // store (pop value off stack and store)
-    self.add_command(".a",     Processor::c_store_a);  // store (pop value off stack and store)
-    self.add_command("a",      Processor::c_push_a);   // retrieve (push stored value onto the stack)
-    self.add_command("sb",     Processor::c_store_b);  // store
-    self.add_command(".b",     Processor::c_store_b);  // store
-    self.add_command("b",      Processor::c_push_b);   // retrieve
-    self.add_command("sc",     Processor::c_store_c);  // store
-    self.add_command(".c",     Processor::c_store_c);  // store
-    self.add_command("c",      Processor::c_push_c);   // retrieve
+    self.add_command("sa",     Interpreter::c_store_a);  // store (pop value off stack and store)
+    self.add_command(".a",     Interpreter::c_store_a);  // store (pop value off stack and store)
+    self.add_command("a",      Interpreter::c_push_a);   // retrieve (push stored value onto the stack)
+    self.add_command("sb",     Interpreter::c_store_b);  // store
+    self.add_command(".b",     Interpreter::c_store_b);  // store
+    self.add_command("b",      Interpreter::c_push_b);   // retrieve
+    self.add_command("sc",     Interpreter::c_store_c);  // store
+    self.add_command(".c",     Interpreter::c_store_c);  // store
+    self.add_command("c",      Interpreter::c_push_c);   // retrieve
     // math operations
-    self.add_command("+",      Processor::c_add);      // add
-    self.add_command("+_",     Processor::c_add_all);  // add all
-    self.add_command("-",      Processor::c_sub);      // subtract
-    self.add_command("x",      Processor::c_mult);     // multiply
-    self.add_command("x_",     Processor::c_mult_all); // multiply all
-    self.add_command("/",      Processor::c_div);      // divide
-    self.add_command("chs",    Processor::c_chs);      // change sign
-    self.add_command("abs",    Processor::c_abs);      // absolute value
-    self.add_command("round",  Processor::c_round);    // round
-    self.add_command("int",    Processor::c_round);
-    self.add_command("inv",    Processor::c_inv);      // invert (1/x)
-    self.add_command("sqrt",   Processor::c_sqrt);     // square root
-    self.add_command("throot", Processor::c_throot);   // nth root
-    self.add_command("proot",  Processor::c_proot);    // find principal roots
-    self.add_command("^",      Processor::c_exp);      // exponenation
-    self.add_command("exp",    Processor::c_exp);
-    self.add_command("%",      Processor::c_mod);      // modulus
-    self.add_command("mod",    Processor::c_mod);
-    self.add_command("!",      Processor::c_fact);     // factorial
-    self.add_command("gcd",    Processor::c_gcd);      // greatest common divisor
-    self.add_command("pi",     Processor::c_pi);       // pi
-    self.add_command("e",      Processor::c_euler);    // Euler's constant
-    self.add_command("dtor",   Processor::c_dtor);     // degrees to radians
-    self.add_command("rtod",   Processor::c_rtod);     // radians to degrees
-    self.add_command("sin",    Processor::c_sin);      // sine
-    self.add_command("asin",   Processor::c_asin);     // arcsine
-    self.add_command("cos",    Processor::c_cos);      // cosine
-    self.add_command("acos",   Processor::c_acos);     // arccosine
-    self.add_command("tan",    Processor::c_tan);      // tangent
-    self.add_command("atan",   Processor::c_atan);     // arctangent
-    self.add_command("log",    Processor::c_log10);    // log (base 10)
-    self.add_command("log10",  Processor::c_log10);
-    self.add_command("ln",     Processor::c_ln);       // natural log
+    self.add_command("+",      Interpreter::c_add);      // add
+    self.add_command("+_",     Interpreter::c_add_all);  // add all
+    self.add_command("-",      Interpreter::c_sub);      // subtract
+    self.add_command("x",      Interpreter::c_mult);     // multiply
+    self.add_command("x_",     Interpreter::c_mult_all); // multiply all
+    self.add_command("/",      Interpreter::c_div);      // divide
+    self.add_command("chs",    Interpreter::c_chs);      // change sign
+    self.add_command("abs",    Interpreter::c_abs);      // absolute value
+    self.add_command("round",  Interpreter::c_round);    // round
+    self.add_command("int",    Interpreter::c_round);
+    self.add_command("inv",    Interpreter::c_inv);      // invert (1/x)
+    self.add_command("sqrt",   Interpreter::c_sqrt);     // square root
+    self.add_command("throot", Interpreter::c_throot);   // nth root
+    self.add_command("proot",  Interpreter::c_proot);    // find principal roots
+    self.add_command("^",      Interpreter::c_exp);      // exponenation
+    self.add_command("exp",    Interpreter::c_exp);
+    self.add_command("%",      Interpreter::c_mod);      // modulus
+    self.add_command("mod",    Interpreter::c_mod);
+    self.add_command("!",      Interpreter::c_fact);     // factorial
+    self.add_command("gcd",    Interpreter::c_gcd);      // greatest common divisor
+    self.add_command("pi",     Interpreter::c_pi);       // pi
+    self.add_command("e",      Interpreter::c_euler);    // Euler's constant
+    self.add_command("dtor",   Interpreter::c_dtor);     // degrees to radians
+    self.add_command("rtod",   Interpreter::c_rtod);     // radians to degrees
+    self.add_command("sin",    Interpreter::c_sin);      // sine
+    self.add_command("asin",   Interpreter::c_asin);     // arcsine
+    self.add_command("cos",    Interpreter::c_cos);      // cosine
+    self.add_command("acos",   Interpreter::c_acos);     // arccosine
+    self.add_command("tan",    Interpreter::c_tan);      // tangent
+    self.add_command("atan",   Interpreter::c_atan);     // arctangent
+    self.add_command("log",    Interpreter::c_log10);    // log (base 10)
+    self.add_command("log10",  Interpreter::c_log10);
+    self.add_command("ln",     Interpreter::c_ln);       // natural log
     // control flow
-    self.add_command("fn",     Processor::c_fn);       // function definition
+    self.add_command("fn",     Interpreter::c_fn);       // function definition
   }
 
   fn process_node(&mut self, op: &str) {
-    if self.dict.contains_key(op) {
-      let f = self.dict[op];
+    if self.cmap.contains_key(op) {
+      let f = self.cmap[op];
       f(self);
     } else {
       let ind: i32 = self.is_user_function(op);
@@ -501,7 +501,7 @@ impl Processor {
                            });
     let fpos: usize = self.fns.len() - 1; // added function position in function vector
 
-    // build out function operations my reading from processor ops
+    // build out function operations my reading from interpreter ops
     while self.ops[0] != "end" {
       self.fns[fpos].fops.push(self.ops.remove(0));
     }
@@ -599,35 +599,35 @@ mod comp_tests {
 
   #[test]
   fn test_core() {
-    let mut test_proc = super::Processor::new();
+    let mut test_cinter = super::Interpreter::new();
 
-    test_proc.stack.push(1.0);
-    test_proc.stack.push(2.0);
-    test_proc.stack.push(3.0);
-    test_proc.stack.push(4.0);
+    test_cinter.stack.push(1.0);
+    test_cinter.stack.push(2.0);
+    test_cinter.stack.push(3.0);
+    test_cinter.stack.push(4.0);
 
-    test_proc.c_dtor();
-    test_proc.c_cos();
-    test_proc.c_acos();
-    test_proc.c_sin();
-    test_proc.c_asin();
-    test_proc.c_tan();
-    test_proc.c_atan();
-    test_proc.c_rtod();
-    test_proc.c_round();
-    test_proc.c_roll();
-    test_proc.c_roll();
-    test_proc.c_roll();
-    test_proc.c_roll();
-    test_proc.c_dup();
-    test_proc.c_drop();
-    test_proc.c_swap();
-    test_proc.c_swap();
-    test_proc.c_add();
-    test_proc.c_sub();
-    test_proc.c_div();
+    test_cinter.c_dtor();
+    test_cinter.c_cos();
+    test_cinter.c_acos();
+    test_cinter.c_sin();
+    test_cinter.c_asin();
+    test_cinter.c_tan();
+    test_cinter.c_atan();
+    test_cinter.c_rtod();
+    test_cinter.c_round();
+    test_cinter.c_roll();
+    test_cinter.c_roll();
+    test_cinter.c_roll();
+    test_cinter.c_roll();
+    test_cinter.c_dup();
+    test_cinter.c_drop();
+    test_cinter.c_swap();
+    test_cinter.c_swap();
+    test_cinter.c_add();
+    test_cinter.c_sub();
+    test_cinter.c_div();
 
-    assert!(test_proc.stack.pop().unwrap() == -0.2);
+    assert!(test_cinter.stack.pop().unwrap() == -0.2);
   }
 
   #[test]
@@ -638,118 +638,118 @@ mod comp_tests {
 
   #[test]
   fn test_roots() {
-    let mut test_proc = super::Processor::new();
+    let mut test_cinter = super::Interpreter::new();
 
-    test_proc.stack.push(2.0);
-    test_proc.c_dup();
-    test_proc.c_sqrt();
-    test_proc.c_swap();
-    test_proc.stack.push(32.0);
-    test_proc.c_exp();
-    test_proc.stack.push(32.0 * 2.0);
-    test_proc.c_throot();
+    test_cinter.stack.push(2.0);
+    test_cinter.c_dup();
+    test_cinter.c_sqrt();
+    test_cinter.c_swap();
+    test_cinter.stack.push(32.0);
+    test_cinter.c_exp();
+    test_cinter.stack.push(32.0 * 2.0);
+    test_cinter.c_throot();
 
-    assert!(test_proc.stack.pop().unwrap() == test_proc.stack.pop().unwrap());
+    assert!(test_cinter.stack.pop().unwrap() == test_cinter.stack.pop().unwrap());
 
-    test_proc.stack.push(1.0);
-    test_proc.stack.push(-2.0);
-    test_proc.c_chs();
-    test_proc.c_chs();
-    test_proc.c_pi();
-    test_proc.c_mult();
-    test_proc.c_pi();
-    test_proc.stack.push(2.0);
-    test_proc.c_exp();
-    test_proc.stack.push(1.0);
-    test_proc.c_add();
-    test_proc.c_proot();
-    test_proc.c_add_all();
-    test_proc.stack.push(2.0);
-    test_proc.c_div();
-    test_proc.c_pi();
+    test_cinter.stack.push(1.0);
+    test_cinter.stack.push(-2.0);
+    test_cinter.c_chs();
+    test_cinter.c_chs();
+    test_cinter.c_pi();
+    test_cinter.c_mult();
+    test_cinter.c_pi();
+    test_cinter.stack.push(2.0);
+    test_cinter.c_exp();
+    test_cinter.stack.push(1.0);
+    test_cinter.c_add();
+    test_cinter.c_proot();
+    test_cinter.c_add_all();
+    test_cinter.stack.push(2.0);
+    test_cinter.c_div();
+    test_cinter.c_pi();
 
-    assert!(test_proc.stack.pop().unwrap() == test_proc.stack.pop().unwrap());
+    assert!(test_cinter.stack.pop().unwrap() == test_cinter.stack.pop().unwrap());
   }
 
   #[test]
   #[should_panic]
   fn test_cls() {
-    let mut test_proc = super::Processor::new();
+    let mut test_cinter = super::Interpreter::new();
 
-    test_proc.stack.push(1.0);
-    test_proc.stack.push(2.0);
-    test_proc.stack.push(3.0);
-    test_proc.stack.push(4.0);
-    test_proc.stack.push(1.0);
-    test_proc.stack.push(2.0);
-    test_proc.stack.push(3.0);
-    test_proc.stack.push(4.0);
-    test_proc.stack.push(1.0);
-    test_proc.stack.push(2.0);
-    test_proc.stack.push(3.0);
-    test_proc.stack.push(4.0);
-    test_proc.c_cls();
+    test_cinter.stack.push(1.0);
+    test_cinter.stack.push(2.0);
+    test_cinter.stack.push(3.0);
+    test_cinter.stack.push(4.0);
+    test_cinter.stack.push(1.0);
+    test_cinter.stack.push(2.0);
+    test_cinter.stack.push(3.0);
+    test_cinter.stack.push(4.0);
+    test_cinter.stack.push(1.0);
+    test_cinter.stack.push(2.0);
+    test_cinter.stack.push(3.0);
+    test_cinter.stack.push(4.0);
+    test_cinter.c_cls();
 
-    assert!(test_proc.stack.pop().unwrap() == 0.0);
+    assert!(test_cinter.stack.pop().unwrap() == 0.0);
   }
 
   #[test]
   fn test_mem() {
-    let mut test_proc = super::Processor::new();
+    let mut test_cinter = super::Interpreter::new();
 
-    test_proc.stack.push(1.0);
-    test_proc.stack.push(2.0);
-    test_proc.stack.push(3.0);
-    test_proc.stack.push(4.0);
-    test_proc.stack.push(1.0);
-    test_proc.stack.push(2.0);
-    test_proc.stack.push(3.0);
-    test_proc.stack.push(4.0);
-    test_proc.stack.push(1.0);
-    test_proc.stack.push(2.0);
-    test_proc.stack.push(3.0);
-    test_proc.stack.push(4.0);
-    test_proc.c_chs();
-    test_proc.c_abs();
-    test_proc.c_inv();
-    test_proc.c_inv();
-    test_proc.c_pi();
-    test_proc.c_euler();
-    test_proc.stack.push(0.0);
-    test_proc.c_store_b(); // 0
-    test_proc.c_store_a(); // e
-    test_proc.c_store_c(); // pi
-    test_proc.c_cls();
-    test_proc.c_push_b(); // 0
-    test_proc.c_push_c(); // pi
-    test_proc.c_add();
-    test_proc.c_push_a(); // e
-    test_proc.c_add();
+    test_cinter.stack.push(1.0);
+    test_cinter.stack.push(2.0);
+    test_cinter.stack.push(3.0);
+    test_cinter.stack.push(4.0);
+    test_cinter.stack.push(1.0);
+    test_cinter.stack.push(2.0);
+    test_cinter.stack.push(3.0);
+    test_cinter.stack.push(4.0);
+    test_cinter.stack.push(1.0);
+    test_cinter.stack.push(2.0);
+    test_cinter.stack.push(3.0);
+    test_cinter.stack.push(4.0);
+    test_cinter.c_chs();
+    test_cinter.c_abs();
+    test_cinter.c_inv();
+    test_cinter.c_inv();
+    test_cinter.c_pi();
+    test_cinter.c_euler();
+    test_cinter.stack.push(0.0);
+    test_cinter.c_store_b(); // 0
+    test_cinter.c_store_a(); // e
+    test_cinter.c_store_c(); // pi
+    test_cinter.c_cls();
+    test_cinter.c_push_b(); // 0
+    test_cinter.c_push_c(); // pi
+    test_cinter.c_add();
+    test_cinter.c_push_a(); // e
+    test_cinter.c_add();
 
-    assert!(test_proc.stack.pop().unwrap() == std::f64::consts::PI + std::f64::consts::E);
+    assert!(test_cinter.stack.pop().unwrap() == std::f64::consts::PI + std::f64::consts::E);
   }
 
   #[test]
   fn test_cmp() {
-    let mut test_proc = super::Processor::new();
+    let mut test_cinter = super::Interpreter::new();
 
-    test_proc.stack.push(10.0);
-    test_proc.c_log10();
-    test_proc.c_euler();
-    test_proc.c_ln();
-    test_proc.stack.push(105.0);
-    test_proc.stack.push(2.0);
-    test_proc.c_mod();
-    test_proc.stack.push(3049.0);
-    test_proc.stack.push(1009.0);
-    test_proc.c_gcd();
-    test_proc.c_mult_all();
+    test_cinter.stack.push(10.0);
+    test_cinter.c_log10();
+    test_cinter.c_euler();
+    test_cinter.c_ln();
+    test_cinter.stack.push(105.0);
+    test_cinter.stack.push(2.0);
+    test_cinter.c_mod();
+    test_cinter.stack.push(3049.0);
+    test_cinter.stack.push(1009.0);
+    test_cinter.c_gcd();
+    test_cinter.c_mult_all();
 
-    assert!(test_proc.stack.pop().unwrap() == 1.0);
+    assert!(test_cinter.stack.pop().unwrap() == 1.0);
 
-    test_proc.stack.push(20.0);
-    test_proc.c_fact();
+    test_cinter.stack.push(20.0);
+    test_cinter.c_fact();
 
-    assert!(test_proc.stack.pop().unwrap() == 2432902008176640000.0);
+    assert!(test_cinter.stack.pop().unwrap() == 2432902008176640000.0);
   }
 }

@@ -1,6 +1,6 @@
 # comp
 
-![](https://img.shields.io/badge/stable-0.18.4-green?style=plastic)
+![](https://img.shields.io/badge/stable-0.20.0-green?style=plastic)
 ![](https://img.shields.io/badge/license-MIT-blue?style=plastic)
 
 * [Usage instructions][1]

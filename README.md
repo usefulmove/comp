@@ -16,7 +16,7 @@ For more information, see the comp command [usage documentation][1].
 ---
 
 ## Usage
-The basic usage of the comp interpreter can be accessed in the output of the `comp help` command. Detailed [usage information][1] and descriptions of each available command can be found in [`USAGE.md`][1].
+The basic usage of the comp interpreter can be accessed in the output of the `comp help` command. A detailed [usage guide][1] with descriptions of each available command can be found in [`USAGE.md`][1].
 ```
 comp help
 ```

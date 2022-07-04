@@ -1,7 +1,9 @@
-# comp
+# Comp
 
-![](https://img.shields.io/badge/stable-0.20.0-green?style=plastic)
-![](https://img.shields.io/badge/license-MIT-blue?style=plastic)
+![](https://img.shields.io/badge/stable-0.20.0-success?style=plastic)
+![](https://img.shields.io/badge/license-MIT-informational?style=plastic)
+
+<img src="https://raw.githubusercontent.com/usefulmove/comp/main/assets/system-preferences-icon-64x64.png" align="right"/>
 
 * [Usage instructions][1]
 * [Installation][2]

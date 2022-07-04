@@ -94,7 +94,7 @@ fn main() {
         Ok(file) => file,
         Err(error) => {
           eprintln!("error: could not open [{display}] file: {error}");
-          std::process::exit(255);
+          std::process::exit(99);
         },
       };
 
@@ -104,7 +104,7 @@ fn main() {
         Ok(_) => (),
         Err(error) => {
           eprintln!("error: could not read [{display}]: {error}");
-          std::process::exit(255);
+          std::process::exit(99);
         },
       };
   
@@ -117,7 +117,7 @@ fn main() {
       }
     } else {
       eprintln!("error: no file argument was passed");
-      std::process::exit(255);
+      std::process::exit(99);
     }
   } else {
     // read operations list input from command line arguments
@@ -229,7 +229,7 @@ impl Processor {
                    eprintln!("error: comp interpreter was passed an unknown \
                               expression: [{op}] is not a recognized operation \
                               or value");
-                   std::process::exit(255);
+                   std::process::exit(99);
                  },
                };
 

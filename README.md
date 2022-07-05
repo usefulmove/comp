@@ -5,7 +5,7 @@
 ![](https://img.shields.io/badge/stable-0.20.3-success?style=plastic)
 ![](https://img.shields.io/badge/license-MIT-informational?style=plastic)
 
-* [Usage instructions][1]
+* [Usage Guide][1]
 * [Installation][2]
 * [License][3]
 

@@ -250,7 +250,7 @@ The file flag allows the use of commands defined within a source file.
 ---
 ## Commands (control flow)
 
-### user-defined functions
+### functions
 User-defined functions can be defined by indicating the start of a function with the `fn` keyword followed by the function name then a list of operations and terminated with the `end` keyword. The user function is executed by calling the function name as shown in the examples below.
 ```
 % comp fn square dup x end 5 square
@@ -262,19 +262,37 @@ User-defined functions can be defined by indicating the start of a function with
 ```
 
 Note that functions are most useful when combined with the file option. The cube function can be defined and executed in a source file and passed to the comp command using the file option.
-
 ```
-(cubed.cm)
+(cube.cm)
 
-fn cubed
+fn cube
   3 ^
 end
 
-5 cubed
-8 cubed
+5 cube
+8 cube
 ```
 ```
-% comp -f cubed.cm
+% comp -f cube.cm
 125
+512
+```
+
+Functions can also be nested and used in definitions of other user-defined functions. The cube function could also be defined by making use of a user-defined square function.
+```
+(cube.cm)
+
+fn cube
+  dup square x
+end
+
+fn square
+  dup x
+end
+
+8 cube
+```
+```
+% comp -f cube.cm
 512
 ```

@@ -16,3 +16,13 @@ end
 
 5 square_root
 sub1 div2 ten6th_round
+
+fn cube
+  dup square x
+end
+
+fn square
+  dup x
+end
+
+8 cube

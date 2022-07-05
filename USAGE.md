@@ -1,4 +1,4 @@
-# Usage
+# Usage Guide
 
 
 ## Commands (stack manipulation)
@@ -275,19 +275,20 @@ The file flag allows the use of commands defined within a source file.
 ### functions
 User-defined functions can be defined by indicating the start of a function with the `fn` keyword followed by the function name then a list of operations and terminated with the `end` keyword. The user function is executed by calling the function name as shown in the examples below.
 ```
-% comp fn square dup x end 5 square
-25
+% comp fn square dup x end 16 square
+256
 ```
 ```
-% comp fn double 2 x end 50 double
-100
+% comp fn double 2 x end 250 double
+500
 ```
 
 Note that functions are most useful when combined with the file option. The cube function can be defined and executed in a source file and passed to the comp command using the file option.
 ```
 ( cube.cm )
 ( note - comments are identified inside parentheses. 
-  there must be whitespace before and after each parenthesis. )
+  there must be whitespace surrounding each parenthesis.
+  multiline comments are supported. )
 
 fn cube
   3 ^

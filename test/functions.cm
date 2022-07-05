@@ -1,6 +1,13 @@
 ( functions manual tests )
 
 (   comments test   ) ( )
+( note -- comments are identified inside parentheses. 
+  there must be whitespace before and after each parenthesis. )
+
+  ( multiline 
+    comments
+    are fine. )
+
 
 fn sub1
   1 -
@@ -33,3 +40,11 @@ fn square
 end
 
 8 cube
+
+
+(
+)
+
+(
+to be or not to be
+)

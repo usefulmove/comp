@@ -240,6 +240,18 @@ For this operation, the coefficients `a b c` of the quadratic equation `ax^2 + b
 2
 ```
 
+### log (base 2)
+```
+% comp 256 log2
+8
+```
+
+### log (base n)
+```
+% comp 256 2 logn
+8
+```
+
 ### natural log
 ```
 % comp e ln

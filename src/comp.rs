@@ -38,7 +38,7 @@ const COMP_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 const CMDS: &str = "drop dup swap cls clr roll rot sa .a a sb .b b sc .c c + +_ \
 - x x_ / chs abs round int inv sqrt throot proot ^ exp % mod ! gcd pi e dtor \
-rtod sin asin cos acos tan atan log log10 ln";
+rtod sin asin cos acos tan atan log log2 log10 ln logn";
 
 
 fn main() {
@@ -224,8 +224,10 @@ impl Interpreter {
     self.add_command("acos",   Interpreter::c_acos);     // arccosine
     self.add_command("tan",    Interpreter::c_tan);      // tangent
     self.add_command("atan",   Interpreter::c_atan);     // arctangent
+    self.add_command("log2",   Interpreter::c_log2);     // log (base 2)
     self.add_command("log",    Interpreter::c_log10);    // log (base 10)
     self.add_command("log10",  Interpreter::c_log10);
+    self.add_command("logn",   Interpreter::c_logn);     // log (base n)
     self.add_command("ln",     Interpreter::c_ln);       // natural log
     // control flow
     self.add_command("fn",     Interpreter::c_fn);       // function definition
@@ -490,6 +492,17 @@ impl Interpreter {
     self.stack[end] = self.stack[end].log10();
   }
   
+  fn c_log2(&mut self) {
+    let end: usize = self.stack.len() - 1;
+    self.stack[end] = self.stack[end].log2();
+  }
+  
+  fn c_logn(&mut self) {
+    let end: usize = self.stack.len() - 1;
+    let n: f64 = self.stack.pop().unwrap();
+    self.stack[end-1] = self.stack[end-1].log(n);
+  }
+  
   fn c_ln(&mut self) {
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].ln();
@@ -646,6 +659,15 @@ mod comp_tests {
     test_cinter.c_add();
     test_cinter.c_sub();
     test_cinter.c_div();
+
+    test_cinter.stack.push(10.0);
+    test_cinter.c_log2();
+    test_cinter.stack.push(10.0);
+    test_cinter.stack.push(2.0);
+    test_cinter.c_logn();
+    test_cinter.c_sub();
+    test_cinter.c_round();
+    test_cinter.c_add();
 
     assert!(test_cinter.stack.pop().unwrap() == -0.2);
   }

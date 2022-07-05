@@ -36,9 +36,9 @@ const COMP_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // -- command list -------------------------------------------------------------
 
-const CMDS: &str = "drop dup swap cls clr roll sa .a a sb .b b sc .c c + +_ - x \
-x_ / chs abs round int inv sqrt throot proot ^ exp % mod ! gcd pi e dtor rtod \
-sin asin cos acos tan atan log log10 ln fn";
+const CMDS: &str = "drop dup swap cls clr roll rot sa .a a sb .b b sc .c c + +_ \
+- x x_ / chs abs round int inv sqrt throot proot ^ exp % mod ! gcd pi e dtor \
+rtod sin asin cos acos tan atan log log10 ln fn";
 
 
 fn main() {
@@ -182,6 +182,7 @@ impl Interpreter {
     self.add_command("cls",    Interpreter::c_cls);      // clear stack
     self.add_command("clr",    Interpreter::c_cls);      // clear stack
     self.add_command("roll",   Interpreter::c_roll);     // roll stack
+    self.add_command("rot",    Interpreter::c_rot);      // rotate stack (reverse direction from roll)
     // memory usage
     self.add_command("sa",     Interpreter::c_store_a);  // store (pop value off stack and store)
     self.add_command(".a",     Interpreter::c_store_a);  // store (pop value off stack and store)
@@ -289,8 +290,13 @@ impl Interpreter {
   }
   
   fn c_roll(&mut self) {
-    let o: f64 = self.stack.pop().unwrap();
-    self.stack.splice(0..0, [o]);
+    let o: f64 = self.stack.pop().unwrap(); // remove last
+    self.stack.splice(0..0, [o]);           // add as first
+  }
+  
+  fn c_rot(&mut self) {
+    let o: f64 = self.stack.remove(0); // remove first
+    self.stack.push(o);                // add as last
   }
   
   

@@ -52,6 +52,16 @@ rotate stack elements such that the last element becomes the first
 3
 ```
 
+### rotate stack
+rotate stack elements such that the first element becomes the last (reverse direction from roll operation)
+```
+% comp 1 2 3 4 rot
+2
+3
+4
+1
+```
+
 
 ---
 ## Commands (memory usage)

@@ -1,3 +1,7 @@
+( functions manual tests )
+
+(   comments test   ) ( )
+
 fn sub1
   1 -
 end
@@ -16,6 +20,9 @@ end
 
 5 square_root
 sub1 div2 ten6th_round
+
+
+( nested user-defined functions )
 
 fn cube
   dup square x

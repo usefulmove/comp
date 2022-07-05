@@ -38,7 +38,7 @@ const COMP_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 const CMDS: &str = "drop dup swap cls clr roll rot sa .a a sb .b b sc .c c + +_ \
 - x x_ / chs abs round int inv sqrt throot proot ^ exp % mod ! gcd pi e dtor \
-rtod sin asin cos acos tan atan log log10 ln fn";
+rtod sin asin cos acos tan atan log log10 ln";
 
 
 fn main() {
@@ -229,6 +229,7 @@ impl Interpreter {
     self.add_command("ln",     Interpreter::c_ln);       // natural log
     // control flow
     self.add_command("fn",     Interpreter::c_fn);       // function definition
+    self.add_command("(",      Interpreter::c_comment);  // function definition
   }
 
   fn process_node(&mut self, op: &str) {
@@ -525,6 +526,14 @@ impl Interpreter {
     -1
   }
 
+  fn c_comment(&mut self) {
+    // ignore all elements between "(" and ")"
+    while self.ops[0] != ")" {
+      self.ops.remove(0);
+    }
+    self.ops.remove(0); // remove ")" op
+  }
+
 }
 
 
@@ -611,6 +620,11 @@ mod comp_tests {
     test_cinter.stack.push(2.0);
     test_cinter.stack.push(3.0);
     test_cinter.stack.push(4.0);
+
+    test_cinter.c_rot();
+    test_cinter.c_rot();
+    test_cinter.c_roll();
+    test_cinter.c_roll();
 
     test_cinter.c_dtor();
     test_cinter.c_cos();

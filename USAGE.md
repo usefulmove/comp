@@ -67,7 +67,7 @@ rotate stack elements such that the first element becomes the last (reverse dire
 ## Commands (memory usage)
 
 ### store and retrieve
-The values `a b c` can be stored using the store command (e.g, `sa`) into memory for retrieval (e.g., `a`) in subsequent opertions. The stored value is removed from the stack when the store command is executed.
+The values `a b c` can be stored using the store command (e.g, `sa`) into memory for retrieval (e.g., `a`) in subsequent operations. The stored value is removed from the stack when the store command is executed.
 ```
 % comp 1 2 3 sa drop a
 1
@@ -159,7 +159,7 @@ For this operation, the coefficients `a b c` of the quadratic equation `ax^2 + b
 0
 ```
 
-### exponetiation
+### exponentiation
 ```
 % comp 2 4 ^
 16
@@ -273,7 +273,9 @@ User-defined functions can be defined by indicating the start of a function with
 
 Note that functions are most useful when combined with the file option. The cube function can be defined and executed in a source file and passed to the comp command using the file option.
 ```
-(cube.cm)
+( cube.cm )
+( note - comments are identified inside parentheses. 
+  there must be whitespace before and after each parenthesis. )
 
 fn cube
   3 ^
@@ -290,7 +292,7 @@ end
 
 Functions can also be nested and used in definitions of other user-defined functions. The cube function could also be defined by making use of a user-defined square function.
 ```
-(cube.cm)
+( cube.cm )
 
 fn cube
   dup square x

@@ -42,14 +42,16 @@ rtod sin asin cos acos tan atan log log2 log10 ln logn";
 
 
 fn main() {
-  env::set_var("RUST_BACKTRACE", "0"); // enable or disable backtrace on error
-
-  let mut args: Vec<String> = env::args().collect();
+  // enable or disable backtrace on error
+  env::set_var("RUST_BACKTRACE", "0");
 
   // construct command interpreter
   let mut cinter = Interpreter::new();
 
+  // get command line arguments and collect into a vector
+  let mut args: Vec<String> = env::args().collect();
 
+  // if no arguments are passed, behave as if help flag was passed
   if args.len() <= 1 {
     args.push("help".to_string());
   }
@@ -70,16 +72,20 @@ fn main() {
     println!("commands:");
     println!("{CMDS}");
     std::process::exit(0);
+
   } else if args[1] == "--version" || args[1] == "version" {
     // display version information
     println!("comp {COMP_VERSION}");
     std::process::exit(0);
+
   } else if args[1] == "mona" {
     println!("{MONA}");
     std::process::exit(0);
+
   } else if args[1] == "-f" || args[1] == "--file" {
     // read operations list input from file
     if args.len() > 2 {
+      // read file path
       let filename: String = args[2].to_string();
       let path: &Path = Path::new(&filename);
       let display: Display = path.display();
@@ -106,17 +112,21 @@ fn main() {
       // split individual list elements
       let temp_ops: Vec<&str> = file_contents.split_whitespace().collect();
   
-      // create operations list vector
+      // create operations list vector from file contents
       for op in temp_ops {
         cinter.ops.push(op.to_string());
       }
+
     } else {
       eprintln!("error: no file path was passed");
       std::process::exit(99);
+
     }
+
   } else {
-    // read operations list input from command line arguments
+    // read operations list input from arguments
     cinter.ops = (&args[1..]).to_vec();
+
   }
 
   // process operations list
@@ -130,6 +140,11 @@ fn main() {
   std::process::exit(0);
 }
 
+struct Function {
+  name: String,
+  fops: Vec<String>,
+}
+
 struct Interpreter {
   stack: Vec<f64>,
   mem_a: f64,
@@ -140,15 +155,10 @@ struct Interpreter {
   cmap: HashMap<String, fn(&mut Interpreter)>,
 }
 
-struct Function {
-  name: String,
-  fops: Vec<String>,
-}
-
 impl Interpreter {
   // constructor
   fn new() -> Interpreter {
-    let mut p = Interpreter {
+    let mut cint = Interpreter {
       stack: Vec::new(),
       mem_a: 0.0,
       mem_b: 0.0,
@@ -157,12 +167,12 @@ impl Interpreter {
       fns: Vec::new(),
       cmap: HashMap::new(),
     };
+    cint.init();
 
-    p.construct();
-
-    p
+    cint
   }
 
+  // process operations method
   fn process_ops(&mut self) {
     while !self.ops.is_empty() {
       let operation: String = self.ops.remove(0); // pop first operation
@@ -170,68 +180,69 @@ impl Interpreter {
     }
   }
 
-  fn add_command(&mut self, name: &str, func: fn(&mut Interpreter)) {
+  // add native command to interpreter
+  fn compose_native(&mut self, name: &str, func: fn(&mut Interpreter)) {
     self.cmap.insert(name.to_string(), func);
   }
 
-  fn construct(&mut self) {
+  fn init(&mut self) {
     // stack manipulation
-    self.add_command("drop",   Interpreter::c_drop);     // drop
-    self.add_command("dup",    Interpreter::c_dup);      // duplicate
-    self.add_command("swap",   Interpreter::c_swap);     // swap x and y
-    self.add_command("cls",    Interpreter::c_cls);      // clear stack
-    self.add_command("clr",    Interpreter::c_cls);      // clear stack
-    self.add_command("roll",   Interpreter::c_roll);     // roll stack
-    self.add_command("rot",    Interpreter::c_rot);      // rotate stack (reverse direction from roll)
+    self.compose_native("drop",   Interpreter::c_drop);     // drop
+    self.compose_native("dup",    Interpreter::c_dup);      // duplicate
+    self.compose_native("swap",   Interpreter::c_swap);     // swap x and y
+    self.compose_native("cls",    Interpreter::c_cls);      // clear stack
+    self.compose_native("clr",    Interpreter::c_cls);      // clear stack
+    self.compose_native("roll",   Interpreter::c_roll);     // roll stack
+    self.compose_native("rot",    Interpreter::c_rot);      // rotate stack (reverse direction from roll)
     // memory usage
-    self.add_command("sa",     Interpreter::c_store_a);  // store (pop value off stack and store)
-    self.add_command(".a",     Interpreter::c_store_a);  // store (pop value off stack and store)
-    self.add_command("a",      Interpreter::c_push_a);   // retrieve (push stored value onto the stack)
-    self.add_command("sb",     Interpreter::c_store_b);  // store
-    self.add_command(".b",     Interpreter::c_store_b);  // store
-    self.add_command("b",      Interpreter::c_push_b);   // retrieve
-    self.add_command("sc",     Interpreter::c_store_c);  // store
-    self.add_command(".c",     Interpreter::c_store_c);  // store
-    self.add_command("c",      Interpreter::c_push_c);   // retrieve
+    self.compose_native("sa",     Interpreter::c_store_a);  // store (pop value off stack and store)
+    self.compose_native(".a",     Interpreter::c_store_a);  // store (pop value off stack and store)
+    self.compose_native("a",      Interpreter::c_push_a);   // retrieve (push stored value onto the stack)
+    self.compose_native("sb",     Interpreter::c_store_b);  // store
+    self.compose_native(".b",     Interpreter::c_store_b);  // store
+    self.compose_native("b",      Interpreter::c_push_b);   // retrieve
+    self.compose_native("sc",     Interpreter::c_store_c);  // store
+    self.compose_native(".c",     Interpreter::c_store_c);  // store
+    self.compose_native("c",      Interpreter::c_push_c);   // retrieve
     // math operations
-    self.add_command("+",      Interpreter::c_add);      // add
-    self.add_command("+_",     Interpreter::c_add_all);  // add all
-    self.add_command("-",      Interpreter::c_sub);      // subtract
-    self.add_command("x",      Interpreter::c_mult);     // multiply
-    self.add_command("x_",     Interpreter::c_mult_all); // multiply all
-    self.add_command("/",      Interpreter::c_div);      // divide
-    self.add_command("chs",    Interpreter::c_chs);      // change sign
-    self.add_command("abs",    Interpreter::c_abs);      // absolute value
-    self.add_command("round",  Interpreter::c_round);    // round
-    self.add_command("int",    Interpreter::c_round);
-    self.add_command("inv",    Interpreter::c_inv);      // invert (1/x)
-    self.add_command("sqrt",   Interpreter::c_sqrt);     // square root
-    self.add_command("throot", Interpreter::c_throot);   // nth root
-    self.add_command("proot",  Interpreter::c_proot);    // find principal roots
-    self.add_command("^",      Interpreter::c_exp);      // exponenation
-    self.add_command("exp",    Interpreter::c_exp);
-    self.add_command("%",      Interpreter::c_mod);      // modulus
-    self.add_command("mod",    Interpreter::c_mod);
-    self.add_command("!",      Interpreter::c_fact);     // factorial
-    self.add_command("gcd",    Interpreter::c_gcd);      // greatest common divisor
-    self.add_command("pi",     Interpreter::c_pi);       // pi
-    self.add_command("e",      Interpreter::c_euler);    // Euler's constant
-    self.add_command("dtor",   Interpreter::c_dtor);     // degrees to radians
-    self.add_command("rtod",   Interpreter::c_rtod);     // radians to degrees
-    self.add_command("sin",    Interpreter::c_sin);      // sine
-    self.add_command("asin",   Interpreter::c_asin);     // arcsine
-    self.add_command("cos",    Interpreter::c_cos);      // cosine
-    self.add_command("acos",   Interpreter::c_acos);     // arccosine
-    self.add_command("tan",    Interpreter::c_tan);      // tangent
-    self.add_command("atan",   Interpreter::c_atan);     // arctangent
-    self.add_command("log2",   Interpreter::c_log2);     // log (base 2)
-    self.add_command("log",    Interpreter::c_log10);    // log (base 10)
-    self.add_command("log10",  Interpreter::c_log10);
-    self.add_command("logn",   Interpreter::c_logn);     // log (base n)
-    self.add_command("ln",     Interpreter::c_ln);       // natural log
+    self.compose_native("+",      Interpreter::c_add);      // add
+    self.compose_native("+_",     Interpreter::c_add_all);  // add all
+    self.compose_native("-",      Interpreter::c_sub);      // subtract
+    self.compose_native("x",      Interpreter::c_mult);     // multiply
+    self.compose_native("x_",     Interpreter::c_mult_all); // multiply all
+    self.compose_native("/",      Interpreter::c_div);      // divide
+    self.compose_native("chs",    Interpreter::c_chs);      // change sign
+    self.compose_native("abs",    Interpreter::c_abs);      // absolute value
+    self.compose_native("round",  Interpreter::c_round);    // round
+    self.compose_native("int",    Interpreter::c_round);
+    self.compose_native("inv",    Interpreter::c_inv);      // invert (1/x)
+    self.compose_native("sqrt",   Interpreter::c_sqrt);     // square root
+    self.compose_native("throot", Interpreter::c_throot);   // nth root
+    self.compose_native("proot",  Interpreter::c_proot);    // find principal roots
+    self.compose_native("^",      Interpreter::c_exp);      // exponentiation
+    self.compose_native("exp",    Interpreter::c_exp);
+    self.compose_native("%",      Interpreter::c_mod);      // modulus
+    self.compose_native("mod",    Interpreter::c_mod);
+    self.compose_native("!",      Interpreter::c_fact);     // factorial
+    self.compose_native("gcd",    Interpreter::c_gcd);      // greatest common divisor
+    self.compose_native("pi",     Interpreter::c_pi);       // pi
+    self.compose_native("e",      Interpreter::c_euler);    // Euler's constant
+    self.compose_native("dtor",   Interpreter::c_dtor);     // degrees to radians
+    self.compose_native("rtod",   Interpreter::c_rtod);     // radians to degrees
+    self.compose_native("sin",    Interpreter::c_sin);      // sine
+    self.compose_native("asin",   Interpreter::c_asin);     // arcsine
+    self.compose_native("cos",    Interpreter::c_cos);      // cosine
+    self.compose_native("acos",   Interpreter::c_acos);     // arccosine
+    self.compose_native("tan",    Interpreter::c_tan);      // tangent
+    self.compose_native("atan",   Interpreter::c_atan);     // arctangent
+    self.compose_native("log2",   Interpreter::c_log2);     // log (base 2)
+    self.compose_native("log",    Interpreter::c_log10);    // log (base 10)
+    self.compose_native("log10",  Interpreter::c_log10);
+    self.compose_native("logn",   Interpreter::c_logn);     // log (base n)
+    self.compose_native("ln",     Interpreter::c_ln);       // natural log
     // control flow
-    self.add_command("fn",     Interpreter::c_fn);       // function definition
-    self.add_command("(",      Interpreter::c_comment);  // function definition
+    self.compose_native("fn",     Interpreter::c_fn);       // function definition
+    self.compose_native("(",      Interpreter::c_comment);  // function definition
   }
 
   fn process_node(&mut self, op: &str) {
@@ -276,7 +287,6 @@ impl Interpreter {
   }
 
   // -- command functions ------------------------------------------------------
-  
   // ---- stack manipulation ---------------------------------------------------
   
   fn c_drop(&mut self) {
@@ -408,15 +418,15 @@ impl Interpreter {
     let a: f64 = self.stack.pop().unwrap();
   
     if (b*b - 4.0*a*c) < 0.0 {
-      self.stack.push(-1.0*b/(2.0*a)); // root1 real
-      self.stack.push(f64::sqrt(4.0*a*c-b*b)/(2.0*a)); // root1 imag
-      self.stack.push(-1.0*b/(2.0*a)); // root2 real
-      self.stack.push(-1.0*f64::sqrt(4.0*a*c-b*b)/(2.0*a)); // root2 imag
+      self.stack.push(-1.0*b/(2.0*a)); // root_1 real
+      self.stack.push(f64::sqrt(4.0*a*c-b*b)/(2.0*a)); // root_1 imag
+      self.stack.push(-1.0*b/(2.0*a)); // root_2 real
+      self.stack.push(-1.0*f64::sqrt(4.0*a*c-b*b)/(2.0*a)); // root_2 imag
     } else {
-      self.stack.push(-1.0*b+f64::sqrt(b*b-4.0*a*c)/(2.0*a)); // root1 real
-      self.stack.push(0.0); // root1 imag
-      self.stack.push(-1.0*b-f64::sqrt(b*b-4.0*a*c)/(2.0*a)); // root2 real
-      self.stack.push(0.0); // root2 imag
+      self.stack.push(-1.0*b+f64::sqrt(b*b-4.0*a*c)/(2.0*a)); // root_1 real
+      self.stack.push(0.0); // root_1 imag
+      self.stack.push(-1.0*b-f64::sqrt(b*b-4.0*a*c)/(2.0*a)); // root_2 real
+      self.stack.push(0.0); // root_2 imag
     }
   }
   

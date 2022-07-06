@@ -235,32 +235,37 @@ impl Interpreter {
   }
 
   fn process_node(&mut self, op: &str) {
-    if self.cmap.contains_key(op) {
+    if self.cmap.contains_key(op) { // native comp command?
       let f = self.cmap[op];
       f(self);
     } else {
-      let ind: i32 = self.is_user_function(op);
-      if ind != -1 { // user-defined function?
-        // copy user function ops (fops) into main ops
-        for i in (0..self.fns[ind as usize].fops.len()).rev() {
-          let fop: String = self.fns[ind as usize].fops[i].clone();
-          self.ops.insert(0, fop);
+      let result: Option<usize> = self.is_user_function(op); // user-defined function?
+
+      match result {
+        Some(index) => { // user-defined function
+          // copy user function ops (fops) into main ops
+          for i in (0..self.fns[index].fops.len()).rev() {
+            let fop: String = self.fns[index].fops[i].clone();
+            self.ops.insert(0, fop);
+          }
         }
+        None => { // neither native command nor user-defined function
+          // attempt to parse as value
+          let res: Result<f64, ParseFloatError> = self.parse_value(op);
+          
+          let val = match res {
+            Ok(val) => val, // parsed successfully
+            Err(_error) => { // parse failed
+              eprintln!("error: comp interpreter was passed an unknown \
+                         expression: [{op}] is not a recognized operation \
+                         or value");
+              std::process::exit(99);
+            },
+          };
 
-      } else {
-        let res: Result<f64, ParseFloatError> = self.parse_value(op);
-        
-        let val = match res {
-          Ok(val) => val,
-          Err(_error) => {
-            eprintln!("error: comp interpreter was passed an unknown \
-                       expression: [{op}] is not a recognized operation \
-                       or value");
-            std::process::exit(99);
-          },
-        };
-
-        self.stack.push(val);
+          // push value onto stack
+          self.stack.push(val);
+        }
       }
     }
   }
@@ -528,15 +533,16 @@ impl Interpreter {
     self.ops.remove(0); // remove "end" op
   }
 
-  fn is_user_function(&self, op: &str) -> i32 {
+  // is operator a user defined function?
+  fn is_user_function(&self, op: &str) -> Option<usize> {
     if !self.fns.is_empty() {
       for i in 0..self.fns.len() {
         if self.fns[i].name == op {
-          return i as i32;
+          return Some(i);
         }
       }
     }
-    -1
+    None
   }
 
   fn c_comment(&mut self) {

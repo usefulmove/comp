@@ -556,11 +556,26 @@ impl Interpreter {
   }
 
   fn c_comment(&mut self) {
-    // ignore all elements between "(" and ")"
-    while self.ops[0] != ")" {
-      self.ops.remove(0);
+    const COMMENT_START: &str = "(";
+    const COMMENT_END: &str = ")";
+    let mut nested: usize = 0;
+
+    while !self.ops.is_empty() {
+      let op = self.ops.remove(0);
+      match &op[..] {
+        COMMENT_START => {
+          nested += 1;
+        },
+        COMMENT_END => {
+          if nested == 0 {
+            return;
+          } else {
+            nested -= 1;
+          }
+        },
+        _ => (),
+      }
     }
-    self.ops.remove(0); // remove ")" op
   }
 
 }

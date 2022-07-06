@@ -29,7 +29,7 @@ end
 sub1 div2 ten6th_round
 
 
-( nested user-defined functions )
+( nested user-defined functions ( also nested comments ) )
 
 fn cube
   dup square x

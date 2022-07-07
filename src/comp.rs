@@ -95,7 +95,7 @@ fn main() {
       let mut file: File = match File::open(&path) {
         Ok(file) => file,
         Err(error) => {
-          eprintln!("{}: could not open [{display}] file: {error}", "error".red());
+          eprintln!("{}: could not open [{display}] file: {error}", "error".truecolor(255, 0, 0).bold());
           std::process::exit(99);
         },
       };
@@ -105,7 +105,7 @@ fn main() {
       match file.read_to_string(&mut file_contents) {
         Ok(_) => (),
         Err(error) => {
-          eprintln!("{}: could not read [{display}]: {error}", "error".red());
+          eprintln!("{}: could not read [{display}]: {error}", "error".truecolor(255, 0, 0).bold());
           std::process::exit(99);
         },
       };
@@ -119,7 +119,7 @@ fn main() {
       }
 
     } else {
-      eprintln!("{}: no file path was passed", "error".red());
+      eprintln!("{}: no file path was passed", "error".truecolor(255, 0, 0).bold());
       std::process::exit(99);
 
     }
@@ -135,7 +135,7 @@ fn main() {
 
   // display resulting computation stack
   for element in cinter.stack {
-    println!("{}", element.to_string().green());
+    println!("{}", element.to_string().truecolor(51, 255, 51));
   }
 
   std::process::exit(0);
@@ -269,7 +269,7 @@ impl Interpreter {
             Ok(val) => val, // parsed successfully
             Err(_error) => { // parse failed
               eprintln!("{}: unknown expression: [{}] is not a recognized operation \
-                         or value", "error".red(), op.to_string().cyan());
+                         or value", "error".truecolor(255, 0, 0).bold(), op.to_string().cyan());
               std::process::exit(99);
             },
           };

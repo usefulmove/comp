@@ -5,6 +5,7 @@ use std::num::ParseFloatError;
 use std::path::Path;
 use std::path::Display;
 use std::collections::HashMap;
+use colored::*;
 
 const COMP_VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -94,7 +95,7 @@ fn main() {
       let mut file: File = match File::open(&path) {
         Ok(file) => file,
         Err(error) => {
-          eprintln!("error: could not open [{display}] file: {error}");
+          eprintln!("{}: could not open [{display}] file: {error}", "error".red());
           std::process::exit(99);
         },
       };
@@ -104,7 +105,7 @@ fn main() {
       match file.read_to_string(&mut file_contents) {
         Ok(_) => (),
         Err(error) => {
-          eprintln!("error: could not read [{display}]: {error}");
+          eprintln!("{}: could not read [{display}]: {error}", "error".red());
           std::process::exit(99);
         },
       };
@@ -118,7 +119,7 @@ fn main() {
       }
 
     } else {
-      eprintln!("error: no file path was passed");
+      eprintln!("{}: no file path was passed", "error".red());
       std::process::exit(99);
 
     }
@@ -134,7 +135,7 @@ fn main() {
 
   // display resulting computation stack
   for element in cinter.stack {
-    println!("{element}");
+    println!("{}", element.to_string().green());
   }
 
   std::process::exit(0);
@@ -267,9 +268,8 @@ impl Interpreter {
           let val = match res {
             Ok(val) => val, // parsed successfully
             Err(_error) => { // parse failed
-              eprintln!("error: comp interpreter was passed an unknown \
-                         expression: [{op}] is not a recognized operation \
-                         or value");
+              eprintln!("{}: unknown expression: [{}] is not a recognized operation \
+                         or value", "error".red(), op.to_string().cyan());
               std::process::exit(99);
             },
           };
@@ -581,6 +581,7 @@ impl Interpreter {
 
 // -- support functions --------------------------------------------------------
 
+// factorial
 fn factorial(n: u64) -> u64 {
   if n < 2 {
     1
@@ -589,6 +590,7 @@ fn factorial(n: u64) -> u64 {
   }
 }
 
+// greatest common divisor
 fn gcd(a: u64, b: u64) -> u64 {
   if b != 0 {
     gcd(b, a % b)

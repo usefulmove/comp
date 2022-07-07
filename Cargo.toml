@@ -10,3 +10,4 @@ name = "comp"
 path = "src/comp.rs"
 
 [dependencies]
+colored = "2"

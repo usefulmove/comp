@@ -21,12 +21,12 @@ fn square_root
   sqrt
 end
 
-fn ten6th_round
-  1e6 x round
+fn ten5th_round
+  1e5 x round
 end
 
 5 square_root
-sub1 div2 ten6th_round
+sub1 div2 ten5th_round
 
 
 ( nested user-defined functions ( also nested comments ) )
@@ -40,6 +40,8 @@ fn square
 end
 
 8 cube
+
+100 x
 
 
 (

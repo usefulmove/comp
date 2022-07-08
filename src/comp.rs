@@ -108,10 +108,10 @@ fn main() {
           std::process::exit(99);
         },
       };
-  
+
       // split individual list elements
       let temp_ops: Vec<&str> = file_contents.split_whitespace().collect();
-  
+
       // create operations list vector from file contents
       for op in temp_ops {
         cinter.ops.push(op.to_string());
@@ -263,7 +263,7 @@ impl Interpreter {
         None => { // neither native command nor user-defined function
           // attempt to parse as value
           let res: Result<f64, ParseFloatError> = self.parse_value(op);
-          
+
           let val = match res {
             Ok(val) => val, // parsed successfully
             Err(_error) => { // parse failed
@@ -296,7 +296,7 @@ impl Interpreter {
 
   // -- command functions ------------------------------------------------------
   // ---- stack manipulation ---------------------------------------------------
-  
+
   fn c_drop(&mut self) {
     if !self.stack.is_empty() {
       self.stack.pop().unwrap();
@@ -304,82 +304,82 @@ impl Interpreter {
       println!("{}: drop called on empty stack", "warning".bright_yellow());
     }
   }
-  
+
   fn c_dup(&mut self) {
     Interpreter::check_stack_error(self, 1, "duplicate");
 
     let end: usize = self.stack.len() - 1;
     self.stack.push(self.stack[end]);
   }
-  
+
   fn c_swap(&mut self) {
     Interpreter::check_stack_error(self, 2, "swap");
 
     let end: usize = self.stack.len() - 1;
     self.stack.swap(end, end-1);
   }
-  
+
   fn c_cls(&mut self) {
     self.stack.clear();
   }
-  
+
   fn c_roll(&mut self) {
     Interpreter::check_stack_error(self, 1, "roll");
 
     let o: f64 = self.stack.pop().unwrap(); // remove last
     self.stack.splice(0..0, [o]);           // add as first
   }
-  
+
   fn c_rot(&mut self) {
     Interpreter::check_stack_error(self, 1, "rotate");
 
     let o: f64 = self.stack.remove(0); // remove first
     self.stack.push(o);                // add as last
   }
-  
-  
+
+
   // ---- memory usage ---------------------------------------------------------
-  
+
   fn c_store_a(&mut self) {
     Interpreter::check_stack_error(self, 1, "store");
 
     self.mem_a = self.stack.pop().unwrap();
   }
-  
+
   fn c_push_a(&mut self) {
     self.stack.push(self.mem_a);
   }
-  
+
   fn c_store_b(&mut self) {
     Interpreter::check_stack_error(self, 1, "store");
 
     self.mem_b = self.stack.pop().unwrap();
   }
-  
+
   fn c_push_b(&mut self) {
     self.stack.push(self.mem_b);
   }
-  
+
   fn c_store_c(&mut self) {
     Interpreter::check_stack_error(self, 1, "store");
 
     self.mem_c = self.stack.pop().unwrap();
   }
-  
+
   fn c_push_c(&mut self) {
     self.stack.push(self.mem_c);
   }
-  
-  
+
+
   // -- math operations --------------------------------------------------------
-  
+
   fn c_add(&mut self) {
     Interpreter::check_stack_error(self, 2, "add");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end-1] += self.stack.pop().unwrap();
   }
-  
+
   fn c_add_all(&mut self) {
     Interpreter::check_stack_error(self, 2, "add (all)");
 
@@ -388,21 +388,21 @@ impl Interpreter {
       self.stack[end-1] += self.stack.pop().unwrap();
     }
   }
-  
+
   fn c_sub(&mut self) {
     Interpreter::check_stack_error(self, 2, "subtract");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end-1] -= self.stack.pop().unwrap();
   }
-  
+
   fn c_mult(&mut self) {
     Interpreter::check_stack_error(self, 2, "multiply");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end-1] *= self.stack.pop().unwrap();
   }
-  
+
   fn c_mult_all(&mut self) {
     Interpreter::check_stack_error(self, 2, "multiply (all)");
 
@@ -411,49 +411,49 @@ impl Interpreter {
       self.stack[end-1] *= self.stack.pop().unwrap();
     }
   }
-  
+
   fn c_div(&mut self) {
     Interpreter::check_stack_error(self, 2, "divide");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end-1] /= self.stack.pop().unwrap();
   }
-  
+
   fn c_chs(&mut self) {
     Interpreter::check_stack_error(self, 1, "change sign");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] *= -1.0;
   }
-  
+
   fn c_abs(&mut self) {
     Interpreter::check_stack_error(self, 1, "absolute value");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = f64::abs(self.stack[end]);
   }
-  
+
   fn c_round(&mut self) {
     Interpreter::check_stack_error(self, 1, "round");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].round();
   }
-  
+
   fn c_inv(&mut self) {
     Interpreter::check_stack_error(self, 1, "invert");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = 1.0 / self.stack[end];
   }
-  
+
   fn c_sqrt(&mut self) {
     Interpreter::check_stack_error(self, 1, "square root");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = f64::sqrt(self.stack[end]);
   }
-  
+
   fn c_throot(&mut self) {
     Interpreter::check_stack_error(self, 1, "nth root");
 
@@ -461,14 +461,14 @@ impl Interpreter {
     let o: f64 = self.stack.pop().unwrap();
     self.stack[end-1] = self.stack[end-1].powf(1.0/o);
   }
-  
+
   fn c_proot(&mut self) {
     Interpreter::check_stack_error(self, 3, "principal root");
 
     let c: f64 = self.stack.pop().unwrap();
     let b: f64 = self.stack.pop().unwrap();
     let a: f64 = self.stack.pop().unwrap();
-  
+
     if (b*b - 4.0*a*c) < 0.0 {
       self.stack.push(-1.0*b/(2.0*a)); // root_1 real
       self.stack.push(f64::sqrt(4.0*a*c-b*b)/(2.0*a)); // root_1 imag
@@ -481,7 +481,7 @@ impl Interpreter {
       self.stack.push(0.0); // root_2 imag
     }
   }
-  
+
   fn c_exp(&mut self) {
     Interpreter::check_stack_error(self, 2, "exponentiate");
 
@@ -489,7 +489,7 @@ impl Interpreter {
     let o: f64 = self.stack.pop().unwrap();
     self.stack[end-1] = self.stack[end-1].powf(o);
   }
-  
+
   fn c_mod(&mut self) {
     Interpreter::check_stack_error(self, 2, "modulus");
 
@@ -497,14 +497,14 @@ impl Interpreter {
     let o: f64 = self.stack.pop().unwrap();
     self.stack[end-1] %= o;
   }
-  
+
   fn c_fact(&mut self) {
     Interpreter::check_stack_error(self, 1, "factorial");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = factorial(self.stack[end] as u64) as f64;
   }
-  
+
   fn c_gcd(&mut self) {
     Interpreter::check_stack_error(self, 2, "greatest common divisior");
 
@@ -513,85 +513,85 @@ impl Interpreter {
     let g: f64 = gcd(a,b) as f64;
     self.stack.push(g);
   }
-  
+
   fn c_pi(&mut self) {
     self.stack.push(std::f64::consts::PI);
   }
-  
+
   fn c_euler(&mut self) {
     self.stack.push(std::f64::consts::E);
   }
-  
+
   fn c_dtor(&mut self) {
     Interpreter::check_stack_error(self, 1, "degree-to-radian conversion");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].to_radians();
   }
-  
+
   fn c_rtod(&mut self) {
     Interpreter::check_stack_error(self, 1, "radian-to-degree conversion");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].to_degrees();
   }
-  
+
   fn c_sin(&mut self) {
     Interpreter::check_stack_error(self, 1, "sine");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].sin();
   }
-  
+
   fn c_asin(&mut self) {
     Interpreter::check_stack_error(self, 1, "arcsine");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].asin();
   }
-  
+
   fn c_cos(&mut self) {
     Interpreter::check_stack_error(self, 1, "cosine");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].cos();
   }
-  
+
   fn c_acos(&mut self) {
     Interpreter::check_stack_error(self, 1, "arccosine");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].acos();
   }
-  
+
   fn c_tan(&mut self) {
     Interpreter::check_stack_error(self, 1, "tangent");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].tan();
   }
-  
+
   fn c_atan(&mut self) {
     Interpreter::check_stack_error(self, 1, "arctangent");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].atan();
   }
-  
+
   fn c_log10(&mut self) {
     Interpreter::check_stack_error(self, 1, "log");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].log10();
   }
-  
+
   fn c_log2(&mut self) {
     Interpreter::check_stack_error(self, 1, "log2");
 
     let end: usize = self.stack.len() - 1;
     self.stack[end] = self.stack[end].log2();
   }
-  
+
   fn c_logn(&mut self) {
     Interpreter::check_stack_error(self, 1, "logn");
 
@@ -599,7 +599,7 @@ impl Interpreter {
     let n: f64 = self.stack.pop().unwrap();
     self.stack[end-1] = self.stack[end-1].log(n);
   }
-  
+
   fn c_ln(&mut self) {
     Interpreter::check_stack_error(self, 1, "natural log");
 
@@ -609,7 +609,7 @@ impl Interpreter {
 
 
   // -- control flow -----------------------------------------------------------
-  
+
   fn c_fn(&mut self) {
     // get function name
     let fn_name: String = self.ops.remove(0);

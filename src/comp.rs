@@ -75,7 +75,7 @@ fn main() {
 
   } else if args[1] == "--version" || args[1] == "version" {
     // display version information
-    println!("comp {COMP_VERSION}");
+    println!("  comp {COMP_VERSION}");
     std::process::exit(0);
 
   } else if args[1] == "mona" {
@@ -134,7 +134,7 @@ fn main() {
 
   // display resulting computation stack
   for element in cinter.stack {
-    println!("{}", element.to_string().bright_green());
+    println!("  {}", element.to_string().bright_green());
   }
 
   std::process::exit(0);

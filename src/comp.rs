@@ -94,7 +94,7 @@ fn main() {
       let mut file: File = match File::open(&path) {
         Ok(file) => file,
         Err(error) => {
-          eprintln!("{}: could not open [{display}] file: {error}", "error".truecolor(255, 0, 0).bold());
+          eprintln!("{}: could not open [{display}] file: {error}", "error".bright_red());
           std::process::exit(99);
         },
       };
@@ -104,7 +104,7 @@ fn main() {
       match file.read_to_string(&mut file_contents) {
         Ok(_) => (),
         Err(error) => {
-          eprintln!("{}: could not read [{display}]: {error}", "error".truecolor(255, 0, 0).bold());
+          eprintln!("{}: could not read [{display}]: {error}", "error".bright_red());
           std::process::exit(99);
         },
       };
@@ -118,7 +118,7 @@ fn main() {
       }
 
     } else {
-      eprintln!("{}: no file path was passed", "error".truecolor(255, 0, 0).bold());
+      eprintln!("{}: no file path was passed", "error".bright_red());
       std::process::exit(99);
 
     }
@@ -134,7 +134,7 @@ fn main() {
 
   // display resulting computation stack
   for element in cinter.stack {
-    println!("{}", element.to_string().truecolor(51, 255, 51));
+    println!("{}", element.to_string().bright_green());
   }
 
   std::process::exit(0);
@@ -268,7 +268,7 @@ impl Interpreter {
             Ok(val) => val, // parsed successfully
             Err(_error) => { // parse failed
               eprintln!("{}: unknown expression: [{}] is not a recognized operation \
-                         or value", "error".truecolor(255, 0, 0).bold(), op.to_string().cyan());
+                         or value", "error".bright_red(), op.to_string().cyan());
               std::process::exit(99);
             },
           };
@@ -288,7 +288,7 @@ impl Interpreter {
   // check stack depth
   fn check_stack_error(&self, min_depth: usize, command: &str) {
     if self.stack.len() < min_depth {
-      eprintln!("{}: {command} called without at least {min_depth} element(s) on stack", "error".truecolor(255, 0, 0).bold());
+      eprintln!("{}: {command} called without at least {min_depth} element(s) on stack", "error".bright_red());
       std::process::exit(99);
     }
   }
@@ -298,9 +298,11 @@ impl Interpreter {
   // ---- stack manipulation ---------------------------------------------------
   
   fn c_drop(&mut self) {
-    Interpreter::check_stack_error(self, 1, "drop");
-
-    self.stack.pop().unwrap();
+    if !self.stack.is_empty() {
+      self.stack.pop().unwrap();
+    } else {
+      println!("{}: drop called on empty stack", "warning".bright_yellow());
+    }
   }
   
   fn c_dup(&mut self) {

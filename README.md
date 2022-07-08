@@ -5,8 +5,8 @@
 ![](https://img.shields.io/badge/stable-0.20.4-success?style=plastic)
 ![](https://img.shields.io/badge/license-MIT-informational?style=plastic)
 
-* [Usage Guide][1]
 * [Installation][2]
+* [Usage Guide][1]
 * [License][3]
 
 A simple and fast, reverse Polish notation (RPN) interpreter written in Rust. The interpreter implements a stack-based language similar to Forth that is inspired by the calculation interface of the original HP scientific calculators of the 1970s. The posfix language consists of lists of elements where each element is either a value to be added to the stack or an operation. As examples, `comp 3 4 +` adds the values 3 and 4 and `comp 3 dup x 4 dup x +` computes the sum of the squares of 3 and 4.

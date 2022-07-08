@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/usefulmove/comp/main/assets/system-preferences-icon-64x64.png" align="right"/>
 
-![](https://img.shields.io/badge/stable-0.20.3-success?style=plastic)
+![](https://img.shields.io/badge/stable-0.20.4-success?style=plastic)
 ![](https://img.shields.io/badge/license-MIT-informational?style=plastic)
 
 * [Usage Guide][1]

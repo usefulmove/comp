@@ -502,7 +502,7 @@ impl Interpreter {
     Interpreter::check_stack_error(self, 1, "factorial");
 
     let end: usize = self.stack.len() - 1;
-    self.stack[end] = Interpreter::factorial(self.stack[end] as u64) as f64;
+    self.stack[end] = Interpreter::factorial(self.stack[end].round());
   }
 
   fn c_gcd(&mut self) {
@@ -664,11 +664,11 @@ impl Interpreter {
   // support functions ---------------------------------------------------------
   
   // factorial
-  fn factorial(n: u64) -> u64 {
-    if n < 2 {
-      1
+  fn factorial(n: f64) -> f64 {
+    if n < 2.0 {
+      1.0
     } else {
-      n * Interpreter::factorial(n-1)
+      n * Interpreter::factorial(n - 1.0)
     }
   }
   

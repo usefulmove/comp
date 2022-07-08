@@ -54,7 +54,7 @@ mod comp_tests {
   #[test]
   fn test_support() {
     assert!(super::Interpreter::gcd(55, 10) == 5);
-    assert!(super::Interpreter::factorial(10) == 3628800);
+    assert!(super::Interpreter::factorial(10.0) == 3628800.0);
   }
 
   #[test]

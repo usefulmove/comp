@@ -26,7 +26,11 @@ comp help
 ---
 
 ## Installation
-The comp interpreter can be installed by installing the [`Rustup`][4] toolchain installer and using the `cargo` build management system to build comp from source on your system. Detailed [installation instructions][2] can be found in [`INSTALL.md`][2].
+### Prebuilt binaries
+Prebuilt binaries are provided on the [Releases](https://github.com/usefulmove/comp/releases) page.
+
+### From source
+The comp interpreter can be installed by installing the [`Rustup`][4] toolchain installer and using the `cargo` build management system to build comp from on your system from the source code. Detailed [installation instructions][2] can be found in [`INSTALL.md`][2].
 
 ---
 

@@ -681,9 +681,9 @@ fn show_help() {
   println!("    comp -f <file>");
   println!();
   println!("Options:");
-  println!("        --version          show version");
-  println!("    -f, --file             used to specify a path to a file");
-  println!("        --help             display help and usage information");
+  println!("        --version      show version");
+  println!("    -f, --file         used to specify a path to a file");
+  println!("        --help         display help and usage information");
   println!();
   println!("<list> is a sequence of comp language (postfix) operations and \
   <file> specifies the directory path to a file containing a sequence of \

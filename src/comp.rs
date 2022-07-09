@@ -7,7 +7,7 @@ use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
-const RELEASE_STATUS: &str = "c";
+const RELEASE_STATUS: &str = "d";
 
 /*
 
@@ -122,7 +122,8 @@ fn main() {
 
   // display resulting computation stack
   for element in cinter.stack {
-    println!("  {}", element.to_string().bright_green());
+    //println!("  {}", element.to_string().bright_green());
+    println!("  {}", element.to_string().truecolor(0, 192, 255).bold());
   }
 
   std::process::exit(0);
@@ -223,11 +224,11 @@ impl Interpreter {
     self.compose_native("acos",   Interpreter::c_acos);     // arccosine
     self.compose_native("tan",    Interpreter::c_tan);      // tangent
     self.compose_native("atan",   Interpreter::c_atan);     // arctangent
-    self.compose_native("log2",   Interpreter::c_log2);     // log (base 2)
-    self.compose_native("log",    Interpreter::c_log10);    // log (base 10)
+    self.compose_native("log2",   Interpreter::c_log2);     // logarithm (base 2)
+    self.compose_native("log",    Interpreter::c_log10);    // logarithm (base 10)
     self.compose_native("log10",  Interpreter::c_log10);
-    self.compose_native("logn",   Interpreter::c_logn);     // log (base n)
-    self.compose_native("ln",     Interpreter::c_ln);       // natural log
+    self.compose_native("logn",   Interpreter::c_logn);     // logarithm (base n)
+    self.compose_native("ln",     Interpreter::c_ln);       // natural logarithm
     // control flow
     self.compose_native("fn",     Interpreter::c_fn);       // function definition
     self.compose_native("(",      Interpreter::c_comment);  // function definition

@@ -7,7 +7,7 @@ use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
-const RELEASE_STATUS: &str = "e";
+const RELEASE_STATUS: &str = "f";
 
 /*
 
@@ -122,7 +122,6 @@ fn main() {
 
   // display resulting computation stack
   for element in cinter.stack {
-    //println!("  {}", element.to_string().bright_green());
     println!("  {}", element.to_string().truecolor(0, 192, 255).bold());
   }
 
@@ -288,7 +287,7 @@ impl Interpreter {
 
   fn c_drop(&mut self, op: &str) {
     if !self.stack.is_empty() {
-      self.stack.pop().unwrap();
+      self.stack.pop();
     } else {
       println!("{}: [{}] operation called on empty stack", "warning".bright_yellow(), op.to_string().cyan());
     }

@@ -200,10 +200,10 @@ For this operation, the coefficients `a b c` of the quadratic equation `ax^2 + b
 % comp pi 2 /
 1.5707963267948966
 
-% comp pi 2 / rtod
+% comp pi 2 / r_d
 90
 
-% comp 90 dtor
+% comp 90 d_r
 1.5707963267948966
 ```
 

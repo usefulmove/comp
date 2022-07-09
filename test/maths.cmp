@@ -16,7 +16,7 @@ swap drop
  20 1 7 / atan x 8 3 79 /
                  atan x +
                  
-        -55 abs dtor rtod
+         -55 abs d_r r_d
 dup + 10 - 10 / e swap ^
 e 10 exp - 50 + 10 gcd 3
 mod e ln - 27.0 3 throot

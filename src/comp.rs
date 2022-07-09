@@ -7,7 +7,7 @@ use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
-const RELEASE_STATUS: &str = "d";
+const RELEASE_STATUS: &str = "e";
 
 /*
 
@@ -37,7 +37,7 @@ const RELEASE_STATUS: &str = "d";
 
 // -- command list -------------------------------------------------------------
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
-int inv sqrt throot proot ^ exp % mod ! gcd pi e dtor rtod sin asin cos acos \
+int inv sqrt throot proot ^ exp % mod ! gcd pi e d_r r_d sin asin cos acos \
 tan atan log log2 log10 ln logn sa .a a sb .b b sc .c c";
 
 
@@ -216,8 +216,8 @@ impl Interpreter {
     self.compose_native("gcd",    Interpreter::c_gcd);      // greatest common divisor
     self.compose_native("pi",     Interpreter::c_pi);       // pi
     self.compose_native("e",      Interpreter::c_euler);    // Euler's constant
-    self.compose_native("dtor",   Interpreter::c_dtor);     // degrees to radians
-    self.compose_native("rtod",   Interpreter::c_rtod);     // radians to degrees
+    self.compose_native("d_r",    Interpreter::c_dtor);     // degrees to radians
+    self.compose_native("r_d",    Interpreter::c_rtod);     // radians to degrees
     self.compose_native("sin",    Interpreter::c_sin);      // sine
     self.compose_native("asin",   Interpreter::c_asin);     // arcsine
     self.compose_native("cos",    Interpreter::c_cos);      // cosine

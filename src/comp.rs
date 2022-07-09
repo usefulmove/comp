@@ -7,7 +7,7 @@ use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
-const RELEASE_STATUS: &str = "b";
+const RELEASE_STATUS: &str = "c";
 
 /*
 
@@ -673,35 +673,39 @@ impl Interpreter {
 
 
 fn show_help() {
-  println!("Command interpreter");
   println!();
-  println!("Usage:");
+  println!("{}", "NAME".to_string().bold());
+  println!("    comp - command interpreter");
+  println!();
+  println!("{}", "USAGE".to_string().bold());
   println!("    comp [version] [help]");
   println!("    comp <list>");
   println!("    comp -f <file>");
   println!();
-  println!("Options:");
+  println!("{}", "OPTIONS".to_string().bold());
   println!("        --version      show version");
   println!("    -f, --file         used to specify a path to a file");
   println!("        --help         display help and usage information");
   println!();
-  println!("<list> is a sequence of comp language (postfix) operations and \
-  <file> specifies the directory path to a file containing a sequence of \
-  comp operations. Each operation is either a command (symbol) or a value. \
-  As examples, 'comp 3 4 +' adds the values 3 and 4 and '3 dup x 4 dup x +' \
-  computes the sum of the squares of 3 and 4. The available commands are \
-  listed below.");
+  println!("{}", "DESCRIPTION".to_string().bold());
+  println!("The interpreter takes a sequence of (postfix) operations \
+  <list> as command line arguments or a file argument <file> that specifies \
+  the path to a file containing a list of operations. Each operation is \
+  either a command (symbol) or a value. As examples, 'comp 3 4 +' adds \
+  the values 3 and 4 and '3 dup x 4 dup x +' computes the sum of the \
+  squares of 3 and 4. The available commands are listed below.");
   println!();
   println!("The usage guide can be found at https://github.com/usefulmove/\
   comp/blob/main/USAGE.md.");
   println!();
-  println!("Commands:");
+  println!("{}", "COMMANDS".to_string().bold());
   println!("{CMDS}");
   println!();
-  println!("Examples:");
+  println!("{}", "EXAMPLES".to_string().bold());
   println!("    comp 1 2 +                  add 1 and 2");
   println!("    comp 5 2 /                  divide 5 by 2");
   println!("    comp 3 dup x 4 dup x +      sum of the squares of 3 and 4");
+  println!();
 }
 
 fn show_version() {

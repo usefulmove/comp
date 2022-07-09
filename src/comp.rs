@@ -7,7 +7,7 @@ use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
-const RELEASE_STATUS: &str = "a";
+const RELEASE_STATUS: &str = "b";
 
 /*
 
@@ -58,25 +58,12 @@ fn main() {
 
   if args[1] == "--help" || args[1] == "help" {
     // display command usage information
-    println!("usage: comp [version] [help]");
-    println!("       comp <list>");
-    println!("       comp -f <file>");
-    println!();
-    println!("where <list> represents a sequence of reverse Polish notion (RPN) \
-    postfix operations or <file> is a file containing a similar sequence of \
-    operations. Each operation must be either a command (symbol) or value. As \
-    examples, 'comp 3 4 +' adds the values 3 and 4 and '3 dup x 4 dup x +' \
-    computes the sum of the squares of 3 and 4. The available commands are \
-    listed below.");
-    println!();
-    println!("commands:");
-    println!("{CMDS}");
+    show_help();
     std::process::exit(0);
 
   } else if args[1] == "--version" || args[1] == "version" {
     // display version information
-    let version: &str = env!("CARGO_PKG_VERSION");
-    println!("  comp {}", version.to_string() + RELEASE_STATUS);
+    show_version();
     std::process::exit(0);
 
   } else if args[1] == "mona" {
@@ -685,6 +672,42 @@ impl Interpreter {
 }
 
 
+fn show_help() {
+  println!("Command interpreter");
+  println!();
+  println!("Usage:");
+  println!("    comp [version] [help]");
+  println!("    comp <list>");
+  println!("    comp -f <file>");
+  println!();
+  println!("Options:");
+  println!("        --version          show version");
+  println!("    -f, --file             used to specify a path to a file");
+  println!("        --help             display help and usage information");
+  println!();
+  println!("<list> is a sequence of comp language (postfix) operations and \
+  <file> specifies the directory path to a file containing a sequence of \
+  comp operations. Each operation is either a command (symbol) or a value. \
+  As examples, 'comp 3 4 +' adds the values 3 and 4 and '3 dup x 4 dup x +' \
+  computes the sum of the squares of 3 and 4. The available commands are \
+  listed below.");
+  println!();
+  println!("The usage guide can be found at https://github.com/usefulmove/\
+  comp/blob/main/USAGE.md.");
+  println!();
+  println!("Commands:");
+  println!("{CMDS}");
+  println!();
+  println!("Examples:");
+  println!("    comp 1 2 +                  add 1 and 2");
+  println!("    comp 5 2 /                  divide 5 by 2");
+  println!("    comp 3 dup x 4 dup x +      sum of the squares of 3 and 4");
+}
+
+fn show_version() {
+  let version: &str = env!("CARGO_PKG_VERSION");
+  println!("  comp {}", version.to_string() + RELEASE_STATUS);
+}
 
 // -- mona ---------------------------------------------------------------------
 

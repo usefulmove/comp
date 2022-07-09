@@ -36,9 +36,9 @@ const RELEASE_STATUS: &str = "b";
 */
 
 // -- command list -------------------------------------------------------------
-const CMDS: &str = "drop dup swap cls clr roll rot sa .a a sb .b b sc .c c + +_ \
-- x x_ / chs abs round int inv sqrt throot proot ^ exp % mod ! gcd pi e dtor \
-rtod sin asin cos acos tan atan log log2 log10 ln logn";
+const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
+int inv sqrt throot proot ^ exp % mod ! gcd pi e dtor rtod sin asin cos acos \
+tan atan log log2 log10 ln logn sa .a a sb .b b sc .c c";
 
 
 fn main() {

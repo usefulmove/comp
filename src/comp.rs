@@ -8,7 +8,7 @@ use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
-const RELEASE_STATUS: &str = "i";
+const RELEASE_STATUS: &str = "n";
 
 /*
 
@@ -38,8 +38,8 @@ const RELEASE_STATUS: &str = "i";
 
 // -- command list -------------------------------------------------------------
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
-int inv sqrt throot proot ^ exp % mod ! gcd pi e d_r r_d sin asin cos acos \
-tan atan log log2 log10 ln logn sa .a a sb .b b sc .c c";
+int inv sqrt throot proot ^ exp % mod ! gcd pi e d_r r_d h_d d_h b_d d_h sin \
+asin cos acos tan atan log log2 log10 ln logn sa .a a sb .b b sc .c c";
 
 
 fn main() {
@@ -218,6 +218,10 @@ impl Interpreter {
     self.compose_native("e",      Interpreter::c_euler);    // Euler's constant
     self.compose_native("d_r",    Interpreter::c_dtor);     // degrees to radians
     self.compose_native("r_d",    Interpreter::c_rtod);     // radians to degrees
+    self.compose_native("d_h",    Interpreter::c_dtoh);     // decimal to hexadecimal
+    self.compose_native("h_d",    Interpreter::c_htod);     // hexadecimal to decimal
+    self.compose_native("d_b",    Interpreter::c_dtob);     // decimal to binary
+    self.compose_native("b_d",    Interpreter::c_btod);     // binary to decimal
     self.compose_native("sin",    Interpreter::c_sin);      // sine
     self.compose_native("asin",   Interpreter::c_asin);     // arcsine
     self.compose_native("cos",    Interpreter::c_cos);      // cosine
@@ -264,7 +268,7 @@ impl Interpreter {
       Ok(val) => val, // parse success
       Err(_error) => { // parse fail
         eprintln!("{}: unknown expression [{}] is not a recognized operation \
-                   or value (f)", "error".bright_red(), element.cyan());
+                   or valid value (f)", "error".bright_red(), element.cyan());
         std::process::exit(99);
       },
     }
@@ -276,7 +280,33 @@ impl Interpreter {
       Ok(val) => val, // parse success
       Err(_error) => { // parse fail
         eprintln!("{}: unknown expression [{}] is not a recognized operation \
-                   or value (u)", "error".bright_red(), element.cyan());
+                   or valid value (u)", "error".bright_red(), element.cyan());
+        std::process::exit(99);
+      },
+    }
+  }
+
+  fn pop_stack_i_hex(&mut self) -> i64 {
+    let element: String = self.stack.pop().unwrap();
+
+    match i64::from_str_radix(&element, 16) {
+      Ok(val) => val, // parse success
+      Err(_error) => { // parse fail
+        eprintln!("{}: unknown expression [{}] is not a recognized operation \
+                   or valid value (i_h)", "error".bright_red(), element.cyan());
+        std::process::exit(99);
+      },
+    }
+  }
+
+  fn pop_stack_i_bin(&mut self) -> i64 {
+    let element: String = self.stack.pop().unwrap();
+
+    match i64::from_str_radix(&element, 2) {
+      Ok(val) => val, // parse success
+      Err(_error) => { // parse fail
+        eprintln!("{}: unknown expression [{}] is not a recognized operation \
+                   or valid value (i_b)", "error".bright_red(), element.cyan());
         std::process::exit(99);
       },
     }
@@ -561,6 +591,38 @@ impl Interpreter {
     let a: f64 = self.pop_stack_f();
 
     self.stack.push((a.to_degrees()).to_string());
+  }
+
+  fn c_dtoh(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: u64 = self.pop_stack_u();
+
+    self.stack.push(format!("{:x}",a));
+  }
+
+  fn c_htod(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a = self.pop_stack_i_hex();
+
+    self.stack.push(a.to_string());
+  }
+
+  fn c_dtob(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: u64 = self.pop_stack_u();
+
+    self.stack.push(format!("{:b}",a));
+  }
+
+  fn c_btod(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a = self.pop_stack_i_bin();
+
+    self.stack.push(a.to_string());
   }
 
   fn c_sin(&mut self, op: &str) {

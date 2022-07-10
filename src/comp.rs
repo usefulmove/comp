@@ -176,13 +176,13 @@ impl Interpreter {
   fn init(&mut self) {
     // stack manipulation
     self.compose_native("drop",   Interpreter::c_drop);     // drop
-//    self.compose_native("dup",    Interpreter::c_dup);      // duplicate
+    self.compose_native("dup",    Interpreter::c_dup);      // duplicate
     self.compose_native("swap",   Interpreter::c_swap);     // swap x and y
     self.compose_native("cls",    Interpreter::c_cls);      // clear stack
     self.compose_native("clr",    Interpreter::c_cls);      // clear stack
     self.compose_native("roll",   Interpreter::c_roll);     // roll stack
     self.compose_native("rot",    Interpreter::c_rot);      // rotate stack (reverse direction from roll)
-//    // memory usage
+    // memory usage
 //    self.compose_native("sa",     Interpreter::c_store_a);  // store (pop value off stack and store)
 //    self.compose_native(".a",     Interpreter::c_store_a);  // store (pop value off stack and store)
 //    self.compose_native("a",      Interpreter::c_push_a);   // retrieve (push stored value onto the stack)
@@ -192,18 +192,18 @@ impl Interpreter {
 //    self.compose_native("sc",     Interpreter::c_store_c);  // store
 //    self.compose_native(".c",     Interpreter::c_store_c);  // store
 //    self.compose_native("c",      Interpreter::c_push_c);   // retrieve
-//    // math operations
+    // math operations
     self.compose_native("+",      Interpreter::c_add);      // add
 //    self.compose_native("+_",     Interpreter::c_add_all);  // add all
     self.compose_native("-",      Interpreter::c_sub);      // subtract
-//    self.compose_native("x",      Interpreter::c_mult);     // multiply
+    self.compose_native("x",      Interpreter::c_mult);     // multiply
 //    self.compose_native("x_",     Interpreter::c_mult_all); // multiply all
     self.compose_native("/",      Interpreter::c_div);      // divide
-//    self.compose_native("chs",    Interpreter::c_chs);      // change sign
-//    self.compose_native("abs",    Interpreter::c_abs);      // absolute value
-//    self.compose_native("round",  Interpreter::c_round);    // round
-//    self.compose_native("int",    Interpreter::c_round);
-//    self.compose_native("inv",    Interpreter::c_inv);      // invert (1/x)
+    self.compose_native("chs",    Interpreter::c_chs);      // change sign
+    self.compose_native("abs",    Interpreter::c_abs);      // absolute value
+    self.compose_native("round",  Interpreter::c_round);    // round
+    self.compose_native("int",    Interpreter::c_round);
+    self.compose_native("inv",    Interpreter::c_inv);      // invert (1/x)
     self.compose_native("sqrt",   Interpreter::c_sqrt);     // square root
 //    self.compose_native("throot", Interpreter::c_throot);   // nth root
 //    self.compose_native("proot",  Interpreter::c_proot);    // find principal roots
@@ -294,12 +294,14 @@ impl Interpreter {
     }
   }
 
-//  fn c_dup(&mut self, op: &str) { //TODO
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack.push(self.stack[end]);
-//  }
+  fn c_dup(&mut self, op: &str) { //TODO
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push(a.to_string());
+    self.stack.push(a.to_string());
+  }
 
   fn c_swap(&mut self, op: &str) {
     Interpreter::check_stack_error(self, 2, op);
@@ -358,9 +360,9 @@ impl Interpreter {
 //  fn c_push_c(&mut self, _op: &str) {
 //    self.stack.push(self.mem_c);
 //  }
-//
-//
-//  // ---- math operations ------------------------------------------------------
+
+
+  // ---- math operations ------------------------------------------------------
 
   fn c_add(&mut self, op: &str) {
     Interpreter::check_stack_error(self, 2, op);
@@ -389,13 +391,15 @@ impl Interpreter {
     self.stack.push((a - b).to_string());
   }
 
-//  fn c_mult(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 2, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end-1] *= self.stack.pop().unwrap();
-//  }
-//
+  fn c_mult(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 2, op);
+
+    let b: f64 = self.pop_stack_f();
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a * b).to_string());
+  }
+
 //  fn c_mult_all(&mut self, op: &str) {
 //    Interpreter::check_stack_error(self, 2, op);
 //
@@ -414,33 +418,37 @@ impl Interpreter {
     self.stack.push((a / b).to_string());
   }
 
-//  fn c_chs(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] *= -1.0;
-//  }
-//
-//  fn c_abs(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = f64::abs(self.stack[end]);
-//  }
-//
-//  fn c_round(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].round();
-//  }
-//
-//  fn c_inv(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = 1.0 / self.stack[end];
-//  }
+  fn c_chs(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((-1.0 * a).to_string());
+  }
+
+  fn c_abs(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.abs()).to_string());
+  }
+
+  fn c_round(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.round()).to_string());
+  }
+
+  fn c_inv(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((1.0 / a).to_string());
+  }
 
   fn c_sqrt(&mut self, op: &str) {
     Interpreter::check_stack_error(self, 1, op);

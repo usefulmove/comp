@@ -13,6 +13,11 @@ mod comp_tests {
     test_cinter.stack.push(3.0.to_string());
     test_cinter.stack.push(4.0.to_string());
 
+    test_cinter.c_dtoh("o");
+    test_cinter.c_htod("o");
+    test_cinter.c_dtob("o");
+    test_cinter.c_btod("o");
+
     test_cinter.c_rot("o");
     test_cinter.c_rot("o");
     test_cinter.c_roll("o");

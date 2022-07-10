@@ -1,4 +1,5 @@
 use std::env;
+use std::fs;
 use std::fs::File;
 use std::io::prelude::*;
 use std::num::ParseFloatError;
@@ -42,91 +43,81 @@ int inv sqrt throot proot ^ exp % mod ! gcd pi e d_r r_d sin asin cos acos \
 tan atan log log2 log10 ln logn sa .a a sb .b b sc .c c";
 
 
-fn main() {
-  // enable or disable backtrace on error
-  env::set_var("RUST_BACKTRACE", "0");
+type ErrorMessage = String;
 
-  // construct command interpreter
-  let mut cinter = Interpreter::new();
+fn main() -> Result<(), ErrorMessage> {
+    // enable or disable backtrace on error
+    env::set_var("RUST_BACKTRACE", "0");
 
-  // get command line arguments and collect into a vector
-  let mut args: Vec<String> = env::args().collect();
+    // construct command interpreter
+    let mut cinter = Interpreter::new();
 
-  // if no arguments are passed, behave as if help flag was passed
-  if args.len() <= 1 {
-    args.push("help".to_string());
-  }
+    // get command line arguments and collect into a vector
+    let mut args: Vec<String> = env::args().collect();
 
-  if args[1] == "--help" || args[1] == "help" {
-    // display command usage information
-    show_help();
-    std::process::exit(0);
-
-  } else if args[1] == "--version" || args[1] == "version" {
-    // display version information
-    show_version();
-    std::process::exit(0);
-
-  } else if args[1] == "mona" {
-    println!("{MONA}");
-    std::process::exit(0);
-
-  } else if args[1] == "-f" || args[1] == "--file" {
-    // read operations list input from file
-    if args.len() > 2 {
-      // read file path
-      let filename: String = args[2].to_string();
-      let path: &Path = Path::new(&filename);
-      let display: Display = path.display();
-
-      // open file
-      let mut file: File = match File::open(&path) {
-        Ok(file) => file,
-        Err(error) => {
-          eprintln!("{}: could not open file [{}]: {error}", "error".bright_red(), display.to_string().cyan());
-          std::process::exit(99);
-        },
-      };
-
-      // read file contents
-      let mut file_contents: String = String::new();
-      match file.read_to_string(&mut file_contents) {
-        Ok(_) => (),
-        Err(error) => {
-          eprintln!("{}: could not read [{}]: {error}", "error".bright_red(), display.to_string().cyan());
-          std::process::exit(99);
-        },
-      };
-
-      // split individual list elements
-      let temp_ops: Vec<&str> = file_contents.split_whitespace().collect();
-
-      // create operations list vector from file contents
-      for op in temp_ops {
-        cinter.ops.push(op.to_string());
-      }
-
-    } else {
-      eprintln!("{}: no file path provided", "error".bright_red());
-      std::process::exit(99);
-
+    // if no arguments are passed, behave as if help flag was passed
+    if args.len() <= 1 {
+        args.push("help".to_string());
     }
 
-  } else {
-    // read operations list input from arguments
-    cinter.ops = (&args[1..]).to_vec();
+    match args[1].as_str() {
+        "--help" | "help" => {
+            // display command usage information
+            show_help();
+            return Ok(());
+        }
+        "--version" | "version" => {
+            // display version information
+            show_version();
+            return Ok(());
+        }
+        "mona" => {
+            println!("{MONA}");
+            return Ok(());
+        }
+        "-f" | "--file" => {
+            // read operations list input from file
+            if args.get(2).is_none() {
+                return Err(format!("{}: no file path provided", "error".bright_red()));
+            }
 
-  }
+            // read file contents
+            let filename: String = args[2].to_string();
+            let path: &Path = Path::new(&filename);
+            let file_contents = fs::read_to_string(&path);
 
-  // process operations list
-  cinter.process_ops();
+            if let Err(ref err) = file_contents {
+                let error_message: String = format!(
+                    "Problem reading file {}: {}",
+                    path.display(),
+                    err.to_string()
+                );
 
-  // display resulting computation stack
-  for element in cinter.stack {
-    println!("  {}", element.truecolor(0, 192, 255).bold());
-  }
+                return Err(error_message);
+            }
 
-  std::process::exit(0);
+            let file_contents = file_contents.unwrap();
+
+            // split individual list elements
+            // create operations list vector from file contents
+            let operations = file_contents.split_whitespace().map(|it| it.to_string());
+            cinter.ops.extend(operations);
+        }
+        _ => {
+            // read operations list input from arguments
+            cinter.ops = (&args[1..]).to_vec();
+        }
+    };
+
+    // process operations list
+    cinter.process_ops();
+
+    // display resulting computation stack
+    for element in cinter.stack {
+        println!("  {}", element.to_string().truecolor(0, 192, 255).bold());
+    }
+
+    Ok(())
 }
 
 struct Function {

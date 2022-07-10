@@ -2,12 +2,13 @@ use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::num::ParseFloatError;
+use std::num::ParseIntError;
 use std::path::Path;
 use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
-const RELEASE_STATUS: &str = "g";
+const RELEASE_STATUS: &str = "h";
 
 /*
 
@@ -205,29 +206,29 @@ impl Interpreter {
     self.compose_native("int",    Interpreter::c_round);
     self.compose_native("inv",    Interpreter::c_inv);      // invert (1/x)
     self.compose_native("sqrt",   Interpreter::c_sqrt);     // square root
-//    self.compose_native("throot", Interpreter::c_throot);   // nth root
-//    self.compose_native("proot",  Interpreter::c_proot);    // find principal roots
-//    self.compose_native("^",      Interpreter::c_exp);      // exponentiation
-//    self.compose_native("exp",    Interpreter::c_exp);
-//    self.compose_native("%",      Interpreter::c_mod);      // modulus
-//    self.compose_native("mod",    Interpreter::c_mod);
-//    self.compose_native("!",      Interpreter::c_fact);     // factorial
-//    self.compose_native("gcd",    Interpreter::c_gcd);      // greatest common divisor
-//    self.compose_native("pi",     Interpreter::c_pi);       // pi
-//    self.compose_native("e",      Interpreter::c_euler);    // Euler's constant
-//    self.compose_native("d_r",    Interpreter::c_dtor);     // degrees to radians
-//    self.compose_native("r_d",    Interpreter::c_rtod);     // radians to degrees
-//    self.compose_native("sin",    Interpreter::c_sin);      // sine
-//    self.compose_native("asin",   Interpreter::c_asin);     // arcsine
-//    self.compose_native("cos",    Interpreter::c_cos);      // cosine
-//    self.compose_native("acos",   Interpreter::c_acos);     // arccosine
-//    self.compose_native("tan",    Interpreter::c_tan);      // tangent
-//    self.compose_native("atan",   Interpreter::c_atan);     // arctangent
-//    self.compose_native("log2",   Interpreter::c_log2);     // logarithm (base 2)
-//    self.compose_native("log",    Interpreter::c_log10);    // logarithm (base 10)
-//    self.compose_native("log10",  Interpreter::c_log10);
-//    self.compose_native("logn",   Interpreter::c_logn);     // logarithm (base n)
-//    self.compose_native("ln",     Interpreter::c_ln);       // natural logarithm
+    self.compose_native("throot", Interpreter::c_throot);   // nth root
+    self.compose_native("proot",  Interpreter::c_proot);    // find principal roots
+    self.compose_native("^",      Interpreter::c_exp);      // exponentiation
+    self.compose_native("exp",    Interpreter::c_exp);
+    self.compose_native("%",      Interpreter::c_mod);      // modulus
+    self.compose_native("mod",    Interpreter::c_mod);
+    self.compose_native("!",      Interpreter::c_fact);     // factorial
+    self.compose_native("gcd",    Interpreter::c_gcd);      // greatest common divisor
+    self.compose_native("pi",     Interpreter::c_pi);       // pi
+    self.compose_native("e",      Interpreter::c_euler);    // Euler's constant
+    self.compose_native("d_r",    Interpreter::c_dtor);     // degrees to radians
+    self.compose_native("r_d",    Interpreter::c_rtod);     // radians to degrees
+    self.compose_native("sin",    Interpreter::c_sin);      // sine
+    self.compose_native("asin",   Interpreter::c_asin);     // arcsine
+    self.compose_native("cos",    Interpreter::c_cos);      // cosine
+    self.compose_native("acos",   Interpreter::c_acos);     // arccosine
+    self.compose_native("tan",    Interpreter::c_tan);      // tangent
+    self.compose_native("atan",   Interpreter::c_atan);     // arctangent
+    self.compose_native("log2",   Interpreter::c_log2);     // logarithm (base 2)
+    self.compose_native("log",    Interpreter::c_log10);    // logarithm (base 10)
+    self.compose_native("log10",  Interpreter::c_log10);
+    self.compose_native("logn",   Interpreter::c_logn);     // logarithm (base n)
+    self.compose_native("ln",     Interpreter::c_ln);       // natural logarithm
 //    // control flow
 //    self.compose_native("fn",     Interpreter::c_fn);       // function definition
 //    self.compose_native("(",      Interpreter::c_comment);  // function definition
@@ -256,10 +257,22 @@ impl Interpreter {
     }
   }
 
-  // pop float from stack
+  // pop from stack helpers ----------------------------------------------------
   fn pop_stack_f(&mut self) -> f64 {
     let element: String = self.stack.pop().unwrap();
     match self.parse_float(&element) {
+      Ok(val) => val, // parse success
+      Err(_error) => { // parse fail
+        eprintln!("{}: unknown expression [{}] is not a recognized operation \
+                   or value", "error".bright_red(), element.cyan());
+        std::process::exit(99);
+      },
+    }
+  }
+
+  fn pop_stack_u(&mut self) -> u64 {
+    let element: String = self.stack.pop().unwrap();
+    match self.parse_uint(&element) {
       Ok(val) => val, // parse success
       Err(_error) => { // parse fail
         eprintln!("{}: unknown expression [{}] is not a recognized operation \
@@ -273,6 +286,12 @@ impl Interpreter {
     let value: f64 = op.parse::<f64>()?;
     Ok(value)
   }
+
+  fn parse_uint(&self, op: &String) -> Result<u64, ParseIntError> {
+    let value: u64 = op.parse::<u64>()?;
+    Ok(value)
+  }
+  // ---------------------------------------------------------------------------
 
   // confirm stack depth
   fn check_stack_error(&self, min_depth: usize, command: &str) {
@@ -294,7 +313,7 @@ impl Interpreter {
     }
   }
 
-  fn c_dup(&mut self, op: &str) { //TODO
+  fn c_dup(&mut self, op: &str) {
     Interpreter::check_stack_error(self, 1, op);
 
     let a: f64 = self.pop_stack_f();
@@ -454,165 +473,182 @@ impl Interpreter {
     Interpreter::check_stack_error(self, 1, op);
 
     let a: f64 = self.pop_stack_f();
+
     self.stack.push((a.sqrt()).to_string());
   }
 
-//  fn c_throot(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    let o: f64 = self.stack.pop().unwrap();
-//    self.stack[end-1] = self.stack[end-1].powf(1.0/o);
-//  }
-//
-//  fn c_proot(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 3, op);
-//
-//    let c: f64 = self.stack.pop().unwrap();
-//    let b: f64 = self.stack.pop().unwrap();
-//    let a: f64 = self.stack.pop().unwrap();
-//
-//    if (b*b - 4.0*a*c) < 0.0 {
-//      self.stack.push(-1.0*b/(2.0*a)); // root_1 real
-//      self.stack.push(f64::sqrt(4.0*a*c-b*b)/(2.0*a)); // root_1 imag
-//      self.stack.push(-1.0*b/(2.0*a)); // root_2 real
-//      self.stack.push(-1.0*f64::sqrt(4.0*a*c-b*b)/(2.0*a)); // root_2 imag
-//    } else {
-//      self.stack.push(-1.0*b+f64::sqrt(b*b-4.0*a*c)/(2.0*a)); // root_1 real
-//      self.stack.push(0.0); // root_1 imag
-//      self.stack.push(-1.0*b-f64::sqrt(b*b-4.0*a*c)/(2.0*a)); // root_2 real
-//      self.stack.push(0.0); // root_2 imag
-//    }
-//  }
-//
-//  fn c_exp(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 2, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    let o: f64 = self.stack.pop().unwrap();
-//    self.stack[end-1] = self.stack[end-1].powf(o);
-//  }
-//
-//  fn c_mod(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 2, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    let o: f64 = self.stack.pop().unwrap();
-//    self.stack[end-1] %= o;
-//  }
-//
-//  fn c_fact(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = Interpreter::factorial(self.stack[end].round());
-//  }
-//
-//  fn c_gcd(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 2, op);
-//
-//    let a: u64 = self.stack.pop().unwrap() as u64;
-//    let b: u64 = self.stack.pop().unwrap() as u64;
-//    let g: f64 = Interpreter::gcd(a,b) as f64;
-//    self.stack.push(g);
-//  }
-//
-//  fn c_pi(&mut self, _op: &str) {
-//    self.stack.push(std::f64::consts::PI);
-//  }
-//
-//  fn c_euler(&mut self, _op: &str) {
-//    self.stack.push(std::f64::consts::E);
-//  }
-//
-//  fn c_dtor(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].to_radians();
-//  }
-//
-//  fn c_rtod(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].to_degrees();
-//  }
-//
-//  fn c_sin(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].sin();
-//  }
-//
-//  fn c_asin(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].asin();
-//  }
-//
-//  fn c_cos(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].cos();
-//  }
-//
-//  fn c_acos(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].acos();
-//  }
-//
-//  fn c_tan(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].tan();
-//  }
-//
-//  fn c_atan(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].atan();
-//  }
-//
-//  fn c_log10(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].log10();
-//  }
-//
-//  fn c_log2(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].log2();
-//  }
-//
-//  fn c_logn(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    let n: f64 = self.stack.pop().unwrap();
-//    self.stack[end-1] = self.stack[end-1].log(n);
-//  }
-//
-//  fn c_ln(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    let end: usize = self.stack.len() - 1;
-//    self.stack[end] = self.stack[end].ln();
-//  }
-//
-//
-//  // -- control flow -----------------------------------------------------------
-//
+  fn c_throot(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 2, op);
+
+    let b: f64 = self.pop_stack_f();
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.powf(1.0/b)).to_string());
+  }
+
+  fn c_proot(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 3, op);
+
+    let c: f64 = self.pop_stack_f();
+    let b: f64 = self.pop_stack_f();
+    let a: f64 = self.pop_stack_f();
+
+    if (b*b - 4.0*a*c) < 0.0 {
+      self.stack.push((-1.0*b/(2.0*a)).to_string()); // root_1 real
+      self.stack.push(((4.0*a*c-b*b).sqrt()/(2.0*a)).to_string()); // root_1 imag
+      self.stack.push((-1.0*b/(2.0*a)).to_string()); // root_2 real
+      self.stack.push((-1.0*(4.0*a*c-b*b).sqrt()/(2.0*a)).to_string()); // root_2 imag
+    } else {
+      self.stack.push((-1.0*b+(b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // root_1 real
+      self.stack.push(0.0.to_string()); // root_1 imag
+      self.stack.push((-1.0*b-(b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // root_2 real
+      self.stack.push(0.0.to_string()); // root_2 imag
+    }
+  }
+
+  fn c_exp(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 2, op);
+
+    let b: f64 = self.pop_stack_f();
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.powf(b)).to_string());
+  }
+
+  fn c_mod(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 2, op);
+
+    let b: f64 = self.pop_stack_f();
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a % b).to_string());
+  }
+
+  fn c_fact(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push(a.round().to_string());
+  }
+
+  fn c_gcd(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 2, op);
+
+    let b: u64 = self.pop_stack_u();
+    let a: u64 = self.pop_stack_u();
+
+    self.stack.push(Interpreter::gcd(a,b).to_string());
+  }
+
+  fn c_pi(&mut self, _op: &str) {
+    self.stack.push(std::f64::consts::PI.to_string());
+  }
+
+  fn c_euler(&mut self, _op: &str) {
+    self.stack.push(std::f64::consts::E.to_string());
+  }
+
+  fn c_dtor(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.to_radians()).to_string());
+  }
+
+  fn c_rtod(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.to_degrees()).to_string());
+  }
+
+  fn c_sin(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.sin()).to_string());
+  }
+
+  fn c_asin(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.asin()).to_string());
+  }
+
+  fn c_cos(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.cos()).to_string());
+  }
+
+  fn c_acos(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.acos()).to_string());
+  }
+
+  fn c_tan(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.tan()).to_string());
+  }
+
+  fn c_atan(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.atan()).to_string());
+  }
+
+  fn c_log10(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.log10()).to_string());
+  }
+
+  fn c_log2(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.log2()).to_string());
+  }
+
+  fn c_logn(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let b: f64 = self.pop_stack_f();
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.log(b)).to_string());
+  }
+
+  fn c_ln(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a: f64 = self.pop_stack_f();
+
+    self.stack.push((a.ln()).to_string());
+  }
+
+
+  // -- control flow -----------------------------------------------------------
+
 //  fn c_fn(&mut self, _op: &str) {
 //    // get function name
 //    let fn_name: String = self.ops.remove(0);

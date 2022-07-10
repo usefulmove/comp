@@ -8,7 +8,7 @@ use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
-const RELEASE_STATUS: &str = "h";
+const RELEASE_STATUS: &str = "(i)";
 
 /*
 
@@ -184,21 +184,21 @@ impl Interpreter {
     self.compose_native("roll",   Interpreter::c_roll);     // roll stack
     self.compose_native("rot",    Interpreter::c_rot);      // rotate stack (reverse direction from roll)
     // memory usage
-//    self.compose_native("sa",     Interpreter::c_store_a);  // store (pop value off stack and store)
-//    self.compose_native(".a",     Interpreter::c_store_a);  // store (pop value off stack and store)
-//    self.compose_native("a",      Interpreter::c_push_a);   // retrieve (push stored value onto the stack)
-//    self.compose_native("sb",     Interpreter::c_store_b);  // store
-//    self.compose_native(".b",     Interpreter::c_store_b);  // store
-//    self.compose_native("b",      Interpreter::c_push_b);   // retrieve
-//    self.compose_native("sc",     Interpreter::c_store_c);  // store
-//    self.compose_native(".c",     Interpreter::c_store_c);  // store
-//    self.compose_native("c",      Interpreter::c_push_c);   // retrieve
+    self.compose_native("sa",     Interpreter::c_store_a);  // store (pop value off stack and store)
+    self.compose_native(".a",     Interpreter::c_store_a);  // store (pop value off stack and store)
+    self.compose_native("a",      Interpreter::c_push_a);   // retrieve (push stored value onto the stack)
+    self.compose_native("sb",     Interpreter::c_store_b);  // store
+    self.compose_native(".b",     Interpreter::c_store_b);  // store
+    self.compose_native("b",      Interpreter::c_push_b);   // retrieve
+    self.compose_native("sc",     Interpreter::c_store_c);  // store
+    self.compose_native(".c",     Interpreter::c_store_c);  // store
+    self.compose_native("c",      Interpreter::c_push_c);   // retrieve
     // math operations
     self.compose_native("+",      Interpreter::c_add);      // add
-//    self.compose_native("+_",     Interpreter::c_add_all);  // add all
+    self.compose_native("+_",     Interpreter::c_add_all);  // add all
     self.compose_native("-",      Interpreter::c_sub);      // subtract
     self.compose_native("x",      Interpreter::c_mult);     // multiply
-//    self.compose_native("x_",     Interpreter::c_mult_all); // multiply all
+    self.compose_native("x_",     Interpreter::c_mult_all); // multiply all
     self.compose_native("/",      Interpreter::c_div);      // divide
     self.compose_native("chs",    Interpreter::c_chs);      // change sign
     self.compose_native("abs",    Interpreter::c_abs);      // absolute value
@@ -229,7 +229,7 @@ impl Interpreter {
     self.compose_native("log10",  Interpreter::c_log10);
     self.compose_native("logn",   Interpreter::c_logn);     // logarithm (base n)
     self.compose_native("ln",     Interpreter::c_ln);       // natural logarithm
-//    // control flow
+    // control flow
     self.compose_native("fn",     Interpreter::c_fn);       // function definition
     self.compose_native("(",      Interpreter::c_comment);  // function definition
   }
@@ -349,36 +349,36 @@ impl Interpreter {
 
 
   // ---- memory usage ---------------------------------------------------------
-//
-//  fn c_store_a(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    self.mem_a = self.stack.pop().unwrap();
-//  }
-//
-//  fn c_push_a(&mut self, _op: &str) {
-//    self.stack.push(self.mem_a);
-//  }
-//
-//  fn c_store_b(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    self.mem_b = self.stack.pop().unwrap();
-//  }
-//
-//  fn c_push_b(&mut self, _op: &str) {
-//    self.stack.push(self.mem_b);
-//  }
-//
-//  fn c_store_c(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 1, op);
-//
-//    self.mem_c = self.stack.pop().unwrap();
-//  }
-//
-//  fn c_push_c(&mut self, _op: &str) {
-//    self.stack.push(self.mem_c);
-//  }
+
+  fn c_store_a(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    self.mem_a = self.pop_stack_f();
+  }
+
+  fn c_push_a(&mut self, _op: &str) {
+    self.stack.push(self.mem_a.to_string());
+  }
+
+  fn c_store_b(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    self.mem_b = self.pop_stack_f();
+  }
+
+  fn c_push_b(&mut self, _op: &str) {
+    self.stack.push(self.mem_b.to_string());
+  }
+
+  fn c_store_c(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    self.mem_c = self.pop_stack_f();
+  }
+
+  fn c_push_c(&mut self, _op: &str) {
+    self.stack.push(self.mem_c.to_string());
+  }
 
 
   // ---- math operations ------------------------------------------------------
@@ -392,14 +392,13 @@ impl Interpreter {
     self.stack.push((a + b).to_string());
   }
 
-//  fn c_add_all(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 2, op);
-//
-//    while self.stack.len() > 1 {
-//      let end: usize = self.stack.len() - 1;
-//      self.stack[end-1] += self.stack.pop().unwrap();
-//    }
-//  }
+  fn c_add_all(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 2, op);
+
+    while self.stack.len() > 1 {
+      self.c_add(&op);
+    }
+  }
 
   fn c_sub(&mut self, op: &str) {
     Interpreter::check_stack_error(self, 2, op);
@@ -419,14 +418,13 @@ impl Interpreter {
     self.stack.push((a * b).to_string());
   }
 
-//  fn c_mult_all(&mut self, op: &str) {
-//    Interpreter::check_stack_error(self, 2, op);
-//
-//    while self.stack.len() > 1 {
-//      let end: usize = self.stack.len() - 1;
-//      self.stack[end-1] *= self.stack.pop().unwrap();
-//    }
-//  }
+  fn c_mult_all(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 2, op);
+
+    while self.stack.len() > 1 {
+      self.c_mult(&op);
+    }
+  }
 
   fn c_div(&mut self, op: &str) {
     Interpreter::check_stack_error(self, 2, op);
@@ -529,7 +527,7 @@ impl Interpreter {
 
     let a: f64 = self.pop_stack_f();
 
-    self.stack.push(a.round().to_string());
+    self.stack.push((Interpreter::factorial(a)).to_string());
   }
 
   fn c_gcd(&mut self, op: &str) {
@@ -703,7 +701,9 @@ impl Interpreter {
   // support functions ---------------------------------------------------------
   
   // factorial
-  fn factorial(n: f64) -> f64 {
+  fn factorial(o: f64) -> f64 {
+    let n = o.floor();
+
     if n < 2.0 {
       1.0
     } else {

@@ -230,8 +230,8 @@ impl Interpreter {
     self.compose_native("logn",   Interpreter::c_logn);     // logarithm (base n)
     self.compose_native("ln",     Interpreter::c_ln);       // natural logarithm
 //    // control flow
-//    self.compose_native("fn",     Interpreter::c_fn);       // function definition
-//    self.compose_native("(",      Interpreter::c_comment);  // function definition
+    self.compose_native("fn",     Interpreter::c_fn);       // function definition
+    self.compose_native("(",      Interpreter::c_comment);  // function definition
   }
 
   fn process_node(&mut self, op: &str) {
@@ -264,7 +264,7 @@ impl Interpreter {
       Ok(val) => val, // parse success
       Err(_error) => { // parse fail
         eprintln!("{}: unknown expression [{}] is not a recognized operation \
-                   or value", "error".bright_red(), element.cyan());
+                   or value (f)", "error".bright_red(), element.cyan());
         std::process::exit(99);
       },
     }
@@ -276,7 +276,7 @@ impl Interpreter {
       Ok(val) => val, // parse success
       Err(_error) => { // parse fail
         eprintln!("{}: unknown expression [{}] is not a recognized operation \
-                   or value", "error".bright_red(), element.cyan());
+                   or value (u)", "error".bright_red(), element.cyan());
         std::process::exit(99);
       },
     }
@@ -649,23 +649,23 @@ impl Interpreter {
 
   // -- control flow -----------------------------------------------------------
 
-//  fn c_fn(&mut self, _op: &str) {
-//    // get function name
-//    let fn_name: String = self.ops.remove(0);
-//
-//    // create new function instance and assign function name
-//    self.fns.push(Function { name: fn_name,
-//                             fops: Vec::new(),
-//                           });
-//    let fpos: usize = self.fns.len() - 1; // added function position in function vector
-//
-//    // build out function operations my reading from interpreter ops
-//    while self.ops[0] != "end" {
-//      self.fns[fpos].fops.push(self.ops.remove(0));
-//    }
-//    self.ops.remove(0); // remove "end" op
-//  }
-//
+  fn c_fn(&mut self, _op: &str) {
+    // get function name
+    let fn_name: String = self.ops.remove(0);
+
+    // create new function instance and assign function name
+    self.fns.push(Function { name: fn_name,
+                             fops: Vec::new(),
+                           });
+    let fpos: usize = self.fns.len() - 1; // added function position in function vector
+
+    // build out function operations my reading from interpreter ops
+    while self.ops[0] != "end" {
+      self.fns[fpos].fops.push(self.ops.remove(0));
+    }
+    self.ops.remove(0); // remove "end" op
+  }
+
   // is operator a user defined function?
   fn is_user_function(&self, op: &str) -> Option<usize> {
     if !self.fns.is_empty() {
@@ -677,27 +677,27 @@ impl Interpreter {
     }
     None
   }
-//
-//  fn c_comment(&mut self, _op: &str) {
-//    let mut nested: usize = 0;
-//
-//    while !self.ops.is_empty() {
-//      let op = self.ops.remove(0);
-//      match &op[..] {
-//        "(" => {
-//          nested += 1;
-//        },
-//        ")" => {
-//          if nested == 0 {
-//            return;
-//          } else {
-//            nested -= 1;
-//          }
-//        },
-//        _ => (),
-//      }
-//    }
-//  }
+
+  fn c_comment(&mut self, _op: &str) {
+    let mut nested: usize = 0;
+
+    while !self.ops.is_empty() {
+      let op = self.ops.remove(0);
+      match &op[..] {
+        "(" => {
+          nested += 1;
+        },
+        ")" => {
+          if nested == 0 {
+            return;
+          } else {
+            nested -= 1;
+          }
+        },
+        _ => (),
+      }
+    }
+  }
 
 
   // support functions ---------------------------------------------------------

@@ -8,7 +8,7 @@ use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
-const RELEASE_STATUS: &str = "(i)";
+const RELEASE_STATUS: &str = "i";
 
 /*
 
@@ -699,7 +699,7 @@ impl Interpreter {
 
 
   // support functions ---------------------------------------------------------
-  
+
   // factorial
   fn factorial(o: f64) -> f64 {
     let n = o.floor();
@@ -710,7 +710,7 @@ impl Interpreter {
       n * Interpreter::factorial(n - 1.0)
     }
   }
-  
+
   // greatest common divisor
   fn gcd(a: u64, b: u64) -> u64 {
     if b != 0 {

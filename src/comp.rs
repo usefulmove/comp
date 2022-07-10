@@ -8,7 +8,7 @@ use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
-const RELEASE_STATUS: &str = "n";
+const RELEASE_STATUS: &str = "o";
 
 /*
 
@@ -312,12 +312,12 @@ impl Interpreter {
     }
   }
 
-  fn parse_float(&self, op: &String) -> Result<f64, ParseFloatError> {
+  fn parse_float(&self, op: &str) -> Result<f64, ParseFloatError> {
     let value: f64 = op.parse::<f64>()?;
     Ok(value)
   }
 
-  fn parse_uint(&self, op: &String) -> Result<u64, ParseIntError> {
+  fn parse_uint(&self, op: &str) -> Result<u64, ParseIntError> {
     let value: u64 = op.parse::<u64>()?;
     Ok(value)
   }
@@ -426,7 +426,7 @@ impl Interpreter {
     Interpreter::check_stack_error(self, 2, op);
 
     while self.stack.len() > 1 {
-      self.c_add(&op);
+      self.c_add(op);
     }
   }
 
@@ -452,7 +452,7 @@ impl Interpreter {
     Interpreter::check_stack_error(self, 2, op);
 
     while self.stack.len() > 1 {
-      self.c_mult(&op);
+      self.c_mult(op);
     }
   }
 

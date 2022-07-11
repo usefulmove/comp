@@ -4,8 +4,6 @@ use std::env;
 use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
-use std::collections::HashMap;
-use colored::*;
 
 const RELEASE_STATUS: &str = "r";
 

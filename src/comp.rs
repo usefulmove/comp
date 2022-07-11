@@ -1,11 +1,7 @@
 use std::env;
 use std::fs;
-use std::fs::File;
-use std::io::prelude::*;
-use std::num::ParseFloatError;
-use std::num::ParseIntError;
+use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
-use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
@@ -42,10 +38,7 @@ const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e d_r r_d sin asin cos acos \
 tan atan log log2 log10 ln logn sa .a a sb .b b sc .c c";
 
-
-type ErrorMessage = String;
-
-fn main() -> Result<(), ErrorMessage> {
+fn main() {
     // enable or disable backtrace on error
     env::set_var("RUST_BACKTRACE", "0");
 
@@ -64,21 +57,22 @@ fn main() -> Result<(), ErrorMessage> {
         "--help" | "help" => {
             // display command usage information
             show_help();
-            return Ok(());
+            return;
         }
         "--version" | "version" => {
             // display version information
             show_version();
-            return Ok(());
+            return;
         }
         "mona" => {
             println!("{MONA}");
-            return Ok(());
+            return;
         }
         "-f" | "--file" => {
             // read operations list input from file
             if args.get(2).is_none() {
-                return Err(format!("{}: no file path provided", "error".bright_red()));
+                eprintln!("{}: no file path provided", "error".bright_red());
+                return;
             }
 
             // read file contents
@@ -86,14 +80,9 @@ fn main() -> Result<(), ErrorMessage> {
             let path: &Path = Path::new(&filename);
             let file_contents = fs::read_to_string(&path);
 
-            if let Err(ref err) = file_contents {
-                let error_message: String = format!(
-                    "Problem reading file {}: {}",
-                    path.display(),
-                    err.to_string()
-                );
-
-                return Err(error_message);
+            if let Err(ref error) = file_contents {
+                eprintln!("{}: could not read [{}]: {error}", "error".bright_red(), path.display().to_string().cyan());
+                return;
             }
 
             let file_contents = file_contents.unwrap();
@@ -116,8 +105,6 @@ fn main() -> Result<(), ErrorMessage> {
     for element in cinter.stack {
         println!("  {}", element.to_string().truecolor(0, 192, 255).bold());
     }
-
-    Ok(())
 }
 
 struct Function {

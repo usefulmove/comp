@@ -8,7 +8,7 @@ use std::path::Display;
 use std::collections::HashMap;
 use colored::*;
 
-const RELEASE_STATUS: &str = "o";
+const RELEASE_STATUS: &str = "p";
 
 /*
 
@@ -38,8 +38,8 @@ const RELEASE_STATUS: &str = "o";
 
 // -- command list -------------------------------------------------------------
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
-int inv sqrt throot proot ^ exp % mod ! gcd pi e d_r r_d h_d d_h b_d d_h sin \
-asin cos acos tan atan log log2 log10 ln logn sa .a a sb .b b sc .c c";
+int inv sqrt throot proot ^ exp % mod ! gcd pi e d_r r_d sin asin cos acos tan \
+atan log log2 log10 ln logn sa .a a sb .b b sc .c c h_d d_h b_d d_h b_h h_b";
 
 
 fn main() {
@@ -222,6 +222,8 @@ impl Interpreter {
     self.compose_native("h_d",    Interpreter::c_htod);     // hexadecimal to decimal
     self.compose_native("d_b",    Interpreter::c_dtob);     // decimal to binary
     self.compose_native("b_d",    Interpreter::c_btod);     // binary to decimal
+    self.compose_native("b_h",    Interpreter::c_btoh);     // binary to hexadecimal
+    self.compose_native("h_b",    Interpreter::c_htob);     // hexadecimal to binary
     self.compose_native("sin",    Interpreter::c_sin);      // sine
     self.compose_native("asin",   Interpreter::c_asin);     // arcsine
     self.compose_native("cos",    Interpreter::c_cos);      // cosine
@@ -598,7 +600,7 @@ impl Interpreter {
 
     let a: u64 = self.pop_stack_u();
 
-    self.stack.push(format!("{:x}",a));
+    self.stack.push(format!("{:x}", a));
   }
 
   fn c_htod(&mut self, op: &str) {
@@ -614,7 +616,7 @@ impl Interpreter {
 
     let a: u64 = self.pop_stack_u();
 
-    self.stack.push(format!("{:b}",a));
+    self.stack.push(format!("{:b}", a));
   }
 
   fn c_btod(&mut self, op: &str) {
@@ -623,6 +625,22 @@ impl Interpreter {
     let a = self.pop_stack_i_bin();
 
     self.stack.push(a.to_string());
+  }
+
+  fn c_btoh(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a = self.pop_stack_i_bin();
+
+    self.stack.push(format!("{:x}", a));
+  }
+
+  fn c_htob(&mut self, op: &str) {
+    Interpreter::check_stack_error(self, 1, op);
+
+    let a = self.pop_stack_i_hex();
+
+    self.stack.push(format!("{:b}", a));
   }
 
   fn c_sin(&mut self, op: &str) {

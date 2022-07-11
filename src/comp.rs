@@ -834,33 +834,32 @@ fn show_help() {
     println!("    comp - command interpreter");
     println!();
     println!("{}", "USAGE".to_string().bold());
-    println!("    comp [version] [help]");
-    println!("    comp <list>");
-    println!("    comp -f <file>");
+    println!("    comp [OPTIONS] <list>");
+    println!("    comp -f <path>");
     println!();
     println!("{}", "OPTIONS".to_string().bold());
     println!("        --version      show version");
-    println!("    -f, --file         used to specify a path to a file");
-    println!("        --help         display help and usage information");
+    println!("    -f, --file         read from file at the specified path");
+    println!("        --help         show help information");
     println!();
     println!("{}", "DESCRIPTION".to_string().bold());
     println!("The interpreter takes a sequence of (postfix) operations \
-    <list> as command line arguments or a file argument <file> that specifies \
+    <list> as command line arguments or a file argument <path> that specifies \
     the path to a file containing a list of operations. Each operation is \
     either a command (symbol) or a value. As examples, 'comp 3 4 +' adds \
     the values 3 and 4 and '3 dup x 4 dup x +' computes the sum of the \
     squares of 3 and 4. The available commands are listed below.");
     println!();
-    println!("The usage guide can be found at https://github.com/usefulmove/\
-    comp/blob/main/USAGE.md.");
-    println!();
-    println!("{}", "COMMANDS".to_string().bold());
-    println!("{CMDS}");
+    println!("Usage Guide:  https://github.com/usefulmove/comp/blob/main/USAGE.md.");
+    println!("GitHub repo:  https://github.com/usefulmove/comp#readme");
     println!();
     println!("{}", "EXAMPLES".to_string().bold());
     println!("    comp 1 2 +                  add 1 and 2");
     println!("    comp 5 2 /                  divide 5 by 2");
     println!("    comp 3 dup x 4 dup x +      sum of the squares of 3 and 4");
+    println!();
+    println!("{}", "COMMANDS".to_string().bold());
+    println!("{CMDS}");
     println!();
 }
 

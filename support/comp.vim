@@ -1,6 +1,6 @@
 " Vim syntax file
 " Language:    comp
-" Filenames:   *.cm
+" Filenames:   *.cm *.cmp
 " URL:	       https://github.com/usefulmove/comp/blob/main/support/comp.vim
 
 
@@ -8,8 +8,9 @@
 
 " basic mathematical and logical operators
 syn keyword compOperators + +_ - x x_ / chs abs round int inv sqrt throot
-syn keyword compOperators proot ^ exp % mod ! gcd pi e dtor rtod
-syn keyword compOperators sin asin cos acos tan atan log log10 ln
+syn keyword compOperators proot ^ exp % mod ! gcd pi e d_r r_d
+syn keyword compOperators sin asin cos acos tan atan log log10 ln log2 logn
+syn keyword compOperators d_h h_d d_b b_d h_b b_h
 
 " stack manipulations
 syn keyword compStack drop dup swap cls clr roll rot

@@ -195,7 +195,7 @@ For this operation, the coefficients `a b c` of the quadratic equation `ax^2 + b
 2.718281828459045
 ```
 
-### convert degrees to radians / arcsine
+### convert degrees to radians (and reverse)
 ```
 % comp pi 2 /
 1.5707963267948966
@@ -256,6 +256,25 @@ For this operation, the coefficients `a b c` of the quadratic equation `ax^2 + b
 ```
 % comp e ln
 1
+```
+
+
+---
+## Commands (conversion)
+
+### convert between hexadecimal, binary, and decimal
+```
+% comp c0 h_d
+192
+
+% comp 192 d_h
+c0
+
+% comp 192 d_b
+1100000
+
+% comp 11000000 b_d
+192
 ```
 
 

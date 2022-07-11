@@ -8,7 +8,7 @@ use std::num::ParseIntError;
 use std::path::Display;
 use std::path::Path;
 
-const RELEASE_STATUS: &str = "q";
+const RELEASE_STATUS: &str = "r";
 
 /*
 
@@ -375,10 +375,10 @@ impl Interpreter {
     fn c_dup(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let end: usize = self.stack.len() - 1;
+        let o: String = self.stack[end].clone(); // remove last
 
-        self.stack.push(a.to_string());
-        self.stack.push(a.to_string());
+        self.stack.push(o);
     }
 
     fn c_swap(&mut self, op: &str) {

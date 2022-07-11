@@ -39,7 +39,7 @@ const RELEASE_STATUS: &str = "q";
 // -- command list -------------------------------------------------------------
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e d_r r_d sin asin cos acos tan \
-atan log log2 log10 ln logn sa .a a sb .b b sc .c c h_d d_h b_d d_h b_h h_b";
+atan log log2 log10 ln logn sa _a sb _b sc _c h_d d_h b_d d_h b_h h_b";
 
 fn main() {
     // enable or disable backtrace on error
@@ -194,14 +194,11 @@ impl Interpreter {
         self.compose_native("rot", Interpreter::c_rot); // rotate stack (reverse direction from roll)
                                                         // memory usage
         self.compose_native("sa", Interpreter::c_store_a); // store (pop value off stack and store)
-        self.compose_native(".a", Interpreter::c_store_a); // store (pop value off stack and store)
-        self.compose_native("a", Interpreter::c_push_a); // retrieve (push stored value onto the stack)
+        self.compose_native("_a", Interpreter::c_push_a); // retrieve (push stored value onto the stack)
         self.compose_native("sb", Interpreter::c_store_b); // store
-        self.compose_native(".b", Interpreter::c_store_b); // store
-        self.compose_native("b", Interpreter::c_push_b); // retrieve
+        self.compose_native("_b", Interpreter::c_push_b); // retrieve
         self.compose_native("sc", Interpreter::c_store_c); // store
-        self.compose_native(".c", Interpreter::c_store_c); // store
-        self.compose_native("c", Interpreter::c_push_c); // retrieve
+        self.compose_native("_c", Interpreter::c_push_c); // retrieve
                                                          // math operations
         self.compose_native("+", Interpreter::c_add); // add
         self.compose_native("+_", Interpreter::c_add_all); // add all

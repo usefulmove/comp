@@ -1,11 +1,8 @@
 use colored::*;
 use std::collections::HashMap;
 use std::env;
-use std::fs::File;
-use std::io::prelude::*;
-use std::num::ParseFloatError;
-use std::num::ParseIntError;
-use std::path::Display;
+use std::fs;
+use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
 const RELEASE_STATUS: &str = "r";
@@ -56,86 +53,59 @@ fn main() {
         args.push("help".to_string());
     }
 
-    if args[1] == "--help" || args[1] == "help" {
-        // display command usage information
-        show_help();
-        std::process::exit(0);
 
-    } else if args[1] == "--version" || args[1] == "version" {
-        // display version information
-        show_version();
-        std::process::exit(0);
-
-    } else if args[1] == "mona" {
-        println!("{MONA}");
-        std::process::exit(0);
-
-    } else if args[1] == "-f" || args[1] == "--file" {
-        // read operations list input from file
-        if args.len() > 2 {
-            // read file path
-            let filename: String = args[2].to_string();
-            let path: &Path = Path::new(&filename);
-            let display: Display = path.display();
-
-            // open file
-            let mut file: File = match File::open(&path) {
-                Ok(file) => file,
-                Err(error) => {
-                    eprintln!(
-                        "{}: could not open file [{}]: {error}",
-                        "error".bright_red(),
-                        display.to_string().cyan()
-                    );
-                    std::process::exit(99);
-                }
-            };
-
-            // read file contents
-            let mut file_contents: String = String::new();
-            match file.read_to_string(&mut file_contents) {
-                Ok(_) => (),
-                Err(error) => {
-                    eprintln!(
-                        "{}: could not read [{}]: {error}",
-                        "error".bright_red(),
-                        display.to_string().cyan()
-                    );
-                    std::process::exit(99);
-                }
-            };
-
-            // split individual list elements
-            let temp_ops: Vec<&str> = file_contents.split_whitespace().collect();
-
-            // create operations list vector from file contents
-            for op in temp_ops {
-                cinter.ops.push(op.to_string());
+    match args[1].as_str() {
+        "--help" | "help" => {
+            // display command usage information
+            show_help();
+            return;
+        }
+        "--version" | "version" => {
+            // display version information
+            show_version();
+            return;
+        }
+        "mona" => {
+            println!("{MONA}");
+            return;
+        }
+        "-f" | "--file" => {
+            // read operations list input from file
+            if args.get(2).is_none() {
+                eprintln!("{}: no file path provided", "error".bright_red());
+                return;
             }
 
-        } else {
-            eprintln!(
-                "{}: no file path provided",
-                "error".bright_red()
-            );
-            std::process::exit(99);
+            // read file contents
+            let filename: String = args[2].to_string();
+            let path: &Path = Path::new(&filename);
+            let file_contents = fs::read_to_string(&path);
 
+            if let Err(ref error) = file_contents {
+                eprintln!("{}: could not read [{}]: {error}", "error".bright_red(), path.display().to_string().cyan());
+                return;
+            }
+
+            let file_contents = file_contents.unwrap();
+
+            // split individual list elements
+            // create operations list vector from file contents
+            let operations = file_contents.split_whitespace().map(|it| it.to_string());
+            cinter.ops.extend(operations);
         }
-    } else {
-        // read operations list input from arguments
-        cinter.ops = (&args[1..]).to_vec();
-
-    }
+        _ => {
+            // read operations list input from arguments
+            cinter.ops = (&args[1..]).to_vec();
+        }
+    };
 
     // process operations list
     cinter.process_ops();
 
     // display resulting computation stack
     for element in cinter.stack {
-        println!("  {}", element.truecolor(0, 192, 255).bold());
+        println!("  {}", element.to_string().truecolor(0, 192, 255).bold());
     }
-
-    std::process::exit(0);
 }
 
 struct Function {

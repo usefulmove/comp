@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATUS: &str = "s";
+const RELEASE_STATUS: &str = "t";
 
 /*
 
@@ -99,9 +99,14 @@ fn main() {
             // create operations list vector from file contents - split elements
             let operations = file_contents.split_whitespace().map(|o| o.to_string());
             cinter.ops.extend(operations);
+
+            // add additional operations from command line
+            if args.get(3).is_some() {
+                cinter.ops.extend((&args[3..]).to_vec());
+            }
         }
         _ => {
-            // read operations list input from arguments
+            // read operations list input from command line arguments
             cinter.ops = (&args[1..]).to_vec();
         }
     };

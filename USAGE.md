@@ -200,10 +200,10 @@ For this operation, the coefficients `a b c` of the quadratic equation `ax^2 + b
 % comp pi 2 /
 1.5707963267948966
 
-% comp pi 2 / r_d
+% comp pi 2 / rad_deg
 90
 
-% comp 90 d_r
+% comp 90 deg_rad
 1.5707963267948966
 ```
 
@@ -264,22 +264,22 @@ For this operation, the coefficients `a b c` of the quadratic equation `ax^2 + b
 
 ### convert between hexadecimal, binary, and decimal
 ```
-% comp c0 h_d
+% comp c0 hex_dec
 192
 
-% comp 192 d_h
+% comp 192 dec_hex
 c0
 
-% comp 192 d_b
+% comp 192 dec_bin
 1100000
 
-% comp 11000000 b_d
+% comp 11000000 bin_dec
 192
 
-% comp 1100000 b_h
+% comp 1100000 bin_hex
 c0
 
-% comp c0 h_b
+% comp c0 hex_bin
 11000000
 ```
 
@@ -287,10 +287,10 @@ c0
 ---
 ## Commands (file usage)
 
-### --file option (also -f)
+### -f option (also --file)
 The file flag allows the use of commands defined within a source file.
 ```
-% comp --file <filename>
+% comp -f <filepath>
 ```
 
 
@@ -308,7 +308,7 @@ User-defined functions can be defined by indicating the start of a function with
 500
 ```
 
-Note that functions are most useful when combined with the file option. The cube function can be defined and executed in a source file and passed to the comp command using the file option.
+Note that functions are most useful when combined with the `-f` file option. The cube function can be defined and executed in a source file and passed to the comp command using the file option.
 ```
 ( cube.cm )
 ( note - comments are identified inside parentheses. 
@@ -319,30 +319,28 @@ fn cube
   3 ^
 end
 
-5 cube
-8 cube
-```
-```
-% comp -f cube.cm
-125
-512
-```
-
-Functions can also be nested and used in definitions of other user-defined functions. The cube function could also be defined by making use of a user-defined square function.
-```
-( cube.cm )
-
-fn cube
-  dup square x
-end
-
-fn square
-  dup x
-end
-
 8 cube
 ```
 ```
 % comp -f cube.cm
 512
+```
+
+Functions also can be defined in a file and used in operations passed after the file has been processed.
+```
+( temperature.cm )
+
+fn CtoF
+  9 x 5 /
+  32 +
+end
+
+fn FtoC
+  32 -
+  5 x 9 /
+end
+```
+```
+% comp -f temperature.cm 0 CtoF
+32
 ```

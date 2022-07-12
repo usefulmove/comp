@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATUS: &str = "t";
+const RELEASE_STATUS: &str = "u";
 
 /*
 
@@ -35,8 +35,9 @@ const RELEASE_STATUS: &str = "t";
 
 // -- command list -------------------------------------------------------------
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
-int inv sqrt throot proot ^ exp % mod ! gcd pi e d_r r_d sin asin cos acos tan \
-atan log log2 log10 ln logn sa _a sb _b sc _c h_d d_h b_d d_h b_h h_b";
+int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
+acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
+bin_dec hex_bin bin_hex";
 
 
 fn main() {
@@ -168,65 +169,65 @@ impl Interpreter {
 
     fn init(&mut self) {
         // stack manipulation
-        self.compose_native("drop", Interpreter::c_drop);     // drop
-        self.compose_native("dup", Interpreter::c_dup);       // duplicate
-        self.compose_native("swap", Interpreter::c_swap);     // swap x and y
-        self.compose_native("cls", Interpreter::c_cls);       // clear stack
-        self.compose_native("clr", Interpreter::c_cls);       // clear stack
-        self.compose_native("roll", Interpreter::c_roll);     // roll stack
-        self.compose_native("rot", Interpreter::c_rot);       // rotate stack (reverse direction from roll)
-                                                              // memory usage
-        self.compose_native("sa", Interpreter::c_store_a);    // store (pop value off stack and store)
-        self.compose_native("_a", Interpreter::c_push_a);     // retrieve (push stored value onto the stack)
-        self.compose_native("sb", Interpreter::c_store_b);    // store
-        self.compose_native("_b", Interpreter::c_push_b);     // retrieve
-        self.compose_native("sc", Interpreter::c_store_c);    // store
-        self.compose_native("_c", Interpreter::c_push_c);     // retrieve
+        self.compose_native("drop",    Interpreter::c_drop);     // drop
+        self.compose_native("dup",     Interpreter::c_dup);      // duplicate
+        self.compose_native("swap",    Interpreter::c_swap);     // swap x and y
+        self.compose_native("cls",     Interpreter::c_cls);      // clear stack
+        self.compose_native("clr",     Interpreter::c_cls);      // clear stack
+        self.compose_native("roll",    Interpreter::c_roll);     // roll stack
+        self.compose_native("rot",     Interpreter::c_rot);      // rotate stack (reverse direction from roll)
+        // memory usage
+        self.compose_native("sa",      Interpreter::c_store_a);  // store (pop value off stack and store)
+        self.compose_native("_a",      Interpreter::c_push_a);   // retrieve (push stored value onto the stack)
+        self.compose_native("sb",      Interpreter::c_store_b);  // store
+        self.compose_native("_b",      Interpreter::c_push_b);   // retrieve
+        self.compose_native("sc",      Interpreter::c_store_c);  // store
+        self.compose_native("_c",      Interpreter::c_push_c);   // retrieve
         // math operations
-        self.compose_native("+", Interpreter::c_add);         // add
-        self.compose_native("+_", Interpreter::c_add_all);    // add all
-        self.compose_native("-", Interpreter::c_sub);         // subtract
-        self.compose_native("x", Interpreter::c_mult);        // multiply
-        self.compose_native("x_", Interpreter::c_mult_all);   // multiply all
-        self.compose_native("/", Interpreter::c_div);         // divide
-        self.compose_native("chs", Interpreter::c_chs);       // change sign
-        self.compose_native("abs", Interpreter::c_abs);       // absolute value
-        self.compose_native("round", Interpreter::c_round);   // round
-        self.compose_native("int", Interpreter::c_round);
-        self.compose_native("inv", Interpreter::c_inv);       // invert (1/x)
-        self.compose_native("sqrt", Interpreter::c_sqrt);     // square root
-        self.compose_native("throot", Interpreter::c_throot); // nth root
-        self.compose_native("proot", Interpreter::c_proot);   // find principal roots
-        self.compose_native("^", Interpreter::c_exp);         // exponentiation
-        self.compose_native("exp", Interpreter::c_exp);
-        self.compose_native("%", Interpreter::c_mod);         // modulus
-        self.compose_native("mod", Interpreter::c_mod);
-        self.compose_native("!", Interpreter::c_fact);        // factorial
-        self.compose_native("gcd", Interpreter::c_gcd);       // greatest common divisor
-        self.compose_native("pi", Interpreter::c_pi);         // pi
-        self.compose_native("e", Interpreter::c_euler);       // Euler's constant
-        self.compose_native("d_r", Interpreter::c_dtor);      // degrees to radians
-        self.compose_native("r_d", Interpreter::c_rtod);      // radians to degrees
-        self.compose_native("d_h", Interpreter::c_dtoh);      // decimal to hexadecimal
-        self.compose_native("h_d", Interpreter::c_htod);      // hexadecimal to decimal
-        self.compose_native("d_b", Interpreter::c_dtob);      // decimal to binary
-        self.compose_native("b_d", Interpreter::c_btod);      // binary to decimal
-        self.compose_native("b_h", Interpreter::c_btoh);      // binary to hexadecimal
-        self.compose_native("h_b", Interpreter::c_htob);      // hexadecimal to binary
-        self.compose_native("sin", Interpreter::c_sin);       // sine
-        self.compose_native("asin", Interpreter::c_asin);     // arcsine
-        self.compose_native("cos", Interpreter::c_cos);       // cosine
-        self.compose_native("acos", Interpreter::c_acos);     // arccosine
-        self.compose_native("tan", Interpreter::c_tan);       // tangent
-        self.compose_native("atan", Interpreter::c_atan);     // arctangent
-        self.compose_native("log2", Interpreter::c_log2);     // logarithm (base 2)
-        self.compose_native("log", Interpreter::c_log10);     // logarithm (base 10)
-        self.compose_native("log10", Interpreter::c_log10);
-        self.compose_native("logn", Interpreter::c_logn);     // logarithm (base n)
-        self.compose_native("ln", Interpreter::c_ln);         // natural logarithm
+        self.compose_native("+",       Interpreter::c_add);      // add
+        self.compose_native("+_",      Interpreter::c_add_all);  // add all
+        self.compose_native("-",       Interpreter::c_sub);      // subtract
+        self.compose_native("x",       Interpreter::c_mult);     // multiply
+        self.compose_native("x_",      Interpreter::c_mult_all); // multiply all
+        self.compose_native("/",       Interpreter::c_div);      // divide
+        self.compose_native("chs",     Interpreter::c_chs);      // change sign
+        self.compose_native("abs",     Interpreter::c_abs);      // absolute value
+        self.compose_native("round",   Interpreter::c_round);    // round
+        self.compose_native("int",     Interpreter::c_round);
+        self.compose_native("inv",     Interpreter::c_inv);      // invert (1/x)
+        self.compose_native("sqrt",    Interpreter::c_sqrt);     // square root
+        self.compose_native("throot",  Interpreter::c_throot);   // nth root
+        self.compose_native("proot",   Interpreter::c_proot);    // find principal roots
+        self.compose_native("^",       Interpreter::c_exp);      // exponentiation
+        self.compose_native("exp",     Interpreter::c_exp);
+        self.compose_native("%",       Interpreter::c_mod);      // modulus
+        self.compose_native("mod",     Interpreter::c_mod);
+        self.compose_native("!",       Interpreter::c_fact);     // factorial
+        self.compose_native("gcd",     Interpreter::c_gcd);      // greatest common divisor
+        self.compose_native("pi",      Interpreter::c_pi);       // pi
+        self.compose_native("e",       Interpreter::c_euler);    // Euler's constant
+        self.compose_native("deg_rad", Interpreter::c_degrad);   // degrees to radians
+        self.compose_native("rad_deg", Interpreter::c_raddeg);   // radians to degrees
+        self.compose_native("dec_hex", Interpreter::c_dechex);   // decimal to hexadecimal
+        self.compose_native("hex_dec", Interpreter::c_hexdec);   // hexadecimal to decimal
+        self.compose_native("dec_bin", Interpreter::c_decbin);   // decimal to binary
+        self.compose_native("bin_dec", Interpreter::c_bindec);   // binary to decimal
+        self.compose_native("bin_hex", Interpreter::c_binhex);   // binary to hexadecimal
+        self.compose_native("hex_bin", Interpreter::c_hexbin);   // hexadecimal to binary
+        self.compose_native("sin",     Interpreter::c_sin);      // sine
+        self.compose_native("asin",    Interpreter::c_asin);     // arcsine
+        self.compose_native("cos",     Interpreter::c_cos);      // cosine
+        self.compose_native("acos",    Interpreter::c_acos);     // arccosine
+        self.compose_native("tan",     Interpreter::c_tan);      // tangent
+        self.compose_native("atan",    Interpreter::c_atan);     // arctangent
+        self.compose_native("log2",    Interpreter::c_log2);     // logarithm (base 2)
+        self.compose_native("log",     Interpreter::c_log10);    // logarithm (base 10)
+        self.compose_native("log10",   Interpreter::c_log10);
+        self.compose_native("logn",    Interpreter::c_logn);     // logarithm (base n)
+        self.compose_native("ln",      Interpreter::c_ln);       // natural logarithm
         // control flow
-        self.compose_native("fn", Interpreter::c_fn);         // function definition
-        self.compose_native("(", Interpreter::c_comment);     // function definition
+        self.compose_native("fn",      Interpreter::c_fn);       // function definition
+        self.compose_native("(",       Interpreter::c_comment);  // function comment
     }
 
     fn process_node(&mut self, op: &str) {
@@ -595,7 +596,7 @@ impl Interpreter {
         self.stack.push(std::f64::consts::E.to_string());
     }
 
-    fn c_dtor(&mut self, op: &str) {
+    fn c_degrad(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_f();
@@ -603,7 +604,7 @@ impl Interpreter {
         self.stack.push((a.to_radians()).to_string());
     }
 
-    fn c_rtod(&mut self, op: &str) {
+    fn c_raddeg(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_f();
@@ -611,7 +612,7 @@ impl Interpreter {
         self.stack.push((a.to_degrees()).to_string());
     }
 
-    fn c_dtoh(&mut self, op: &str) {
+    fn c_dechex(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
         let a: u64 = self.pop_stack_u();
@@ -619,7 +620,7 @@ impl Interpreter {
         self.stack.push(format!("{:x}", a));
     }
 
-    fn c_htod(&mut self, op: &str) {
+    fn c_hexdec(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_i_hex();
@@ -627,7 +628,7 @@ impl Interpreter {
         self.stack.push(a.to_string());
     }
 
-    fn c_dtob(&mut self, op: &str) {
+    fn c_decbin(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
         let a: u64 = self.pop_stack_u();
@@ -635,7 +636,7 @@ impl Interpreter {
         self.stack.push(format!("{:b}", a));
     }
 
-    fn c_btod(&mut self, op: &str) {
+    fn c_bindec(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_i_bin();
@@ -643,7 +644,7 @@ impl Interpreter {
         self.stack.push(a.to_string());
     }
 
-    fn c_btoh(&mut self, op: &str) {
+    fn c_binhex(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_i_bin();
@@ -651,7 +652,7 @@ impl Interpreter {
         self.stack.push(format!("{:x}", a));
     }
 
-    fn c_htob(&mut self, op: &str) {
+    fn c_hexbin(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_i_hex();

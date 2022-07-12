@@ -1,0 +1,9 @@
+fn CtoF
+  9 x 5 /
+  32 +
+end
+
+fn FtoC
+  32 -
+  5 x 9 /
+end

@@ -13,24 +13,26 @@ mod comp_tests {
     test_cinter.stack.push(3.0.to_string());
     test_cinter.stack.push(4.0.to_string());
 
-    test_cinter.c_dtoh("o");
-    test_cinter.c_htod("o");
-    test_cinter.c_dtob("o");
-    test_cinter.c_btod("o");
+    test_cinter.c_dechex("o");
+    test_cinter.c_hexbin("o");
+    test_cinter.c_binhex("o");
+    test_cinter.c_hexdec("o");
+    test_cinter.c_decbin("o");
+    test_cinter.c_bindec("o");
 
     test_cinter.c_rot("o");
     test_cinter.c_rot("o");
     test_cinter.c_roll("o");
     test_cinter.c_roll("o");
 
-    test_cinter.c_dtor("o");
+    test_cinter.c_degrad("o");
     test_cinter.c_cos("o");
     test_cinter.c_acos("o");
     test_cinter.c_sin("o");
     test_cinter.c_asin("o");
     test_cinter.c_tan("o");
     test_cinter.c_atan("o");
-    test_cinter.c_rtod("o");
+    test_cinter.c_raddeg("o");
     test_cinter.c_round("o");
     test_cinter.c_roll("o");
     test_cinter.c_roll("o");

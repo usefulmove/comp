@@ -38,6 +38,7 @@ const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e d_r r_d sin asin cos acos tan \
 atan log log2 log10 ln logn sa _a sb _b sc _c h_d d_h b_d d_h b_h h_b";
 
+
 fn main() {
     // enable or disable backtrace on error
     env::set_var("RUST_BACKTRACE", "0");
@@ -76,7 +77,7 @@ fn main() {
                     "  {}: no file path provided",
                     "error".bright_red()
                 );
-                return;
+                std::process::exit(99);
             }
 
             // read file contents
@@ -90,7 +91,7 @@ fn main() {
                     "error".bright_red(),
                     path.display().to_string().cyan()
                 );
-                return;
+                std::process::exit(99);
             }
 
             let file_contents = file_contents.unwrap();
@@ -112,6 +113,7 @@ fn main() {
     for element in cinter.stack {
         println!("  {}", element.truecolor(0, 192, 255).bold());
     }
+
 }
 
 struct Function {
@@ -223,8 +225,7 @@ impl Interpreter {
     }
 
     fn process_node(&mut self, op: &str) {
-        if self.cmap.contains_key(op) {
-            // native comp command?
+        if self.cmap.contains_key(op) { // native comp command?
             let f = self.cmap[op];
             f(self, op);
         } else {
@@ -253,7 +254,8 @@ impl Interpreter {
             Ok(val) => val, // parse success
             Err(_error) => { // parse fail
                 eprintln!(
-                    "  {}: unknown expression [{}] is not a recognized operation or valid value (f)",
+                    "  {}: unknown expression [{}] is not a recognized operation \
+                    or valid value (f)",
                     "error".bright_red(),
                     element.cyan()
                 );
@@ -268,7 +270,8 @@ impl Interpreter {
             Ok(val) => val, // parse success
             Err(_error) => { // parse fail
                 eprintln!(
-                    "  {}: unknown expression [{}] is not a recognized operation or valid value (u)",
+                    "  {}: unknown expression [{}] is not a recognized operation \
+                    or valid value (u)",
                     "error".bright_red(),
                     element.cyan()
                 );
@@ -285,7 +288,8 @@ impl Interpreter {
             Err(_error) => {
                 // parse fail
                 eprintln!(
-                    "  {}: unknown expression [{}] is not a recognized operation or valid value (i_h)",
+                    "  {}: unknown expression [{}] is not a recognized operation \
+                    or valid value (i_h)",
                     "error".bright_red(),
                     element.cyan()
                 );
@@ -302,7 +306,8 @@ impl Interpreter {
             Err(_error) => {
                 // parse fail
                 eprintln!(
-                    "  {}: unknown expression [{}] is not a recognized operation or valid value (i_b)",
+                    "  {}: unknown expression [{}] is not a recognized operation \
+                    or valid value (i_b)",
                     "error".bright_red(),
                     element.cyan()
                 );
@@ -326,7 +331,8 @@ impl Interpreter {
     fn check_stack_error(&self, min_depth: usize, command: &str) {
         if self.stack.len() < min_depth {
             eprintln!(
-                "  {}: [{}] operation called without at least {min_depth} element(s) on stack",
+                "  {}: [{}] operation called without at least {min_depth} \
+                element(s) on stack",
                 "error".bright_red(),
                 command.to_string().cyan()
             );
@@ -529,15 +535,15 @@ impl Interpreter {
         let a: f64 = self.pop_stack_f();
 
         if (b*b - 4.0*a*c) < 0.0 {
-            self.stack.push((-1.0*b/(2.0*a)).to_string()); // root_1 real
-            self.stack.push(((4.0*a*c-b*b).sqrt()/(2.0*a)).to_string()); // root_1 imag
-            self.stack.push((-1.0*b/(2.0*a)).to_string()); // root_2 real
-            self.stack.push((-1.0*(4.0*a*c-b*b).sqrt()/(2.0*a)).to_string()); // root_2 imag
+            self.stack.push((-1.0*b/(2.0*a)).to_string()); // r_1 real
+            self.stack.push(((4.0*a*c-b*b).sqrt()/(2.0*a)).to_string()); // r_1 imag
+            self.stack.push((-1.0*b/(2.0*a)).to_string()); // r_2 real
+            self.stack.push((-1.0*(4.0*a*c-b*b).sqrt()/(2.0*a)).to_string()); // r_2 imag
           } else {
-            self.stack.push((-1.0*b+(b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // root_1 real
-            self.stack.push(0.0.to_string()); // root_1 imag
-            self.stack.push((-1.0*b-(b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // root_2 real
-            self.stack.push(0.0.to_string()); // root_2 imag
+            self.stack.push((-1.0*b+(b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // r_1 real
+            self.stack.push(0.0.to_string()); // r_1 imag
+            self.stack.push((-1.0*b-(b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // r_2 real
+            self.stack.push(0.0.to_string()); // r_2 imag
         }
     }
 

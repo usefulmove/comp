@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/usefulmove/comp/main/assets/system-preferences-icon-64x64.png" align="right"/>
 
-![](https://img.shields.io/badge/stable-0.20.4-success?style=plastic)
+![](https://img.shields.io/badge/stable-0.20.5-success?style=plastic)
 ![](https://img.shields.io/badge/license-MIT-informational?style=plastic)
 
 * [Installation][2]
@@ -21,7 +21,7 @@ The basic usage of the comp interpreter can be accessed in the output of the `co
 comp help
 ```
 
-![](https://raw.githubusercontent.com/usefulmove/comp/main/usage.png)
+![](https://raw.githubusercontent.com/usefulmove/comp/main/assets/usage.png)
 
 ---
 

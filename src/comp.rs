@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATUS: &str = "u";
+const RELEASE_STATUS: &str = "";
 
 /*
 

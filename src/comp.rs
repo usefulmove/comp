@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATUS: &str = "";
+const RELEASE_STATUS: &str = "a";
 
 /*
 
@@ -37,7 +37,7 @@ const RELEASE_STATUS: &str = "";
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
-bin_dec hex_bin bin_hex";
+bin_dec hex_bin bin_hex mi_km km_mi";
 
 
 fn main() {
@@ -208,12 +208,6 @@ impl Interpreter {
         self.compose_native("e",       Interpreter::c_euler);    // Euler's constant
         self.compose_native("deg_rad", Interpreter::c_degrad);   // degrees to radians
         self.compose_native("rad_deg", Interpreter::c_raddeg);   // radians to degrees
-        self.compose_native("dec_hex", Interpreter::c_dechex);   // decimal to hexadecimal
-        self.compose_native("hex_dec", Interpreter::c_hexdec);   // hexadecimal to decimal
-        self.compose_native("dec_bin", Interpreter::c_decbin);   // decimal to binary
-        self.compose_native("bin_dec", Interpreter::c_bindec);   // binary to decimal
-        self.compose_native("bin_hex", Interpreter::c_binhex);   // binary to hexadecimal
-        self.compose_native("hex_bin", Interpreter::c_hexbin);   // hexadecimal to binary
         self.compose_native("sin",     Interpreter::c_sin);      // sine
         self.compose_native("asin",    Interpreter::c_asin);     // arcsine
         self.compose_native("cos",     Interpreter::c_cos);      // cosine
@@ -228,6 +222,15 @@ impl Interpreter {
         // control flow
         self.compose_native("fn",      Interpreter::c_fn);       // function definition
         self.compose_native("(",       Interpreter::c_comment);  // function comment
+        // conversion
+        self.compose_native("dec_hex", Interpreter::c_dechex);   // decimal to hexadecimal
+        self.compose_native("hex_dec", Interpreter::c_hexdec);   // hexadecimal to decimal
+        self.compose_native("dec_bin", Interpreter::c_decbin);   // decimal to binary
+        self.compose_native("bin_dec", Interpreter::c_bindec);   // binary to decimal
+        self.compose_native("bin_hex", Interpreter::c_binhex);   // binary to hexadecimal
+        self.compose_native("hex_bin", Interpreter::c_hexbin);   // hexadecimal to binary
+        self.compose_native("mi_km", Interpreter::c_mikm);       // miles to kilometers
+        self.compose_native("km_mi", Interpreter::c_kmmi);       // kilometers to miles
     }
 
     fn process_node(&mut self, op: &str) {
@@ -612,54 +615,6 @@ impl Interpreter {
         self.stack.push((a.to_degrees()).to_string());
     }
 
-    fn c_dechex(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
-
-        let a: u64 = self.pop_stack_u();
-
-        self.stack.push(format!("{:x}", a));
-    }
-
-    fn c_hexdec(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
-
-        let a = self.pop_stack_i_hex();
-
-        self.stack.push(a.to_string());
-    }
-
-    fn c_decbin(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
-
-        let a: u64 = self.pop_stack_u();
-
-        self.stack.push(format!("{:b}", a));
-    }
-
-    fn c_bindec(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
-
-        let a = self.pop_stack_i_bin();
-
-        self.stack.push(a.to_string());
-    }
-
-    fn c_binhex(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
-
-        let a = self.pop_stack_i_bin();
-
-        self.stack.push(format!("{:x}", a));
-    }
-
-    fn c_hexbin(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
-
-        let a = self.pop_stack_i_hex();
-
-        self.stack.push(format!("{:b}", a));
-    }
-
     fn c_sin(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
@@ -741,6 +696,71 @@ impl Interpreter {
         self.stack.push((a.ln()).to_string());
     }
 
+    // -- conversions ----------------------------------------------------------
+
+    fn c_dechex(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a: u64 = self.pop_stack_u();
+
+        self.stack.push(format!("{:x}", a));
+    }
+
+    fn c_hexdec(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a = self.pop_stack_i_hex();
+
+        self.stack.push(a.to_string());
+    }
+
+    fn c_decbin(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a: u64 = self.pop_stack_u();
+
+        self.stack.push(format!("{:b}", a));
+    }
+
+    fn c_bindec(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a = self.pop_stack_i_bin();
+
+        self.stack.push(a.to_string());
+    }
+
+    fn c_binhex(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a = self.pop_stack_i_bin();
+
+        self.stack.push(format!("{:x}", a));
+    }
+
+    fn c_hexbin(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a = self.pop_stack_i_hex();
+
+        self.stack.push(format!("{:b}", a));
+    }
+
+    fn c_mikm(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a = self.pop_stack_f();
+
+        self.stack.push((a*1.609344).to_string());
+    }
+
+    fn c_kmmi(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a = self.pop_stack_f();
+
+        self.stack.push((a/1.609344).to_string());
+    }
     // -- control flow ---------------------------------------------------------
 
     fn c_fn(&mut self, _op: &str) {

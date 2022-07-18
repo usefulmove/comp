@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATUS: &str = "b";
+const RELEASE_STATUS: &str = "c";
 
 /*
 
@@ -891,7 +891,7 @@ impl Interpreter {
 
 fn show_help() {
     println!();
-    println!("{}", "NAME".to_string().bold());
+    println!("{}", "COMP".to_string().bold());
     println!("    comp - command interpreter");
     println!();
     println!("{}", "USAGE".to_string().bold());
@@ -899,34 +899,45 @@ fn show_help() {
     println!("    comp -f <path>");
     println!();
     println!("{}", "OPTIONS".to_string().bold());
-    println!("        --version      show version");
-    println!("    -f, --file         read from file at the specified path");
-    println!("        --help         show help information");
+    println!("        {}      show version",
+             "--version".truecolor(192, 192, 192));
+    println!("    {}, {}         read from file at the specified path",
+             "-f".truecolor(192, 192, 192),
+             "--file".truecolor(192, 192, 192));
+    println!("        {}         show help information",
+             "--help".truecolor(192, 192, 192));
     println!();
     println!("{}", "DESCRIPTION".to_string().bold());
-    println!("The interpreter takes a sequence of (postfix) operations \
-    <list> as command line arguments or a file argument <path> that specifies \
-    the path to a file containing a list of operations. Each operation is \
-    either a command (symbol) or a value. As examples, 'comp 3 4 +' adds \
-    the values 3 and 4 and '3 dup x 4 dup x +' computes the sum of the \
-    squares of 3 and 4. The available commands are listed below.");
+    println!("The comp interpreter takes a {} sequence of (postfix) operations \
+    as command line arguments or a {} argument that specifies the path to a \
+    file containing a list of operations. Each operation is either a command \
+    (symbol) or a value. The available commands are listed below.",
+             "<list>".truecolor(192, 192, 192),
+             "<path>".truecolor(192, 192, 192));
     println!();
-    println!("Usage Guide:  https://github.com/usefulmove/comp/blob/main/USAGE.md.");
-    println!("GitHub repo:  https://github.com/usefulmove/comp#readme");
+    println!("    Usage Guide:  {}",
+             "https://github.com/usefulmove/comp/blob/main/USAGE.md.".truecolor(192, 192, 192));
+    println!("    Repository:    {}",
+             "https://github.com/usefulmove/comp#readme".truecolor(192, 192, 192));
     println!();
     println!("{}", "EXAMPLES".to_string().bold());
-    println!("    comp 1 2 +                  add 1 and 2");
-    println!("    comp 5 2 /                  divide 5 by 2");
-    println!("    comp 3 dup x 4 dup x +      sum of the squares of 3 and 4");
+    println!("    {}                  add 1 and 2",
+             "comp 1 2 +".truecolor(192, 192, 192));
+    println!("    {}                  divide 5 by 2",
+             "comp 5 2 /".truecolor(192, 192, 192));
+    println!("    {}      sum of the squares of 3 and 4",
+             "comp 3 dup x 4 dup x +".truecolor(192, 192, 192));
     println!();
     println!("{}", "COMMANDS".to_string().bold());
-    println!("{CMDS}");
+    println!("{}", CMDS.truecolor(192, 192, 192));
     println!();
 }
 
 fn show_version() {
     let version: &str = env!("CARGO_PKG_VERSION");
-    println!("  comp {}", version.to_string() + RELEASE_STATUS);
+    println!("  comp {}{}",
+             version.to_string(),
+             RELEASE_STATUS.truecolor(192, 192, 192));
 }
 
 // -- mona ---------------------------------------------------------------------

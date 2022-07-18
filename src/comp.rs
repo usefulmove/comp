@@ -936,7 +936,7 @@ fn show_help() {
 fn show_version() {
     let version: &str = env!("CARGO_PKG_VERSION");
     println!("  comp {}{}",
-             version.to_string(),
+             version,
              RELEASE_STATUS.truecolor(192, 192, 192));
 }
 

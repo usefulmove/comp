@@ -13,6 +13,9 @@ mod comp_tests {
     test_cinter.stack.push(3.0.to_string());
     test_cinter.stack.push(4.0.to_string());
 
+    test_cinter.c_add_one("o");
+    test_cinter.c_sub_one("o");
+
     test_cinter.c_dechex("o");
     test_cinter.c_hexbin("o");
     test_cinter.c_binhex("o");
@@ -55,7 +58,7 @@ mod comp_tests {
     test_cinter.c_round("o");
     test_cinter.c_add("o");
 
-    assert!(test_cinter.pop_stack_f() == -0.2);
+    assert!(test_cinter.pop_stack_float() == -0.2);
   }
 
   #[test]
@@ -77,7 +80,7 @@ mod comp_tests {
     test_cinter.stack.push((32.0 * 2.0).to_string());
     test_cinter.c_throot("o");
 
-    assert!(test_cinter.pop_stack_f() == test_cinter.pop_stack_f());
+    assert!(test_cinter.pop_stack_float() == test_cinter.pop_stack_float());
 
     test_cinter.stack.push(1.0.to_string());
     test_cinter.stack.push((-2.0).to_string());
@@ -96,7 +99,7 @@ mod comp_tests {
     test_cinter.c_div("o");
     test_cinter.c_pi("o");
 
-    assert!(test_cinter.pop_stack_f() == test_cinter.pop_stack_f());
+    assert!(test_cinter.pop_stack_float() == test_cinter.pop_stack_float());
   }
 
   #[test]
@@ -118,7 +121,7 @@ mod comp_tests {
     test_cinter.stack.push(4.0.to_string());
     test_cinter.c_cls("o");
 
-    assert!(test_cinter.pop_stack_f() == 0.0);
+    assert!(test_cinter.pop_stack_float() == 0.0);
   }
 
   #[test]
@@ -154,7 +157,7 @@ mod comp_tests {
     test_cinter.c_push_a("o"); // e
     test_cinter.c_add("o");
 
-    assert!(test_cinter.pop_stack_f() == std::f64::consts::PI + std::f64::consts::E);
+    assert!(test_cinter.pop_stack_float() == std::f64::consts::PI + std::f64::consts::E);
   }
 
   #[test]
@@ -173,11 +176,11 @@ mod comp_tests {
     test_cinter.c_gcd("o");
     test_cinter.c_mult_all("o");
 
-    assert!(test_cinter.pop_stack_f() == 1.0);
+    assert!(test_cinter.pop_stack_float() == 1.0);
 
     test_cinter.stack.push(20.0.to_string());
     test_cinter.c_fact("o");
 
-    assert!(test_cinter.pop_stack_f() == 2432902008176640000.0);
+    assert!(test_cinter.pop_stack_float() == 2432902008176640000.0);
   }
 }

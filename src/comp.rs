@@ -262,7 +262,7 @@ impl Interpreter {
     }
 
     // pop from stack helpers --------------------------------------------------
-    fn pop_stack_f(&mut self) -> f64 {
+    fn pop_stack_float(&mut self) -> f64 {
         let element: String = self.stack.pop().unwrap();
         match self.parse_float(&element) {
             Ok(val) => val, // parse success
@@ -278,7 +278,7 @@ impl Interpreter {
         }
     }
 
-    fn pop_stack_u(&mut self) -> u64 {
+    fn pop_stack_uint(&mut self) -> u64 {
         let element: String = self.stack.pop().unwrap();
         match self.parse_uint(&element) {
             Ok(val) => val, // parse success
@@ -294,7 +294,7 @@ impl Interpreter {
         }
     }
 
-    fn pop_stack_i_hex(&mut self) -> i64 {
+    fn pop_stack_int_hex(&mut self) -> i64 {
         let element: String = self.stack.pop().unwrap();
 
         match i64::from_str_radix(&element, 16) {
@@ -312,7 +312,7 @@ impl Interpreter {
         }
     }
 
-    fn pop_stack_i_bin(&mut self) -> i64 {
+    fn pop_stack_int_bin(&mut self) -> i64 {
         let element: String = self.stack.pop().unwrap();
 
         match i64::from_str_radix(&element, 2) {
@@ -411,7 +411,7 @@ impl Interpreter {
     fn c_store_a(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        self.mem_a = self.pop_stack_f();
+        self.mem_a = self.pop_stack_float();
     }
 
     fn c_push_a(&mut self, _op: &str) {
@@ -421,7 +421,7 @@ impl Interpreter {
     fn c_store_b(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        self.mem_b = self.pop_stack_f();
+        self.mem_b = self.pop_stack_float();
     }
 
     fn c_push_b(&mut self, _op: &str) {
@@ -431,7 +431,7 @@ impl Interpreter {
     fn c_store_c(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        self.mem_c = self.pop_stack_f();
+        self.mem_c = self.pop_stack_float();
     }
 
     fn c_push_c(&mut self, _op: &str) {
@@ -443,8 +443,8 @@ impl Interpreter {
     fn c_add(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 2, op);
 
-        let b: f64 = self.pop_stack_f();
-        let a: f64 = self.pop_stack_f();
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a + b).to_string());
     }
@@ -460,7 +460,7 @@ impl Interpreter {
     fn c_add_one(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a + 1.0).to_string());
     }
@@ -468,8 +468,8 @@ impl Interpreter {
     fn c_sub(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 2, op);
 
-        let b: f64 = self.pop_stack_f();
-        let a: f64 = self.pop_stack_f();
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a - b).to_string());
     }
@@ -477,7 +477,7 @@ impl Interpreter {
     fn c_sub_one(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a - 1.0).to_string());
     }
@@ -485,8 +485,8 @@ impl Interpreter {
     fn c_mult(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 2, op);
 
-        let b: f64 = self.pop_stack_f();
-        let a: f64 = self.pop_stack_f();
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a * b).to_string());
     }
@@ -502,8 +502,8 @@ impl Interpreter {
     fn c_div(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 2, op);
 
-        let b: f64 = self.pop_stack_f();
-        let a: f64 = self.pop_stack_f();
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a / b).to_string());
     }
@@ -511,7 +511,7 @@ impl Interpreter {
     fn c_chs(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((-1.0 * a).to_string());
     }
@@ -519,7 +519,7 @@ impl Interpreter {
     fn c_abs(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.abs()).to_string());
     }
@@ -527,7 +527,7 @@ impl Interpreter {
     fn c_round(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.round()).to_string());
     }
@@ -535,7 +535,7 @@ impl Interpreter {
     fn c_inv(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((1.0 / a).to_string());
     }
@@ -543,7 +543,7 @@ impl Interpreter {
     fn c_sqrt(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.sqrt()).to_string());
     }
@@ -551,8 +551,8 @@ impl Interpreter {
     fn c_throot(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 2, op);
 
-        let b: f64 = self.pop_stack_f();
-        let a: f64 = self.pop_stack_f();
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.powf(1.0 / b)).to_string());
     }
@@ -560,9 +560,9 @@ impl Interpreter {
     fn c_proot(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 3, op);
 
-        let c: f64 = self.pop_stack_f();
-        let b: f64 = self.pop_stack_f();
-        let a: f64 = self.pop_stack_f();
+        let c: f64 = self.pop_stack_float();
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
 
         if (b*b - 4.0*a*c) < 0.0 {
             self.stack.push((-1.0*b/(2.0*a)).to_string()); // r_1 real
@@ -580,8 +580,8 @@ impl Interpreter {
     fn c_exp(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 2, op);
 
-        let b: f64 = self.pop_stack_f();
-        let a: f64 = self.pop_stack_f();
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.powf(b)).to_string());
     }
@@ -589,8 +589,8 @@ impl Interpreter {
     fn c_mod(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 2, op);
 
-        let b: f64 = self.pop_stack_f();
-        let a: f64 = self.pop_stack_f();
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a % b).to_string());
     }
@@ -598,7 +598,7 @@ impl Interpreter {
     fn c_fact(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((Interpreter::factorial(a)).to_string());
     }
@@ -606,8 +606,8 @@ impl Interpreter {
     fn c_gcd(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 2, op);
 
-        let b: u64 = self.pop_stack_u();
-        let a: u64 = self.pop_stack_u();
+        let b: u64 = self.pop_stack_uint();
+        let a: u64 = self.pop_stack_uint();
 
         self.stack.push(Interpreter::gcd(a, b).to_string());
     }
@@ -623,7 +623,7 @@ impl Interpreter {
     fn c_degrad(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.to_radians()).to_string());
     }
@@ -631,7 +631,7 @@ impl Interpreter {
     fn c_raddeg(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.to_degrees()).to_string());
     }
@@ -639,7 +639,7 @@ impl Interpreter {
     fn c_sin(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.sin()).to_string());
     }
@@ -647,7 +647,7 @@ impl Interpreter {
     fn c_asin(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.asin()).to_string());
     }
@@ -655,7 +655,7 @@ impl Interpreter {
     fn c_cos(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.cos()).to_string());
     }
@@ -663,7 +663,7 @@ impl Interpreter {
     fn c_acos(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.acos()).to_string());
     }
@@ -671,7 +671,7 @@ impl Interpreter {
     fn c_tan(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.tan()).to_string());
     }
@@ -679,7 +679,7 @@ impl Interpreter {
     fn c_atan(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.atan()).to_string());
     }
@@ -687,7 +687,7 @@ impl Interpreter {
     fn c_log10(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.log10()).to_string());
     }
@@ -695,7 +695,7 @@ impl Interpreter {
     fn c_log2(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.log2()).to_string());
     }
@@ -703,8 +703,8 @@ impl Interpreter {
     fn c_logn(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let b: f64 = self.pop_stack_f();
-        let a: f64 = self.pop_stack_f();
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.log(b)).to_string());
     }
@@ -712,7 +712,7 @@ impl Interpreter {
     fn c_ln(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_f();
+        let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.ln()).to_string());
     }
@@ -720,7 +720,7 @@ impl Interpreter {
     fn c_rand(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: u64 = self.pop_stack_u();
+        let a: u64 = self.pop_stack_uint();
         let num: f64 = (a as f64 * rand::random::<f64>()).floor();
 
         self.stack.push(num.to_string());
@@ -731,7 +731,7 @@ impl Interpreter {
 
         let mut m: f64 = 0.0;
         while !self.stack.is_empty() {
-            m = m.max(self.pop_stack_f());
+            m = m.max(self.pop_stack_float());
         }
 
         self.stack.push(m.to_string());
@@ -742,7 +742,7 @@ impl Interpreter {
 
         let mut m: f64 = f64::MAX;
         while !self.stack.is_empty() {
-            m = m.min(self.pop_stack_f());
+            m = m.min(self.pop_stack_float());
         }
 
         self.stack.push(m.to_string());
@@ -753,7 +753,7 @@ impl Interpreter {
     fn c_dechex(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: u64 = self.pop_stack_u();
+        let a: u64 = self.pop_stack_uint();
 
         self.stack.push(format!("{:x}", a));
     }
@@ -761,7 +761,7 @@ impl Interpreter {
     fn c_hexdec(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a = self.pop_stack_i_hex();
+        let a = self.pop_stack_int_hex();
 
         self.stack.push(a.to_string());
     }
@@ -769,7 +769,7 @@ impl Interpreter {
     fn c_decbin(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a: u64 = self.pop_stack_u();
+        let a: u64 = self.pop_stack_uint();
 
         self.stack.push(format!("{:b}", a));
     }
@@ -777,7 +777,7 @@ impl Interpreter {
     fn c_bindec(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a = self.pop_stack_i_bin();
+        let a = self.pop_stack_int_bin();
 
         self.stack.push(a.to_string());
     }
@@ -785,7 +785,7 @@ impl Interpreter {
     fn c_binhex(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a = self.pop_stack_i_bin();
+        let a = self.pop_stack_int_bin();
 
         self.stack.push(format!("{:x}", a));
     }
@@ -793,7 +793,7 @@ impl Interpreter {
     fn c_hexbin(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a = self.pop_stack_i_hex();
+        let a = self.pop_stack_int_hex();
 
         self.stack.push(format!("{:b}", a));
     }
@@ -801,7 +801,7 @@ impl Interpreter {
     fn c_mikm(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a = self.pop_stack_f();
+        let a = self.pop_stack_float();
 
         self.stack.push((a*1.609344).to_string());
     }
@@ -809,7 +809,7 @@ impl Interpreter {
     fn c_kmmi(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a = self.pop_stack_f();
+        let a = self.pop_stack_float();
 
         self.stack.push((a/1.609344).to_string());
     }

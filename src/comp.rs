@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATUS: &str = "a";
+const RELEASE_STATUS: &str = "b";
 
 /*
 
@@ -37,7 +37,7 @@ const RELEASE_STATUS: &str = "a";
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
-bin_dec hex_bin bin_hex mi_km km_mi";
+bin_dec hex_bin bin_hex max min rand";
 
 
 fn main() {
@@ -186,7 +186,9 @@ impl Interpreter {
         // math operations
         self.compose_native("+",       Interpreter::c_add);      // add
         self.compose_native("+_",      Interpreter::c_add_all);  // add all
+        self.compose_native("++",      Interpreter::c_add_one);  // add one
         self.compose_native("-",       Interpreter::c_sub);      // subtract
+        self.compose_native("--",      Interpreter::c_sub_one);  // subtract one
         self.compose_native("x",       Interpreter::c_mult);     // multiply
         self.compose_native("x_",      Interpreter::c_mult_all); // multiply all
         self.compose_native("/",       Interpreter::c_div);      // divide
@@ -219,6 +221,9 @@ impl Interpreter {
         self.compose_native("log10",   Interpreter::c_log10);
         self.compose_native("logn",    Interpreter::c_logn);     // logarithm (base n)
         self.compose_native("ln",      Interpreter::c_ln);       // natural logarithm
+        self.compose_native("rand",    Interpreter::c_rand);     // random number
+        self.compose_native("max",     Interpreter::c_max);      // maximum
+        self.compose_native("min",     Interpreter::c_min);      // minimum
         // control flow
         self.compose_native("fn",      Interpreter::c_fn);       // function definition
         self.compose_native("(",       Interpreter::c_comment);  // function comment
@@ -452,6 +457,14 @@ impl Interpreter {
         }
     }
 
+    fn c_add_one(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a: f64 = self.pop_stack_f();
+
+        self.stack.push((a + 1.0).to_string());
+    }
+
     fn c_sub(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 2, op);
 
@@ -459,6 +472,14 @@ impl Interpreter {
         let a: f64 = self.pop_stack_f();
 
         self.stack.push((a - b).to_string());
+    }
+
+    fn c_sub_one(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a: f64 = self.pop_stack_f();
+
+        self.stack.push((a - 1.0).to_string());
     }
 
     fn c_mult(&mut self, op: &str) {
@@ -694,6 +715,37 @@ impl Interpreter {
         let a: f64 = self.pop_stack_f();
 
         self.stack.push((a.ln()).to_string());
+    }
+
+    fn c_rand(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a: u64 = self.pop_stack_u();
+        let num: f64 = (a as f64 * rand::random::<f64>()).floor();
+
+        self.stack.push(num.to_string());
+    }
+
+    fn c_max(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let mut m: f64 = 0.0;
+        while !self.stack.is_empty() {
+            m = m.max(self.pop_stack_f());
+        }
+
+        self.stack.push(m.to_string());
+    }
+
+    fn c_min(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let mut m: f64 = f64::MAX;
+        while !self.stack.is_empty() {
+            m = m.min(self.pop_stack_f());
+        }
+
+        self.stack.push(m.to_string());
     }
 
     // -- conversions ----------------------------------------------------------

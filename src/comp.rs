@@ -76,7 +76,7 @@ fn main() {
             if args.get(2).is_none() {
                 eprintln!(
                     "  {}: no file path provided",
-                    "error".bright_red()
+                    color_red("error")
                 );
                 std::process::exit(99);
             }
@@ -89,8 +89,8 @@ fn main() {
             if let Err(ref error) = file_contents {
                 eprintln!(
                     "  {}: could not read [{}]: {error}",
-                    "error".bright_red(),
-                    path.display().to_string().cyan()
+                    color_red("error"),
+                    color_cyan(path.display().to_string().as_str())
                 );
                 std::process::exit(99);
             }
@@ -117,7 +117,7 @@ fn main() {
 
     // display resulting computation stack
     for element in cinter.stack {
-        println!("  {}", element.truecolor(0, 192, 255).bold());
+        println!("  {}", color_blue_bold(element.as_str()));
     }
 
 }
@@ -271,7 +271,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (f)",
                     "error".bright_red(),
-                    element.cyan()
+                    color_cyan(element.as_str())
                 );
                 std::process::exit(99);
             }
@@ -287,7 +287,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
                     "error".bright_red(),
-                    element.cyan()
+                    color_cyan(element.as_str())
                 );
                 std::process::exit(99);
             }
@@ -305,7 +305,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
                     "error".bright_red(),
-                    element.cyan()
+                    color_cyan(element.as_str())
                 );
                 std::process::exit(99);
             }
@@ -323,7 +323,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_b)",
                     "error".bright_red(),
-                    element.cyan()
+                    color_cyan(element.as_str())
                 );
                 std::process::exit(99);
             }
@@ -348,7 +348,7 @@ impl Interpreter {
                 "  {}: [{}] operation called without at least {min_depth} \
                 element(s) on stack",
                 "error".bright_red(),
-                command.to_string().cyan()
+                color_cyan(command)
             );
             std::process::exit(99);
         }
@@ -364,7 +364,7 @@ impl Interpreter {
             println!(
                 "{}: [{}] operation called on empty stack",
                 "warning".bright_yellow(),
-                op.to_string().cyan()
+                color_cyan(op)
             );
         }
     }
@@ -850,7 +850,7 @@ impl Interpreter {
 
         while !self.ops.is_empty() {
             let op = self.ops.remove(0);
-            match &op[..] {
+            match op.as_str() {
                 "(" => {
                     nested += 1;
                 }
@@ -891,45 +891,45 @@ impl Interpreter {
 
 fn show_help() {
     println!();
-    println!("{}", "COMP".to_string().bold());
+    println!("{}", color_bold("COMP"));
     println!("    comp - command interpreter");
     println!();
-    println!("{}", "USAGE".to_string().bold());
+    println!("{}", color_bold("USAGE"));
     println!("    comp [OPTIONS] <list>");
     println!("    comp -f <path>");
     println!();
-    println!("{}", "OPTIONS".to_string().bold());
+    println!("{}", color_bold("OPTIONS"));
     println!("        {}      show version",
-             "--version".truecolor(192, 192, 192));
+             color_grey("--version"));
     println!("    {}, {}         read from file at the specified path",
-             "-f".truecolor(192, 192, 192),
-             "--file".truecolor(192, 192, 192));
+             color_grey("-f"),
+             color_grey("--file"));
     println!("        {}         show help information",
-             "--help".truecolor(192, 192, 192));
+             color_grey("--help"));
     println!();
-    println!("{}", "DESCRIPTION".to_string().bold());
+    println!("{}", color_bold("DESCRIPTION"));
     println!("The comp interpreter takes a {} sequence of (postfix) operations \
     as command line arguments or a {} argument that specifies the path to a \
     file containing a list of operations. Each operation is either a command \
     (symbol) or a value. The available commands are listed below.",
-             "<list>".truecolor(192, 192, 192),
-             "<path>".truecolor(192, 192, 192));
+             color_grey("<list>"),
+             color_grey("<path>"));
     println!();
-    println!("    Usage Guide:  {}",
-             "https://github.com/usefulmove/comp/blob/main/USAGE.md.".truecolor(192, 192, 192));
+    println!("    Usage Guide:   {}",
+             color_grey("https://github.com/usefulmove/comp/blob/main/USAGE.md"));
     println!("    Repository:    {}",
-             "https://github.com/usefulmove/comp#readme".truecolor(192, 192, 192));
+             color_grey("https://github.com/usefulmove/comp#readme"));
     println!();
-    println!("{}", "EXAMPLES".to_string().bold());
+    println!("{}", color_bold("EXAMPLES"));
     println!("    {}                  add 1 and 2",
-             "comp 1 2 +".truecolor(192, 192, 192));
+             color_grey("comp 1 2 +"));
     println!("    {}                  divide 5 by 2",
-             "comp 5 2 /".truecolor(192, 192, 192));
+             color_grey("comp 5 2 /"));
     println!("    {}      sum of the squares of 3 and 4",
-             "comp 3 dup x 4 dup x +".truecolor(192, 192, 192));
+             color_grey("comp 3 dup x 4 dup x +"));
     println!();
-    println!("{}", "COMMANDS".to_string().bold());
-    println!("{}", CMDS.truecolor(192, 192, 192));
+    println!("{}", color_bold("COMMANDS"));
+    println!("{}", color_grey(CMDS));
     println!();
 }
 
@@ -937,7 +937,27 @@ fn show_version() {
     let version: &str = env!("CARGO_PKG_VERSION");
     println!("  comp {}{}",
              version,
-             RELEASE_STATUS.truecolor(192, 192, 192));
+             color_grey(RELEASE_STATUS));
+}
+
+fn color_blue_bold(message: &str) -> ColoredString {
+    message.truecolor(0, 192, 255).bold()
+}
+
+fn color_bold(message: &str) -> ColoredString {
+    message.bold()
+}
+
+fn color_red(message: &str) -> ColoredString {
+    message.bright_red()
+}
+
+fn color_grey(message: &str) -> ColoredString {
+    message.truecolor(155, 155, 155)
+}
+
+fn color_cyan(message: &str) -> ColoredString {
+    message.cyan()
 }
 
 // -- mona ---------------------------------------------------------------------

@@ -14,6 +14,10 @@ mod comp_tests {
     test_cinter.stack.push(4.0.to_string());
 
     test_cinter.c_add_one("o");
+    test_cinter.c_add_one("o");
+    test_cinter.c_add_one("o");
+    test_cinter.c_sub_one("o");
+    test_cinter.c_sub_one("o");
     test_cinter.c_sub_one("o");
 
     test_cinter.c_dechex("o");
@@ -183,4 +187,56 @@ mod comp_tests {
 
     assert!(test_cinter.pop_stack_float() == 2432902008176640000.0);
   }
+
+  #[test]
+  fn test_rand() {
+    let mut test_cinter = super::Interpreter::new();
+
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.c_rand("o");
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.c_rand("o");
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.c_rand("o");
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.c_rand("o");
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.c_rand("o");
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.c_rand("o");
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.c_rand("o");
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.c_rand("o");
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.c_rand("o");
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.c_rand("o");
+    test_cinter.c_max("o");
+
+    assert!(test_cinter.pop_stack_float() <= 1.0);
+
+  }
+
+  #[test]
+  fn test_mxmn() {
+    let mut test_cinter = super::Interpreter::new();
+
+    test_cinter.stack.push(1.0.to_string());
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.stack.push(3.0.to_string());
+    test_cinter.stack.push(4.0.to_string());
+    test_cinter.c_max("o");
+
+    assert!(test_cinter.pop_stack_float() == 4.0);
+
+    test_cinter.stack.push(1.0.to_string());
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.stack.push(3.0.to_string());
+    test_cinter.stack.push(4.0.to_string());
+    test_cinter.c_min("o");
+
+    assert!(test_cinter.pop_stack_float() == 1.0);
+  }
+
 }

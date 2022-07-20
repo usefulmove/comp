@@ -305,6 +305,12 @@ Reads positive integer (n) from stack and returns a random integer in the range 
   11000000
 ```
 
+### temperature conversion (Fahrenheit, Celsius)
+```
+% comp 212 f_c
+  100
+```
+
 
 ---
 ## Commands (file usage)
@@ -333,7 +339,7 @@ User-defined functions can be defined by indicating the start of a function with
 Note that functions are most useful when combined with the `-f` file option. The cube function can be defined and executed in a source file and passed to the comp command using the file option.
 ```
 ( cube.cm )
-( note - comments are identified inside parentheses. 
+( note - comments are identified inside parentheses.
   there must be whitespace surrounding each parenthesis.
   multiline comments are supported. )
 

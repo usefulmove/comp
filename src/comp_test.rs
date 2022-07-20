@@ -13,54 +13,47 @@ mod comp_tests {
     test_cinter.stack.push(3.0.to_string());
     test_cinter.stack.push(4.0.to_string());
 
-    test_cinter.c_add_one("o");
-    test_cinter.c_add_one("o");
-    test_cinter.c_add_one("o");
-    test_cinter.c_sub_one("o");
-    test_cinter.c_sub_one("o");
-    test_cinter.c_sub_one("o");
+    test_cinter.c_add_one("");
+    test_cinter.c_add_one("");
+    test_cinter.c_add_one("");
+    test_cinter.c_sub_one("");
+    test_cinter.c_sub_one("");
+    test_cinter.c_sub_one("");
 
-    test_cinter.c_dechex("o");
-    test_cinter.c_hexbin("o");
-    test_cinter.c_binhex("o");
-    test_cinter.c_hexdec("o");
-    test_cinter.c_decbin("o");
-    test_cinter.c_bindec("o");
+    test_cinter.c_rot("");
+    test_cinter.c_rot("");
+    test_cinter.c_roll("");
+    test_cinter.c_roll("");
 
-    test_cinter.c_rot("o");
-    test_cinter.c_rot("o");
-    test_cinter.c_roll("o");
-    test_cinter.c_roll("o");
-
-    test_cinter.c_degrad("o");
-    test_cinter.c_cos("o");
-    test_cinter.c_acos("o");
-    test_cinter.c_sin("o");
-    test_cinter.c_asin("o");
-    test_cinter.c_tan("o");
-    test_cinter.c_atan("o");
-    test_cinter.c_raddeg("o");
-    test_cinter.c_round("o");
-    test_cinter.c_roll("o");
-    test_cinter.c_roll("o");
-    test_cinter.c_roll("o");
-    test_cinter.c_roll("o");
-    test_cinter.c_dup("o");
-    test_cinter.c_drop("o");
-    test_cinter.c_swap("o");
-    test_cinter.c_swap("o");
-    test_cinter.c_add("o");
-    test_cinter.c_sub("o");
-    test_cinter.c_div("o");
+    test_cinter.c_degrad("");
+    test_cinter.c_cos("");
+    test_cinter.c_acos("");
+    test_cinter.c_sin("");
+    test_cinter.c_asin("");
+    test_cinter.c_tan("");
+    test_cinter.c_atan("");
+    test_cinter.c_raddeg("");
+    test_cinter.c_round("");
+    test_cinter.c_roll("");
+    test_cinter.c_roll("");
+    test_cinter.c_roll("");
+    test_cinter.c_roll("");
+    test_cinter.c_dup("");
+    test_cinter.c_drop("");
+    test_cinter.c_swap("");
+    test_cinter.c_swap("");
+    test_cinter.c_add("");
+    test_cinter.c_sub("");
+    test_cinter.c_div("");
 
     test_cinter.stack.push(10.0.to_string());
-    test_cinter.c_log2("o");
+    test_cinter.c_log2("");
     test_cinter.stack.push(10.0.to_string());
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_logn("o");
-    test_cinter.c_sub("o");
-    test_cinter.c_round("o");
-    test_cinter.c_add("o");
+    test_cinter.c_logn("");
+    test_cinter.c_sub("");
+    test_cinter.c_round("");
+    test_cinter.c_add("");
 
     assert!(test_cinter.pop_stack_float() == -0.2);
   }
@@ -76,32 +69,32 @@ mod comp_tests {
     let mut test_cinter = super::Interpreter::new();
 
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_dup("o");
-    test_cinter.c_sqrt("o");
-    test_cinter.c_swap("o");
+    test_cinter.c_dup("");
+    test_cinter.c_sqrt("");
+    test_cinter.c_swap("");
     test_cinter.stack.push(32.0.to_string());
-    test_cinter.c_exp("o");
+    test_cinter.c_exp("");
     test_cinter.stack.push((32.0 * 2.0).to_string());
-    test_cinter.c_throot("o");
+    test_cinter.c_throot("");
 
     assert!(test_cinter.pop_stack_float() == test_cinter.pop_stack_float());
 
     test_cinter.stack.push(1.0.to_string());
     test_cinter.stack.push((-2.0).to_string());
-    test_cinter.c_chs("o");
-    test_cinter.c_chs("o");
-    test_cinter.c_pi("o");
-    test_cinter.c_mult("o");
-    test_cinter.c_pi("o");
+    test_cinter.c_chs("");
+    test_cinter.c_chs("");
+    test_cinter.c_pi("");
+    test_cinter.c_mult("");
+    test_cinter.c_pi("");
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_exp("o");
+    test_cinter.c_exp("");
     test_cinter.stack.push(1.0.to_string());
-    test_cinter.c_add("o");
-    test_cinter.c_proot("o");
-    test_cinter.c_add_all("o");
+    test_cinter.c_add("");
+    test_cinter.c_proot("");
+    test_cinter.c_add_all("");
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_div("o");
-    test_cinter.c_pi("o");
+    test_cinter.c_div("");
+    test_cinter.c_pi("");
 
     assert!(test_cinter.pop_stack_float() == test_cinter.pop_stack_float());
   }
@@ -123,7 +116,7 @@ mod comp_tests {
     test_cinter.stack.push(2.0.to_string());
     test_cinter.stack.push(3.0.to_string());
     test_cinter.stack.push(4.0.to_string());
-    test_cinter.c_cls("o");
+    test_cinter.c_cls("");
 
     assert!(test_cinter.pop_stack_float() == 0.0);
   }
@@ -144,22 +137,22 @@ mod comp_tests {
     test_cinter.stack.push(2.0.to_string());
     test_cinter.stack.push(3.0.to_string());
     test_cinter.stack.push(4.0.to_string());
-    test_cinter.c_chs("o");
-    test_cinter.c_abs("o");
-    test_cinter.c_inv("o");
-    test_cinter.c_inv("o");
-    test_cinter.c_pi("o");
-    test_cinter.c_euler("o");
+    test_cinter.c_chs("");
+    test_cinter.c_abs("");
+    test_cinter.c_inv("");
+    test_cinter.c_inv("");
+    test_cinter.c_pi("");
+    test_cinter.c_euler("");
     test_cinter.stack.push(0.0.to_string());
-    test_cinter.c_store_b("o"); // 0
-    test_cinter.c_store_a("o"); // e
-    test_cinter.c_store_c("o"); // pi
-    test_cinter.c_cls("o");
-    test_cinter.c_push_b("o"); // 0
-    test_cinter.c_push_c("o"); // pi
-    test_cinter.c_add("o");
-    test_cinter.c_push_a("o"); // e
-    test_cinter.c_add("o");
+    test_cinter.c_store_b(""); // 0
+    test_cinter.c_store_a(""); // e
+    test_cinter.c_store_c(""); // pi
+    test_cinter.c_cls("");
+    test_cinter.c_push_b(""); // 0
+    test_cinter.c_push_c(""); // pi
+    test_cinter.c_add("");
+    test_cinter.c_push_a(""); // e
+    test_cinter.c_add("");
 
     assert!(test_cinter.pop_stack_float() == std::f64::consts::PI + std::f64::consts::E);
   }
@@ -169,21 +162,21 @@ mod comp_tests {
     let mut test_cinter = super::Interpreter::new();
 
     test_cinter.stack.push(10.0.to_string());
-    test_cinter.c_log10("o");
-    test_cinter.c_euler("o");
-    test_cinter.c_ln("o");
+    test_cinter.c_log10("");
+    test_cinter.c_euler("");
+    test_cinter.c_ln("");
     test_cinter.stack.push(105.0.to_string());
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_mod("o");
+    test_cinter.c_mod("");
     test_cinter.stack.push(3049.0.to_string());
     test_cinter.stack.push(1009.0.to_string());
-    test_cinter.c_gcd("o");
-    test_cinter.c_mult_all("o");
+    test_cinter.c_gcd("");
+    test_cinter.c_mult_all("");
 
     assert!(test_cinter.pop_stack_float() == 1.0);
 
     test_cinter.stack.push(20.0.to_string());
-    test_cinter.c_fact("o");
+    test_cinter.c_fact("");
 
     assert!(test_cinter.pop_stack_float() == 2432902008176640000.0);
   }
@@ -193,26 +186,26 @@ mod comp_tests {
     let mut test_cinter = super::Interpreter::new();
 
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_rand("o");
+    test_cinter.c_rand("");
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_rand("o");
+    test_cinter.c_rand("");
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_rand("o");
+    test_cinter.c_rand("");
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_rand("o");
+    test_cinter.c_rand("");
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_rand("o");
+    test_cinter.c_rand("");
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_rand("o");
+    test_cinter.c_rand("");
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_rand("o");
+    test_cinter.c_rand("");
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_rand("o");
+    test_cinter.c_rand("");
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_rand("o");
+    test_cinter.c_rand("");
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.c_rand("o");
-    test_cinter.c_max("o");
+    test_cinter.c_rand("");
+    test_cinter.c_max("");
 
     assert!(test_cinter.pop_stack_float() <= 1.0);
 
@@ -226,7 +219,7 @@ mod comp_tests {
     test_cinter.stack.push(2.0.to_string());
     test_cinter.stack.push(3.0.to_string());
     test_cinter.stack.push(4.0.to_string());
-    test_cinter.c_max("o");
+    test_cinter.c_max("");
 
     assert!(test_cinter.pop_stack_float() == 4.0);
 
@@ -234,9 +227,25 @@ mod comp_tests {
     test_cinter.stack.push(2.0.to_string());
     test_cinter.stack.push(3.0.to_string());
     test_cinter.stack.push(4.0.to_string());
-    test_cinter.c_min("o");
+    test_cinter.c_min("");
 
     assert!(test_cinter.pop_stack_float() == 1.0);
   }
 
+  #[test]
+  fn test_conv() {
+    let mut test_cinter = super::Interpreter::new();
+
+    test_cinter.stack.push(100.0.to_string());
+    test_cinter.c_celfah("");
+    test_cinter.c_fahcel("");
+    test_cinter.c_dechex("");
+    test_cinter.c_hexbin("");
+    test_cinter.c_binhex("");
+    test_cinter.c_hexdec("");
+    test_cinter.c_decbin("");
+    test_cinter.c_bindec("");
+
+    assert!(test_cinter.pop_stack_float() == 100.0);
+  }
 }

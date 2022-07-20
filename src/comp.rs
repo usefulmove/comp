@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATUS: &str = "c";
+const RELEASE_STATUS: &str = "d";
 
 /*
 
@@ -37,7 +37,7 @@ const RELEASE_STATUS: &str = "c";
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
-bin_dec hex_bin bin_hex max min rand";
+bin_dec hex_bin bin_hex c_f f_c max min rand";
 
 
 fn main() {
@@ -234,8 +234,10 @@ impl Interpreter {
         self.compose_native("bin_dec", Interpreter::c_bindec);   // binary to decimal
         self.compose_native("bin_hex", Interpreter::c_binhex);   // binary to hexadecimal
         self.compose_native("hex_bin", Interpreter::c_hexbin);   // hexadecimal to binary
-        self.compose_native("mi_km", Interpreter::c_mikm);       // miles to kilometers
-        self.compose_native("km_mi", Interpreter::c_kmmi);       // kilometers to miles
+        self.compose_native("c_f",     Interpreter::c_celfah);   // Celsius to Fahrenheit
+        self.compose_native("f_c",     Interpreter::c_fahcel);   // Fahrenheit to Celsius
+        self.compose_native("mi_km",   Interpreter::c_mikm);     // miles to kilometers
+        self.compose_native("km_mi",   Interpreter::c_kmmi);     // kilometers to miles
     }
 
     fn process_node(&mut self, op: &str) {
@@ -796,6 +798,22 @@ impl Interpreter {
         let a = self.pop_stack_int_hex();
 
         self.stack.push(format!("{:b}", a));
+    }
+
+    fn c_celfah(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a = self.pop_stack_float();
+
+        self.stack.push((a*9.0/5.0+32.0).to_string());
+    }
+
+    fn c_fahcel(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a = self.pop_stack_float();
+
+        self.stack.push(((a-32.0)*5.0/9.0).to_string());
     }
 
     fn c_mikm(&mut self, op: &str) {

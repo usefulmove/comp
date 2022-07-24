@@ -8,6 +8,8 @@
 * [Installation][2]
 * [Usage Guide][1]
 * [License][3]
+* [Issues][5]
+* [Feature Requests][6]
 
 A simple and fast, reverse Polish notation (RPN) interpreter written in Rust. The interpreter implements a stack-based language similar to Forth that is inspired by the calculation interface of the original HP scientific calculators of the 1970s. The posfix language consists of lists of elements where each element is either a value to be added to the stack or an operation. As examples, `comp 3 4 +` adds the values 3 and 4 and `comp 3 dup x 4 dup x +` computes the sum of the squares of 3 and 4.
 
@@ -41,3 +43,5 @@ The comp interpreter is available under the MIT License. The MIT License is a pe
 [2]: ./INSTALL.md
 [3]: ./LICENSE
 [4]: https://rust-lang.org/tools/install
+[5]: https://github.com/usefulmove/comp/issues
+[6]: https://github.com/usefulmove/comp/labels/feature%20request

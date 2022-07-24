@@ -911,13 +911,20 @@ impl Interpreter {
 
 fn show_help() {
     println!();
-    println!("{}", color_white_bold("COMP"));
-    println!("    {} - {}",
-             color_yellow_bold("comp"),
-             color_white_bold("command interpreter"),
-             );
+    println!(
+        "{}",
+        color_white_bold("COMP")
+    );
+    println!(
+        "    {} - {}",
+        color_grey("comp"),
+        color_white_bold("command interpreter"),
+    );
     println!();
-    println!("{}", color_white_bold("USAGE"));
+    println!(
+        "{}",
+        color_white_bold("USAGE")
+    );
     println!(
         "    comp {} {}",
         color_white_bold("[OPTIONS]"),
@@ -982,9 +989,12 @@ fn show_help() {
 
 fn show_version() {
     let version: &str = env!("CARGO_PKG_VERSION");
-    println!("  comp {}{}",
-             color_blue_bold(version),
-             color_yellow_bold(RELEASE_STATE));
+    println!(
+        "  {} {}{}",
+        color_white_bold("comp"),
+        color_blue_bold(version),
+        color_white_bold(RELEASE_STATE),
+    );
 }
 
 fn color_white_bold(message: &str) -> ColoredString {

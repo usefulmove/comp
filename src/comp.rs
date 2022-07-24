@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATUS: &str = "d";
+const RELEASE_STATE: &str = "e";
 
 /*
 
@@ -363,11 +363,13 @@ impl Interpreter {
         if !self.stack.is_empty() {
             self.stack.pop();
         } else {
-            println!(
-                "{}: [{}] operation called on empty stack",
-                "warning".bright_yellow(),
+            eprintln!(
+                "  {}: [{}] operation called on empty stack",
+                color_yellow_bold("warning"),
                 color_cyan(op)
             );
+
+            // do not stop execution
         }
     }
 
@@ -909,44 +911,71 @@ impl Interpreter {
 
 fn show_help() {
     println!();
-    println!("{}", color_bold("COMP"));
-    println!("    comp - command interpreter");
+    println!("{}", color_white_bold("COMP"));
+    println!("    {} - {}",
+             color_yellow_bold("comp"),
+             color_white_bold("command interpreter"),
+             );
     println!();
-    println!("{}", color_bold("USAGE"));
-    println!("    comp [OPTIONS] <list>");
-    println!("    comp -f <path>");
+    println!("{}", color_white_bold("USAGE"));
+    println!(
+        "    comp {} {}",
+        color_white_bold("[OPTIONS]"),
+        color_blue_bold("<list>"),
+    );
+    println!(
+        "    comp {} {}",
+        color_yellow_bold("-f"),
+        color_blue_bold("<path>"),
+    );
     println!();
-    println!("{}", color_bold("OPTIONS"));
+    println!("{}", color_white_bold("OPTIONS"));
     println!("        {}      show version",
-             color_grey("--version"));
-    println!("    {}, {}         read from file at the specified path",
-             color_grey("-f"),
-             color_grey("--file"));
+             color_yellow_bold("--version"),
+             );
+    println!("    {}{} {}         read from file at the specified path",
+             color_yellow_bold("-f"),
+             color_white_bold(","),
+             color_yellow_bold("--file"),
+             );
     println!("        {}         show help information",
-             color_grey("--help"));
+             color_yellow_bold("--help"),
+             );
     println!();
-    println!("{}", color_bold("DESCRIPTION"));
+    println!("{}", color_white_bold("DESCRIPTION"));
     println!("The comp interpreter takes a {} sequence of (postfix) operations \
     as command line arguments or a {} argument that specifies the path to a \
     file containing a list of operations. Each operation is either a command \
     (symbol) or a value. The available commands are listed below.",
-             color_grey("<list>"),
-             color_grey("<path>"));
+             color_blue_bold("<list>"),
+             color_blue_bold("<path>"),
+             );
     println!();
     println!("    Usage Guide:   {}",
-             color_grey("https://github.com/usefulmove/comp/blob/main/USAGE.md"));
+             color_grey("https://github.com/usefulmove/comp/blob/main/USAGE.md"),
+             );
     println!("    Repository:    {}",
-             color_grey("https://github.com/usefulmove/comp#readme"));
+             color_grey("https://github.com/usefulmove/comp#readme"),
+             );
     println!();
-    println!("{}", color_bold("EXAMPLES"));
-    println!("    {}                  add 1 and 2",
-             color_grey("comp 1 2 +"));
-    println!("    {}                  divide 5 by 2",
-             color_grey("comp 5 2 /"));
-    println!("    {}      sum of the squares of 3 and 4",
-             color_grey("comp 3 dup x 4 dup x +"));
+    println!("{}", color_white_bold("EXAMPLES"));
+    println!(
+        "    {}                  {}",
+        color_blue_bold("comp 1 2 +"),
+        color_white_bold("add 1 and 2"),
+    );
+    println!(
+        "    {}                  {}",
+        color_blue_bold("comp 5 2 /"),
+        color_white_bold("divide 5 by 2"),
+    );
+    println!(
+        "    {}      {}",
+        color_blue_bold("comp 3 dup x 4 dup x +"),
+        color_white_bold("sum of the squares of 3 and 4"),
+    );
     println!();
-    println!("{}", color_bold("COMMANDS"));
+    println!("{}", color_white_bold("COMMANDS"));
     println!("{}", color_grey(CMDS));
     println!();
 }
@@ -954,16 +983,20 @@ fn show_help() {
 fn show_version() {
     let version: &str = env!("CARGO_PKG_VERSION");
     println!("  comp {}{}",
-             version,
-             color_grey(RELEASE_STATUS));
+             color_blue_bold(version),
+             color_yellow_bold(RELEASE_STATE));
+}
+
+fn color_white_bold(message: &str) -> ColoredString {
+    message.truecolor(255, 255, 255).bold()
+}
+
+fn color_yellow_bold(message: &str) -> ColoredString {
+    message.truecolor(240, 210, 10).bold()
 }
 
 fn color_blue_bold(message: &str) -> ColoredString {
     message.truecolor(0, 192, 255).bold()
-}
-
-fn color_bold(message: &str) -> ColoredString {
-    message.bold()
 }
 
 fn color_red(message: &str) -> ColoredString {

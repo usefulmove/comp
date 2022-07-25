@@ -747,10 +747,15 @@ impl Interpreter {
     }
 
     fn c_avg_all(&mut self, op: &str) {
-        while !self.stack.is_empty() {
-            self.c_avg(op);
+        Interpreter::check_stack_error(self, 2, op);
+
+        let mut sum: f64 = 0.0;
+        let len: usize = self.stack.len();
+        for _i in 0..len {
+            sum += self.pop_stack_float();
         }
 
+        self.stack.push((sum/len as f64).to_string());
     }
 
     fn c_rand(&mut self, op: &str) {

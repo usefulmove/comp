@@ -37,7 +37,7 @@ const RELEASE_STATE: &str = "d";
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
-bin_dec hex_bin bin_hex c_f f_c max min avg avg_ rand";
+bin_dec hex_bin bin_hex c_f f_c min min_ max max_ avg avg_ rand";
 
 
 fn main() {
@@ -219,9 +219,10 @@ impl Interpreter {
         self.compose_native("logn",    Interpreter::c_logn);     // logarithm (base n)
         self.compose_native("ln",      Interpreter::c_ln);       // natural logarithm
         self.compose_native("rand",    Interpreter::c_rand);     // random number
+        self.compose_native("min",     Interpreter::c_min);      // minimum
+        self.compose_native("min_",    Interpreter::c_min_all);  // minimum
         self.compose_native("max",     Interpreter::c_max);      // maximum
         self.compose_native("max_",    Interpreter::c_max_all);  // maximum all
-        self.compose_native("min",     Interpreter::c_min);      // minimum
         self.compose_native("avg",     Interpreter::c_avg);      // average
         self.compose_native("avg_",    Interpreter::c_avg_all);  // average all
         // control flow
@@ -737,6 +738,15 @@ impl Interpreter {
     }
 
     fn c_min(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 2, op);
+
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
+
+        self.stack.push((a.min(b)).to_string());
+    }
+
+    fn c_min_all(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
         let mut m: f64 = f64::MAX;
@@ -1147,4 +1157,4 @@ const MONA: &str = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>''''''<!!!!!!!!!!!!!!
 
 #[cfg(test)]
 #[path = "../test/comp.test.rs"]
-mod comp_test;
+mod comp_tests;

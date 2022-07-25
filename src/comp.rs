@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "a";
+const RELEASE_STATE: &str = "b";
 
 /*
 
@@ -37,7 +37,7 @@ const RELEASE_STATE: &str = "a";
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
-bin_dec hex_bin bin_hex c_f f_c max min rand";
+bin_dec hex_bin bin_hex c_f f_c max min avg avg_ rand";
 
 
 fn main() {
@@ -221,6 +221,8 @@ impl Interpreter {
         self.compose_native("rand",    Interpreter::c_rand);     // random number
         self.compose_native("max",     Interpreter::c_max);      // maximum
         self.compose_native("min",     Interpreter::c_min);      // minimum
+        self.compose_native("avg",     Interpreter::c_avg);      // average
+        self.compose_native("avg_",    Interpreter::c_avg_all);  // average all
         // control flow
         self.compose_native("(",       Interpreter::c_fn);       // function definition
         self.compose_native("<",       Interpreter::c_comment);  // function comment
@@ -365,7 +367,6 @@ impl Interpreter {
                 color_orange_sherbet_bold("warning"),
                 color_blue_coffee_bold(op)
             );
-
             // do not stop execution
         }
     }
@@ -451,8 +452,6 @@ impl Interpreter {
     }
 
     fn c_add_all(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
-
         while self.stack.len() > 1 {
             self.c_add(op);
         }
@@ -493,8 +492,6 @@ impl Interpreter {
     }
 
     fn c_mult_all(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
-
         while self.stack.len() > 1 {
             self.c_mult(op);
         }
@@ -718,15 +715,6 @@ impl Interpreter {
         self.stack.push((a.ln()).to_string());
     }
 
-    fn c_rand(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
-
-        let a: u64 = self.pop_stack_uint();
-        let num: f64 = (a as f64 * rand::random::<f64>()).floor();
-
-        self.stack.push(num.to_string());
-    }
-
     fn c_max(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
@@ -747,6 +735,31 @@ impl Interpreter {
         }
 
         self.stack.push(m.to_string());
+    }
+
+    fn c_avg(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 2, op);
+
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
+
+        self.stack.push(((a + b) / 2.0).to_string());
+    }
+
+    fn c_avg_all(&mut self, op: &str) {
+        while !self.stack.is_empty() {
+            self.c_avg(op);
+        }
+
+    }
+
+    fn c_rand(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a: u64 = self.pop_stack_uint();
+        let num: f64 = (a as f64 * rand::random::<f64>()).floor();
+
+        self.stack.push(num.to_string());
     }
 
     // -- conversions ----------------------------------------------------------
@@ -1017,13 +1030,18 @@ fn print_stack(stack: &mut Vec<String>) {
             println!(
                 "  {}",
                 color_blue_coffee_bold(
-                    stack.pop()
-                         .unwrap()
+                    stack.remove(0)
                          .as_str()
                 )
             );
         } else {
-            println!("  {}", color_green_eggs_bold(stack.pop().unwrap().as_str()));
+            println!(
+                "  {}",
+                color_green_eggs_bold(
+                    stack.remove(0)
+                         .as_str()
+                 )
+            );
         }
     }
 }

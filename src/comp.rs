@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "c";
+const RELEASE_STATE: &str = "d";
 
 /*
 
@@ -220,6 +220,7 @@ impl Interpreter {
         self.compose_native("ln",      Interpreter::c_ln);       // natural logarithm
         self.compose_native("rand",    Interpreter::c_rand);     // random number
         self.compose_native("max",     Interpreter::c_max);      // maximum
+        self.compose_native("max_",    Interpreter::c_max_all);  // maximum all
         self.compose_native("min",     Interpreter::c_min);      // minimum
         self.compose_native("avg",     Interpreter::c_avg);      // average
         self.compose_native("avg_",    Interpreter::c_avg_all);  // average all
@@ -699,7 +700,7 @@ impl Interpreter {
     }
 
     fn c_logn(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Interpreter::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -716,7 +717,16 @@ impl Interpreter {
     }
 
     fn c_max(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Interpreter::check_stack_error(self, 2, op);
+
+        let b: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_float();
+
+        self.stack.push((a.max(b)).to_string());
+    }
+
+    fn c_max_all(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 2, op);
 
         let mut m: f64 = 0.0;
         while !self.stack.is_empty() {

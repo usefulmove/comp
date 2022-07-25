@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "e";
+const RELEASE_STATE: &str = "a";
 
 /*
 
@@ -76,7 +76,7 @@ fn main() {
             if args.get(2).is_none() {
                 eprintln!(
                     "  {}: no file path provided",
-                    color_red("error")
+                    color_red_bold("error")
                 );
                 std::process::exit(99);
             }
@@ -89,8 +89,8 @@ fn main() {
             if let Err(ref error) = file_contents {
                 eprintln!(
                     "  {}: could not read [{}]: {error}",
-                    color_red("error"),
-                    color_cyan(path.display().to_string().as_str())
+                    color_red_bold("error"),
+                    color_blue_coffee_bold(path.display().to_string().as_str())
                 );
                 std::process::exit(99);
             }
@@ -115,10 +115,7 @@ fn main() {
     // process operations list
     cinter.process_ops();
 
-    // display resulting computation stack
-    for element in cinter.stack {
-        println!("  {}", color_blue_bold(element.as_str()));
-    }
+    print_stack(&mut cinter.stack.clone());
 
 }
 
@@ -225,8 +222,8 @@ impl Interpreter {
         self.compose_native("max",     Interpreter::c_max);      // maximum
         self.compose_native("min",     Interpreter::c_min);      // minimum
         // control flow
-        self.compose_native("fn",      Interpreter::c_fn);       // function definition
-        self.compose_native("(",       Interpreter::c_comment);  // function comment
+        self.compose_native("(",       Interpreter::c_fn);       // function definition
+        self.compose_native("<",       Interpreter::c_comment);  // function comment
         // conversion
         self.compose_native("dec_hex", Interpreter::c_dechex);   // decimal to hexadecimal
         self.compose_native("hex_dec", Interpreter::c_hexdec);   // hexadecimal to decimal
@@ -273,7 +270,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (f)",
                     "error".bright_red(),
-                    color_cyan(element.as_str())
+                    color_blue_coffee_bold(element.as_str())
                 );
                 std::process::exit(99);
             }
@@ -289,7 +286,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
                     "error".bright_red(),
-                    color_cyan(element.as_str())
+                    color_blue_coffee_bold(element.as_str())
                 );
                 std::process::exit(99);
             }
@@ -307,7 +304,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
                     "error".bright_red(),
-                    color_cyan(element.as_str())
+                    color_blue_coffee_bold(element.as_str())
                 );
                 std::process::exit(99);
             }
@@ -325,7 +322,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_b)",
                     "error".bright_red(),
-                    color_cyan(element.as_str())
+                    color_blue_coffee_bold(element.as_str())
                 );
                 std::process::exit(99);
             }
@@ -349,8 +346,8 @@ impl Interpreter {
             eprintln!(
                 "  {}: [{}] operation called without at least {min_depth} \
                 element(s) on stack",
-                "error".bright_red(),
-                color_cyan(command)
+                color_red_bold("error"),
+                color_blue_coffee_bold(command)
             );
             std::process::exit(99);
         }
@@ -365,8 +362,8 @@ impl Interpreter {
         } else {
             eprintln!(
                 "  {}: [{}] operation called on empty stack",
-                color_yellow_bold("warning"),
-                color_cyan(op)
+                color_orange_sherbet_bold("warning"),
+                color_blue_coffee_bold(op)
             );
 
             // do not stop execution
@@ -847,10 +844,10 @@ impl Interpreter {
         let fpos: usize = self.fns.len() - 1; // added function position in function vector
 
         // build out function operations my reading from interpreter ops
-        while self.ops[0] != "end" {
+        while self.ops[0] != ")" {
             self.fns[fpos].fops.push(self.ops.remove(0));
         }
-        self.ops.remove(0); // remove "end" op
+        self.ops.remove(0); // remove ")"
     }
 
     // is operator a user defined function?
@@ -871,10 +868,10 @@ impl Interpreter {
         while !self.ops.is_empty() {
             let op = self.ops.remove(0);
             match op.as_str() {
-                "(" => {
+                "<" => {
                     nested += 1;
                 }
-                ")" => {
+                ">" => {
                     if nested == 0 {
                         return;
                     } else {
@@ -916,9 +913,10 @@ fn show_help() {
         color_white_bold("COMP")
     );
     println!(
-        "    {} - {}",
-        color_grey("comp"),
+        "    {} .. {} {}",
+        color_grey_mouse("comp"),
         color_white_bold("command interpreter"),
+        color_grey_mouse(env!("CARGO_PKG_VERSION")),
     );
     println!();
     println!(
@@ -928,62 +926,78 @@ fn show_help() {
     println!(
         "    comp {} {}",
         color_white_bold("[OPTIONS]"),
-        color_blue_bold("<list>"),
+        color_blue_coffee_bold("<list>"),
     );
     println!(
         "    comp {} {}",
-        color_yellow_bold("-f"),
-        color_blue_bold("<path>"),
+        color_orange_sherbet_bold("-f"),
+        color_blue_coffee_bold("<path>"),
     );
     println!();
     println!("{}", color_white_bold("OPTIONS"));
-    println!("        {}      show version",
-             color_yellow_bold("--version"),
-             );
-    println!("    {}{} {}         read from file at the specified path",
-             color_yellow_bold("-f"),
-             color_white_bold(","),
-             color_yellow_bold("--file"),
-             );
-    println!("        {}         show help information",
-             color_yellow_bold("--help"),
-             );
+    println!(
+        "        {}      show version",
+        color_orange_sherbet_bold("--version"),
+    );
+    println!(
+        "    {}{} {}         read from file at the specified path",
+       color_orange_sherbet_bold("-f"),
+       color_white_bold(","),
+       color_orange_sherbet_bold("--file"),
+    );
+    println!(
+        "        {}         show help information",
+        color_orange_sherbet_bold("--help"),
+    );
     println!();
     println!("{}", color_white_bold("DESCRIPTION"));
-    println!("The comp interpreter takes a {} sequence of (postfix) operations \
-    as command line arguments or a {} argument that specifies the path to a \
-    file containing a list of operations. Each operation is either a command \
-    (symbol) or a value. The available commands are listed below.",
-             color_blue_bold("<list>"),
-             color_blue_bold("<path>"),
-             );
+    println!(
+        "The comp interpreter takes a {} sequence of (postfix) operations as \
+    command line arguments or a {} argument that specifies the path to a file \
+    containing a list of operations. Each operation is either a command ({}) \
+    or a {}. The available commands are listed below.",
+        color_blue_coffee_bold("<list>"),
+        color_blue_coffee_bold("<path>"),
+        color_green_eggs_bold("symbol"),
+        color_blue_smurf_bold("value"),
+    );
     println!();
-    println!("    Usage Guide:   {}",
-             color_grey("https://github.com/usefulmove/comp/blob/main/USAGE.md"),
-             );
-    println!("    Repository:    {}",
-             color_grey("https://github.com/usefulmove/comp#readme"),
-             );
+    println!(
+        "    Usage Guide:   {}",
+        color_grey_mouse("https://github.com/usefulmove/comp/blob/main/USAGE.md"),
+    );
+    println!(
+        "    Repository:    {}",
+        color_grey_mouse("https://github.com/usefulmove/comp#readme"),
+    );
     println!();
     println!("{}", color_white_bold("EXAMPLES"));
     println!(
-        "    {}                  {}",
-        color_blue_bold("comp 1 2 +"),
+        "    {} {} {}                  {}",
+        color_grey_mouse("comp"),
+        color_blue_smurf_bold("1 2"),
+        color_green_eggs_bold("+"),
         color_white_bold("add 1 and 2"),
     );
     println!(
-        "    {}                  {}",
-        color_blue_bold("comp 5 2 /"),
+        "    {} {} {}                  {}",
+        color_grey_mouse("comp"),
+        color_blue_smurf_bold("5 2"),
+        color_green_eggs_bold("/"),
         color_white_bold("divide 5 by 2"),
     );
     println!(
-        "    {}      {}",
-        color_blue_bold("comp 3 dup x 4 dup x +"),
+        "    {} {} {} {} {}      {}",
+        color_grey_mouse("comp"),
+        color_blue_smurf_bold("3"),
+        color_green_eggs_bold("dup x"),
+        color_blue_smurf_bold("4"),
+        color_green_eggs_bold("dup x +"),
         color_white_bold("sum of the squares of 3 and 4"),
     );
     println!();
     println!("{}", color_white_bold("COMMANDS"));
-    println!("{}", color_grey(CMDS));
+    println!("{}", color_grey_mouse(CMDS));
     println!();
 }
 
@@ -992,33 +1006,62 @@ fn show_version() {
     println!(
         "  {} {}{}",
         color_white_bold("comp"),
-        color_blue_bold(version),
-        color_white_bold(RELEASE_STATE),
+        color_blue_smurf_bold(version),
+        color_grey_mouse(RELEASE_STATE),
     );
+}
+
+fn print_stack(stack: &mut Vec<String>) {
+    while !stack.is_empty() {
+        if stack.len() == 1 {
+            println!(
+                "  {}",
+                color_blue_coffee_bold(
+                    stack.pop()
+                         .unwrap()
+                         .as_str()
+                )
+            );
+        } else {
+            println!("  {}", color_green_eggs_bold(stack.pop().unwrap().as_str()));
+        }
+    }
+}
+
+fn color_blue_smurf_bold(message: &str) -> ColoredString {
+    message.truecolor(0, 128, 255).bold()
+}
+
+fn color_grey_mouse(message: &str) -> ColoredString {
+    message.truecolor(155, 155, 155)
+}
+
+fn _color_charcoal_creamy_bold(message: &str) -> ColoredString {
+    message.truecolor(38, 38, 38).bold()
+}
+
+fn color_green_eggs_bold(message: &str) -> ColoredString {
+    message.truecolor(135, 255, 175).bold()
 }
 
 fn color_white_bold(message: &str) -> ColoredString {
     message.truecolor(255, 255, 255).bold()
 }
 
-fn color_yellow_bold(message: &str) -> ColoredString {
-    message.truecolor(240, 210, 10).bold()
-}
-
-fn color_blue_bold(message: &str) -> ColoredString {
+fn color_blue_coffee_bold(message: &str) -> ColoredString {
     message.truecolor(0, 192, 255).bold()
 }
 
-fn color_red(message: &str) -> ColoredString {
-    message.bright_red()
+fn _color_yellow_canary_bold(message: &str) -> ColoredString {
+    message.truecolor(240, 210, 10).bold()
 }
 
-fn color_grey(message: &str) -> ColoredString {
-    message.truecolor(155, 155, 155)
+fn color_orange_sherbet_bold(message: &str) -> ColoredString {
+    message.truecolor(239, 157, 110).bold()
 }
 
-fn color_cyan(message: &str) -> ColoredString {
-    message.cyan()
+fn color_red_bold(message: &str) -> ColoredString {
+    message.truecolor(255, 20, 25).bold()
 }
 
 // -- mona ---------------------------------------------------------------------
@@ -1070,5 +1113,5 @@ const MONA: &str = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>''''''<!!!!!!!!!!!!!!
     !!!!!!''       ,d$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$      allen mullen";
 
 #[cfg(test)]
-#[path = "./comp_test.rs"]
+#[path = "../test/comp.test.rs"]
 mod comp_test;

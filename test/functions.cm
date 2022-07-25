@@ -1,53 +1,53 @@
-( functions manual tests )
+< functions manual tests >
 
-(   comments test   ) ( )
-( note -- comments are identified inside parentheses. 
-  there must be whitespace before and after each parenthesis. )
+<   comments test   > < >
+< note -- comments are identified inside curly brackets. 
+  there must be whitespace before and after each bracket. >
 
-  ( multiline 
+  < multiline 
     comments
-    are fine. )
+    are fine. >
 
 
-fn sub1
+( sub1
   1 -
-end
+)
 
-fn div2
+( div2
  2 /
-end
+)
 
-fn square_root
+( square_root
   sqrt
-end
+)
 
-fn ten5th_round
+( ten5th_round
   1e5 x round
-end
+)
 
 5 square_root
 sub1 div2 ten5th_round
 
 
-( nested user-defined functions ( also nested comments ) )
+< nested user-defined functions < also nested comments > >
 
-fn cube
+( cube
   dup square x
-end
+)
 
-fn square
+( square
   dup x
-end
+)
 
 8 cube
 
 100 x
 
 
-( )
+< >
 
-(
+<
 
-eggs and bacon
+basie
 
-)
+>

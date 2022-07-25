@@ -248,4 +248,24 @@ mod comp_tests {
 
     assert!(test_cinter.pop_stack_float() == 100.0);
   }
+
+  #[test]
+  fn test_avg() {
+    let mut test_cinter = super::Interpreter::new();
+
+    test_cinter.stack.push((-2.0).to_string());
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.c_avg("");
+
+    assert!(test_cinter.pop_stack_float() == 0.0);
+
+    test_cinter.stack.push(1.0.to_string());
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.stack.push(3.0.to_string());
+    test_cinter.stack.push(4.0.to_string());
+    test_cinter.c_avg_all("");
+
+    assert!(test_cinter.pop_stack_float() == 2.5);
+  }
+
 }

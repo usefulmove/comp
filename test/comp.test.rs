@@ -212,24 +212,36 @@ mod comp_tests {
   }
 
   #[test]
-  fn test_mxmn() {
+  fn test_minmax() {
     let mut test_cinter = super::Interpreter::new();
 
     test_cinter.stack.push(1.0.to_string());
     test_cinter.stack.push(2.0.to_string());
-    test_cinter.stack.push(3.0.to_string());
-    test_cinter.stack.push(4.0.to_string());
+    test_cinter.c_min("");
+
+    assert!(test_cinter.pop_stack_float() == 1.0);
+
+    test_cinter.stack.push(1.0.to_string());
+    test_cinter.stack.push(2.0.to_string());
     test_cinter.c_max("");
 
-    assert!(test_cinter.pop_stack_float() == 4.0);
+    assert!(test_cinter.pop_stack_float() == 2.0);
 
     test_cinter.stack.push(1.0.to_string());
     test_cinter.stack.push(2.0.to_string());
     test_cinter.stack.push(3.0.to_string());
     test_cinter.stack.push(4.0.to_string());
-    test_cinter.c_min("");
+    test_cinter.c_min_all("");
 
     assert!(test_cinter.pop_stack_float() == 1.0);
+
+    test_cinter.stack.push(1.0.to_string());
+    test_cinter.stack.push(2.0.to_string());
+    test_cinter.stack.push(3.0.to_string());
+    test_cinter.stack.push(4.0.to_string());
+    test_cinter.c_max_all("");
+
+    assert!(test_cinter.pop_stack_float() == 4.0);
   }
 
   #[test]

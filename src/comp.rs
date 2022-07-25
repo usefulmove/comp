@@ -366,7 +366,7 @@ impl Interpreter {
         } else {
             eprintln!(
                 "  {}: [{}] operation called on empty stack",
-                color_orange_sherbet_bold("warning"),
+                color_yellow_canary_bold("warning"),
                 color_blue_coffee_bold(op)
             );
             // do not stop execution
@@ -1055,7 +1055,8 @@ fn print_stack(stack: &mut Vec<String>) {
             1 => {
                 println!(
                     "  {}",
-                    color_green_eggs_bold(
+                    // format top element
+                    color_blue_smurf_bold(
                         stack.remove(0)
                              .as_str()
                     ),
@@ -1064,7 +1065,8 @@ fn print_stack(stack: &mut Vec<String>) {
             _ => {
                 println!(
                     "  {}",
-                    color_blue_coffee_bold(
+                    // format other elements
+                    color_green_eggs_bold(
                         stack.remove(0)
                              .as_str()
                      ),
@@ -1074,8 +1076,32 @@ fn print_stack(stack: &mut Vec<String>) {
     }
 }
 
+fn color_red_bold(message: &str) -> ColoredString {
+    message.truecolor(255, 20, 25).bold()
+}
+
+fn color_orange_sherbet_bold(message: &str) -> ColoredString {
+    message.truecolor(239, 157, 110).bold()
+}
+
+fn color_yellow_canary_bold(message: &str) -> ColoredString {
+    message.truecolor(240, 210, 10).bold()
+}
+
+fn color_green_eggs_bold(message: &str) -> ColoredString {
+    message.truecolor(135, 255, 175).bold()
+}
+
 fn color_blue_smurf_bold(message: &str) -> ColoredString {
     message.truecolor(0, 128, 255).bold()
+}
+
+fn color_blue_coffee_bold(message: &str) -> ColoredString {
+    message.truecolor(0, 192, 255).bold()
+}
+
+fn color_white_bold(message: &str) -> ColoredString {
+    message.truecolor(255, 255, 255).bold()
 }
 
 fn color_grey_mouse(message: &str) -> ColoredString {
@@ -1084,30 +1110,6 @@ fn color_grey_mouse(message: &str) -> ColoredString {
 
 fn _color_charcoal_creamy_bold(message: &str) -> ColoredString {
     message.truecolor(38, 38, 38).bold()
-}
-
-fn color_green_eggs_bold(message: &str) -> ColoredString {
-    message.truecolor(135, 255, 175).bold()
-}
-
-fn color_white_bold(message: &str) -> ColoredString {
-    message.truecolor(255, 255, 255).bold()
-}
-
-fn color_blue_coffee_bold(message: &str) -> ColoredString {
-    message.truecolor(0, 192, 255).bold()
-}
-
-fn _color_yellow_canary_bold(message: &str) -> ColoredString {
-    message.truecolor(240, 210, 10).bold()
-}
-
-fn color_orange_sherbet_bold(message: &str) -> ColoredString {
-    message.truecolor(239, 157, 110).bold()
-}
-
-fn color_red_bold(message: &str) -> ColoredString {
-    message.truecolor(255, 20, 25).bold()
 }
 
 // -- mona ---------------------------------------------------------------------

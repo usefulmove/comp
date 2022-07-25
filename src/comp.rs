@@ -1051,22 +1051,25 @@ fn show_version() {
 
 fn print_stack(stack: &mut Vec<String>) {
     while !stack.is_empty() {
-        if stack.len() == 1 {
-            println!(
-                "  {}",
-                color_green_eggs_bold(
-                    stack.remove(0)
-                         .as_str()
+        match stack.len() {
+            1 => {
+                println!(
+                    "  {}",
+                    color_green_eggs_bold(
+                        stack.remove(0)
+                             .as_str()
+                    ),
+                ) 
+            }
+            _ => {
+                println!(
+                    "  {}",
+                    color_blue_coffee_bold(
+                        stack.remove(0)
+                             .as_str()
+                     ),
                 )
-            );
-        } else {
-            println!(
-                "  {}",
-                color_blue_coffee_bold(
-                    stack.remove(0)
-                         .as_str()
-                 )
-            );
+            }
         }
     }
 }

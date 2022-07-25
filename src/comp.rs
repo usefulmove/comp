@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "b";
+const RELEASE_STATE: &str = "c";
 
 /*
 
@@ -1034,7 +1034,7 @@ fn print_stack(stack: &mut Vec<String>) {
         if stack.len() == 1 {
             println!(
                 "  {}",
-                color_blue_coffee_bold(
+                color_green_eggs_bold(
                     stack.remove(0)
                          .as_str()
                 )
@@ -1042,7 +1042,7 @@ fn print_stack(stack: &mut Vec<String>) {
         } else {
             println!(
                 "  {}",
-                color_green_eggs_bold(
+                color_blue_coffee_bold(
                     stack.remove(0)
                          .as_str()
                  )

@@ -1,0 +1,13 @@
+( color_average
+    < save values from stack >
+    hex_dec sb 
+    hex_dec sa
+
+    < compute average >
+    _a _b + 2 /
+    dec_hex
+)
+
+
+
+    

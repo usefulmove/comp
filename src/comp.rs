@@ -227,7 +227,7 @@ impl Interpreter {
         self.compose_native("avg_",    Interpreter::c_avg_all);  // average all
         // control flow
         self.compose_native("(",       Interpreter::c_function); // function definition
-        self.compose_native("if_eq",   Interpreter::c_ifeq);     // ifequal..else
+        self.compose_native("ifeq",    Interpreter::c_ifeq);     // ifequal..else
         self.compose_native("<",       Interpreter::c_comment);  // function comment
         // conversion
         self.compose_native("dec_hex", Interpreter::c_dechex);   // decimal to hexadecimal
@@ -889,36 +889,40 @@ impl Interpreter {
         self.ops.remove(0); // remove ")"
     }
 
-    fn c_ifeq(&mut self, _op: &str) {
+    fn c_ifeq(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 2, op);
 
         let b = self.pop_stack_float();
         let a = self.pop_stack_float();
 
+        let mut ifops: Vec<String> = Vec::new();
+
         if a == b {
             // execute _if_ condition
-            // build list of operations until 'else' or 'fi'
+            // store list of operations until 'else' or 'fi'
             while (self.ops[0] != "fi") && (self.ops[0] != "else") {
-                TODO
+                ifops.push(self.ops.remove(0));
             }
-
             self.remove_ops("fi");
         } else {
             // execute _else_ condition ( if one exists )
 
-            // remove all ops prior to 'else' or 'fi'
+            // remove ops prior to 'else' or 'fi'
             while (self.ops[0] != "fi") && (self.ops[0] != "else") {
                 self.ops.remove(0);
             }
 
             if self.ops[0] == "else" {
+                self.ops.remove(0); // remove "else"
                 while self.ops[0] != "fi" {
-                    // build list of operations after 'else'
-                    TODO
+                    // store list of operations after 'else'
+                    ifops.push(self.ops.remove(0));
                 }
             }
             self.ops.remove(0); // remove "fi"
         }
+
+        println!("{:#?}", ifops); // remove
     }
 
     fn c_comment(&mut self, _op: &str) {
@@ -1098,7 +1102,7 @@ fn print_stack(stack: &mut Vec<String>) {
                 println!(
                     "  {}",
                     // format top element
-                    color_blue_smurf_bold(
+                    color_green_eggs_bold(
                         stack.remove(0)
                              .as_str()
                     ),
@@ -1108,7 +1112,7 @@ fn print_stack(stack: &mut Vec<String>) {
                 println!(
                     "  {}",
                     // format other elements
-                    color_green_eggs_bold(
+                    color_blue_smurf_bold(
                         stack.remove(0)
                              .as_str()
                      ),

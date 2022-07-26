@@ -12,7 +12,7 @@
 
 < fn nodes_edges
       dup 1
-      if_eq 
+      ifeq 
           0
       else
           --
@@ -25,7 +25,7 @@
 
 ( nodes_edges
     dup 1
-    if_eq
+    ifeq
         0
     else
         --

@@ -226,7 +226,7 @@ impl Interpreter {
         self.compose_native("avg",     Interpreter::c_avg);      // average
         self.compose_native("avg_",    Interpreter::c_avg_all);  // average all
         // control flow
-        self.compose_native("(",       Interpreter::c_fn);       // function definition
+        self.compose_native("(",       Interpreter::c_function); // function definition
         self.compose_native("<",       Interpreter::c_comment);  // function comment
         // conversion
         self.compose_native("dec_hex", Interpreter::c_dechex);   // decimal to hexadecimal
@@ -870,7 +870,7 @@ impl Interpreter {
     }
     // -- control flow ---------------------------------------------------------
 
-    fn c_fn(&mut self, _op: &str) {
+    fn c_function(&mut self, _op: &str) {
         // get function name
         let fn_name: String = self.ops.remove(0);
 
@@ -881,7 +881,7 @@ impl Interpreter {
         });
         let fpos: usize = self.fns.len() - 1; // added function position in function vector
 
-        // build out function operations my reading from interpreter ops
+        // build function operations list
         while self.ops[0] != ")" {
             self.fns[fpos].fops.push(self.ops.remove(0));
         }

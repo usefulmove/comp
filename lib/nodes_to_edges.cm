@@ -25,12 +25,12 @@
 
 ( nodes_edges
     dup 1
-    if_eq (
+    if_eq
         0
-    ) else (
+    else
         --
         dup
         nodes_edges
         +
-    )
+    fi
 )

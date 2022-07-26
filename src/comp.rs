@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "d";
+const RELEASE_STATE: &str = "e";
 
 /*
 
@@ -227,6 +227,7 @@ impl Interpreter {
         self.compose_native("avg_",    Interpreter::c_avg_all);  // average all
         // control flow
         self.compose_native("(",       Interpreter::c_function); // function definition
+        self.compose_native("if_eq",   Interpreter::c_ifeq);     // ifequal..else
         self.compose_native("<",       Interpreter::c_comment);  // function comment
         // conversion
         self.compose_native("dec_hex", Interpreter::c_dechex);   // decimal to hexadecimal
@@ -888,16 +889,36 @@ impl Interpreter {
         self.ops.remove(0); // remove ")"
     }
 
-    // is operator a user defined function?
-    fn is_user_function(&self, op: &str) -> Option<usize> {
-        if !self.fns.is_empty() {
-            for i in 0..self.fns.len() {
-                if self.fns[i].name == op {
-                    return Some(i);
+    fn c_ifeq(&mut self, _op: &str) {
+        Interpreter::check_stack_error(self, 2, op);
+
+        let b = self.pop_stack_float();
+        let a = self.pop_stack_float();
+
+        if a == b {
+            // execute _if_ condition
+            // build list of operations until 'else' or 'fi'
+            while (self.ops[0] != "fi") && (self.ops[0] != "else") {
+                TODO
+            }
+
+            self.remove_ops("fi");
+        } else {
+            // execute _else_ condition ( if one exists )
+
+            // remove all ops prior to 'else' or 'fi'
+            while (self.ops[0] != "fi") && (self.ops[0] != "else") {
+                self.ops.remove(0);
+            }
+
+            if self.ops[0] == "else" {
+                while self.ops[0] != "fi" {
+                    // build list of operations after 'else'
+                    TODO
                 }
             }
+            self.ops.remove(0); // remove "fi"
         }
-        None
     }
 
     fn c_comment(&mut self, _op: &str) {
@@ -923,6 +944,25 @@ impl Interpreter {
 
     // support functions -------------------------------------------------------
 
+    fn is_user_function(&self, op: &str) -> Option<usize> {
+        // is operator a user defined function?
+        if !self.fns.is_empty() {
+            for i in 0..self.fns.len() {
+                if self.fns[i].name == op {
+                    return Some(i);
+                }
+            }
+        }
+        None
+    }
+
+    fn remove_ops(&mut self, end_op: &str) {
+        while self.ops[0] != end_op.to_string() {
+            self.ops.remove(0);
+        }
+        self.ops.remove(0); // remove end_op
+    }
+
     // factorial
     fn factorial(o: f64) -> f64 {
         let n = o.floor();
@@ -942,6 +982,7 @@ impl Interpreter {
             a
         }
     }
+
 }
 
 fn show_help() {

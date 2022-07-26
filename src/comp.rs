@@ -922,7 +922,10 @@ impl Interpreter {
             self.ops.remove(0); // remove "fi"
         }
 
-        println!("{:#?}", ifops); // remove
+        // add if ops to front of operations list
+        for o in ifops.iter().rev() {
+            self.ops.insert(0, o.to_string());
+        }
     }
 
     fn c_comment(&mut self, _op: &str) {
@@ -961,7 +964,7 @@ impl Interpreter {
     }
 
     fn remove_ops(&mut self, end_op: &str) {
-        while self.ops[0] != end_op.to_string() {
+        while self.ops[0] != end_op {
             self.ops.remove(0);
         }
         self.ops.remove(0); // remove end_op

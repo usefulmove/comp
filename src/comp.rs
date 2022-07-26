@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "e";
+const RELEASE_STATE: &str = "f";
 
 /*
 
@@ -897,6 +897,8 @@ impl Interpreter {
 
         let mut ifops: Vec<String> = Vec::new();
 
+        let mut depth: usize = 0;
+
         if a == b {
             // execute _if_ condition
             // store list of operations until 'else' or 'fi'
@@ -999,9 +1001,8 @@ fn show_help() {
         color_white_bold("COMP")
     );
     println!(
-        "    {} {} {} {}",
-        color_grey_mouse("comp"),
-        color_yellow_canary_bold(".."),
+        "    comp {} {} {}",
+        color_grey_mouse(".."),
         color_white_bold("command interpreter"),
         color_grey_mouse(env!("CARGO_PKG_VERSION")),
     );
@@ -1017,24 +1018,24 @@ fn show_help() {
     );
     println!(
         "    comp {} {}",
-        color_orange_sherbet_bold("-f"),
+        color_yellow_canary_bold("-f"),
         color_blue_coffee_bold("<path>"),
     );
     println!();
     println!("{}", color_white_bold("OPTIONS"));
     println!(
         "        {}      show version",
-        color_orange_sherbet_bold("--version"),
+        color_yellow_canary_bold("--version"),
     );
     println!(
         "    {}{} {}         read from file at the specified path",
-       color_orange_sherbet_bold("-f"),
+       color_yellow_canary_bold("-f"),
        color_white_bold(","),
-       color_orange_sherbet_bold("--file"),
+       color_yellow_canary_bold("--file"),
     );
     println!(
         "        {}         show help information",
-        color_orange_sherbet_bold("--help"),
+        color_yellow_canary_bold("--help"),
     );
     println!();
     println!("{}", color_white_bold("DESCRIPTION"));
@@ -1129,12 +1130,12 @@ fn color_red_bold(message: &str) -> ColoredString {
     message.truecolor(255, 20, 25).bold()
 }
 
-fn color_orange_sherbet_bold(message: &str) -> ColoredString {
+fn _color_orange_sherbet_bold(message: &str) -> ColoredString {
     message.truecolor(239, 157, 110).bold()
 }
 
 fn color_yellow_canary_bold(message: &str) -> ColoredString {
-    message.truecolor(240, 210, 10).bold()
+    message.truecolor(255, 252, 103).bold()
 }
 
 fn color_green_eggs_bold(message: &str) -> ColoredString {
@@ -1157,7 +1158,7 @@ fn color_grey_mouse(message: &str) -> ColoredString {
     message.truecolor(155, 155, 155)
 }
 
-fn _color_charcoal_creamy_bold(message: &str) -> ColoredString {
+fn color_charcoal_creamy_bold(message: &str) -> ColoredString {
     message.truecolor(38, 38, 38).bold()
 }
 

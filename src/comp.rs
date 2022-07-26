@@ -951,8 +951,9 @@ fn show_help() {
         color_white_bold("COMP")
     );
     println!(
-        "    {} .. {} {}",
+        "    {} {} {} {}",
         color_grey_mouse("comp"),
+        color_yellow_canary_bold(".."),
         color_white_bold("command interpreter"),
         color_grey_mouse(env!("CARGO_PKG_VERSION")),
     );

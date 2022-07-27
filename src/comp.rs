@@ -902,10 +902,17 @@ impl Interpreter {
         if a == b {
             // execute _if_ condition
             // store list of operations until 'else' or 'fi'
-            while (self.ops[0] != "fi") && (self.ops[0] != "else") {
+            while (depth > 0) || ((self.ops[0] != "fi") && (self.ops[0] != "else")) {
+                println!("self.ops[0]={}", self.ops[0]); // delete
+                println!("depth={}", depth); // delete
+                match self.ops[0].as_str() {
+                    "ifeq" => depth += 1, // increase depth
+                    "fi" => depth -= 1, // decrease depth
+                    _ => (),
+                }
                 ifops.push(self.ops.remove(0));
             }
-            self.remove_ops("fi");
+            self.remove_ops_fi();
         } else {
             // execute _else_ condition ( if one exists )
 
@@ -928,6 +935,16 @@ impl Interpreter {
         for o in ifops.iter().rev() {
             self.ops.insert(0, o.to_string());
         }
+    }
+
+    fn remove_ops_fi(&mut self) { // TODO
+        println!("remove_ops_fi() - start {:#?}", self.ops); // delete
+        let end_op: &str = "fi";
+        while self.ops[0] != end_op {
+            self.ops.remove(0);
+        }
+        self.ops.remove(0); // remove end_op
+        println!("remove_ops_fi() - end {:#?}", self.ops); // delete
     }
 
     fn c_comment(&mut self, _op: &str) {
@@ -963,13 +980,6 @@ impl Interpreter {
             }
         }
         None
-    }
-
-    fn remove_ops(&mut self, end_op: &str) {
-        while self.ops[0] != end_op {
-            self.ops.remove(0);
-        }
-        self.ops.remove(0); // remove end_op
     }
 
     // factorial
@@ -1158,7 +1168,7 @@ fn color_grey_mouse(message: &str) -> ColoredString {
     message.truecolor(155, 155, 155)
 }
 
-fn color_charcoal_creamy_bold(message: &str) -> ColoredString {
+fn _color_charcoal_creamy_bold(message: &str) -> ColoredString {
     message.truecolor(38, 38, 38).bold()
 }
 

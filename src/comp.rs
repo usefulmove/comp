@@ -903,8 +903,6 @@ impl Interpreter {
             // execute _if_ condition
             // store list of operations until 'else' or 'fi'
             while (depth > 0) || ((self.ops[0] != "fi") && (self.ops[0] != "else")) {
-                println!("self.ops[0]={}", self.ops[0]); // delete
-                println!("depth={}", depth); // delete
                 match self.ops[0].as_str() {
                     "ifeq" => depth += 1, // increase depth
                     "fi" => depth -= 1, // decrease depth
@@ -917,7 +915,12 @@ impl Interpreter {
             // execute _else_ condition ( if one exists )
 
             // remove ops prior to 'else' or 'fi'
-            while (self.ops[0] != "fi") && (self.ops[0] != "else") {
+            while (depth > 0) || ((self.ops[0] != "fi") && (self.ops[0] != "else")) { // TODO
+                match self.ops[0].as_str() {
+                    "ifeq" => depth += 1, // increase depth
+                    "fi" => depth -= 1, // decrease depth
+                    _ => (),
+                }
                 self.ops.remove(0);
             }
 
@@ -937,14 +940,20 @@ impl Interpreter {
         }
     }
 
-    fn remove_ops_fi(&mut self) { // TODO
-        println!("remove_ops_fi() - start {:#?}", self.ops); // delete
+    fn remove_ops_fi(&mut self) {
         let end_op: &str = "fi";
-        while self.ops[0] != end_op {
+
+        let mut depth: usize = 0;
+
+        while (depth > 0) || (self.ops[0] != end_op) {
+            match self.ops[0].as_str() {
+                "ifeq" => depth += 1, // increase depth
+                "fi" => depth -= 1, // decrease depth
+                _ => (),
+            }
             self.ops.remove(0);
         }
         self.ops.remove(0); // remove end_op
-        println!("remove_ops_fi() - end {:#?}", self.ops); // delete
     }
 
     fn c_comment(&mut self, _op: &str) {

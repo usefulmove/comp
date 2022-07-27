@@ -7,22 +7,7 @@
     f(1) = 0
 >
 
-
 < recursive function >
-
-< fn nodes_edges
-      dup 1
-      ifeq 
-          drop
-          0
-      else
-          --
-          dup
-          nodes_edges
-          +
-      end
-  end
->
 
 ( nodes_edges
     dup 1

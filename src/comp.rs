@@ -37,7 +37,7 @@ const RELEASE_STATE: &str = "g";
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
-bin_dec hex_bin bin_hex rgb_hex c_f f_c min min_ max max_ avg avg_ rand";
+bin_dec hex_bin bin_hex rgb_hex hex_rgb c_f f_c min min_ max max_ avg avg_ rand";
 
 
 fn main() {
@@ -240,7 +240,7 @@ impl Interpreter {
         self.compose_native("f_c",     Interpreter::c_fahcel);   // Fahrenheit to Celsius
         self.compose_native("mi_km",   Interpreter::c_mikm);     // miles to kilometers
         self.compose_native("km_mi",   Interpreter::c_kmmi);     // kilometers to miles
-//        self.compose_native("hex_rgb", Interpreter::c_hexrgb);   // hexadecimal string to RGB
+        self.compose_native("hex_rgb", Interpreter::c_hexrgb);   // hexadecimal string to RGB
         self.compose_native("rgb_hex", Interpreter::c_rgbhex);   // RGB to hexadecimal string
     }
 
@@ -872,13 +872,23 @@ impl Interpreter {
         self.stack.push((a/1.609344).to_string());
     }
 
-//    fn c_hexrgb(&mut self, op: &str) {
-//        Interpreter::check_stack_error(self, 1, op);
-//
-//        let a = self.pop_stack_int_from_hex();
-//
-//        self.stack.push((a/1.609344).to_string());
-//    }
+    fn c_hexrgb(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let she: String = self.stack.pop().unwrap();
+
+        let rsh: String = she[..2].to_string();
+        let gsh: String = she[2..4].to_string();
+        let bsh: String = she[4..].to_string();
+
+        let r: i64 = i64::from_str_radix(&rsh, 16).unwrap();
+        let g: i64 = i64::from_str_radix(&gsh, 16).unwrap();
+        let b: i64 = i64::from_str_radix(&bsh, 16).unwrap();
+
+        self.stack.push(r.to_string());
+        self.stack.push(g.to_string());
+        self.stack.push(b.to_string());
+    }
 
     fn c_rgbhex(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 3, op);

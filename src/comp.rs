@@ -34,7 +34,7 @@ const RELEASE_STATE: &str = "g";
 */
 
 // -- command list -------------------------------------------------------------
-const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
+const CMDS: &str = "drop dup swap cls roll rot + ++ +_ - -- x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
 bin_dec hex_bin bin_hex rgb_hex hex_rgb c_f f_c min min_ max max_ avg avg_ rand";

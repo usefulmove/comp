@@ -76,7 +76,7 @@ fn main() {
             if args.get(2).is_none() {
                 eprintln!(
                     "  {}: no file path provided",
-                    color_red_bold("error")
+                    color_red_bold("error"),
                 );
                 std::process::exit(99);
             }
@@ -90,7 +90,7 @@ fn main() {
                 eprintln!(
                     "  {}: could not read [{}]: {error}",
                     color_red_bold("error"),
-                    color_blue_coffee_bold(path.display().to_string().as_str())
+                    color_blue_coffee_bold(path.display().to_string().as_str()),
                 );
                 std::process::exit(99);
             }
@@ -276,8 +276,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (f)",
-                    "error".bright_red(),
-                    color_blue_coffee_bold(element.as_str())
+                    color_red_bold("error"),
+                    color_blue_coffee_bold(element.as_str()),
                 );
                 std::process::exit(99);
             }
@@ -292,8 +292,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                    "error".bright_red(),
-                    color_blue_coffee_bold(element.as_str())
+                    color_red_bold("error"),
+                    color_blue_coffee_bold(element.as_str()),
                 );
                 std::process::exit(99);
             }
@@ -310,8 +310,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
-                    "error".bright_red(),
-                    color_blue_coffee_bold(element.as_str())
+                    color_red_bold("error"),
+                    color_blue_coffee_bold(element.as_str()),
                 );
                 std::process::exit(99);
             }
@@ -328,8 +328,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_b)",
-                    "error".bright_red(),
-                    color_blue_coffee_bold(element.as_str())
+                    color_red_bold("error"),
+                    color_blue_coffee_bold(element.as_str()),
                 );
                 std::process::exit(99);
             }
@@ -354,7 +354,7 @@ impl Interpreter {
                 "  {}: [{}] operation called without at least {min_depth} \
                 element(s) on stack",
                 color_red_bold("error"),
-                color_blue_coffee_bold(command)
+                color_blue_coffee_bold(command),
             );
             std::process::exit(99);
         }
@@ -370,7 +370,7 @@ impl Interpreter {
             eprintln!(
                 "  {}: [{}] operation called on empty stack",
                 color_yellow_canary_bold("warning"),
-                color_blue_coffee_bold(op)
+                color_blue_coffee_bold(op),
             );
             // do not stop execution
         }
@@ -876,6 +876,15 @@ impl Interpreter {
         Interpreter::check_stack_error(self, 1, op);
 
         let she: String = self.stack.pop().unwrap();
+
+        if she.len() < 5 {
+            eprintln!(
+                "  {}: argument too short [{}] is not of sufficient length",
+                color_red_bold("error"),
+                color_blue_coffee_bold(she.as_str()),
+            );
+            std::process::exit(99);
+        }
 
         let rsh: String = she[..2].to_string();
         let gsh: String = she[2..4].to_string();

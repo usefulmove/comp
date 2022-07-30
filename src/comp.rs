@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseIntError, ParseFloatError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "f";
+const RELEASE_STATE: &str = "g";
 
 /*
 
@@ -37,7 +37,7 @@ const RELEASE_STATE: &str = "f";
 const CMDS: &str = "drop dup swap cls clr roll rot + +_ - x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
-bin_dec hex_bin bin_hex c_f f_c min min_ max max_ avg avg_ rand";
+bin_dec hex_bin bin_hex rgb_hex c_f f_c min min_ max max_ avg avg_ rand";
 
 
 fn main() {
@@ -240,6 +240,8 @@ impl Interpreter {
         self.compose_native("f_c",     Interpreter::c_fahcel);   // Fahrenheit to Celsius
         self.compose_native("mi_km",   Interpreter::c_mikm);     // miles to kilometers
         self.compose_native("km_mi",   Interpreter::c_kmmi);     // kilometers to miles
+//        self.compose_native("hex_rgb", Interpreter::c_hexrgb);   // hexadecimal string to RGB
+        self.compose_native("rgb_hex", Interpreter::c_rgbhex);   // RGB to hexadecimal string
     }
 
     fn process_node(&mut self, op: &str) {
@@ -298,7 +300,7 @@ impl Interpreter {
         }
     }
 
-    fn pop_stack_int_hex(&mut self) -> i64 {
+    fn pop_stack_int_from_hex(&mut self) -> i64 {
         let element: String = self.stack.pop().unwrap();
 
         match i64::from_str_radix(&element, 16) {
@@ -316,7 +318,7 @@ impl Interpreter {
         }
     }
 
-    fn pop_stack_int_bin(&mut self) -> i64 {
+    fn pop_stack_int_from_bin(&mut self) -> i64 {
         let element: String = self.stack.pop().unwrap();
 
         match i64::from_str_radix(&element, 2) {
@@ -801,7 +803,7 @@ impl Interpreter {
     fn c_hexdec(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a = self.pop_stack_int_hex();
+        let a = self.pop_stack_int_from_hex();
 
         self.stack.push(a.to_string());
     }
@@ -817,7 +819,7 @@ impl Interpreter {
     fn c_bindec(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a = self.pop_stack_int_bin();
+        let a = self.pop_stack_int_from_bin();
 
         self.stack.push(a.to_string());
     }
@@ -825,7 +827,7 @@ impl Interpreter {
     fn c_binhex(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a = self.pop_stack_int_bin();
+        let a = self.pop_stack_int_from_bin();
 
         self.stack.push(format!("{:x}", a));
     }
@@ -833,7 +835,7 @@ impl Interpreter {
     fn c_hexbin(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
-        let a = self.pop_stack_int_hex();
+        let a = self.pop_stack_int_from_hex();
 
         self.stack.push(format!("{:b}", a));
     }
@@ -869,6 +871,25 @@ impl Interpreter {
 
         self.stack.push((a/1.609344).to_string());
     }
+
+//    fn c_hexrgb(&mut self, op: &str) {
+//        Interpreter::check_stack_error(self, 1, op);
+//
+//        let a = self.pop_stack_int_from_hex();
+//
+//        self.stack.push((a/1.609344).to_string());
+//    }
+
+    fn c_rgbhex(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 3, op);
+
+        let b: u64 = self.pop_stack_uint();
+        let g: u64 = self.pop_stack_uint();
+        let r: u64 = self.pop_stack_uint();
+
+        self.stack.push(format!("{:02x}{:02x}{:02x}", r, g, b));
+    }
+
     // -- control flow ---------------------------------------------------------
 
     fn c_function(&mut self, _op: &str) {
@@ -915,7 +936,7 @@ impl Interpreter {
             // execute _else_ condition ( if one exists )
 
             // remove ops prior to 'else' or 'fi'
-            while (depth > 0) || ((self.ops[0] != "fi") && (self.ops[0] != "else")) { // TODO
+            while (depth > 0) || ((self.ops[0] != "fi") && (self.ops[0] != "else")) {
                 match self.ops[0].as_str() {
                     "ifeq" => depth += 1, // increase depth
                     "fi" => depth -= 1, // decrease depth
@@ -1020,7 +1041,8 @@ fn show_help() {
         color_white_bold("COMP")
     );
     println!(
-        "    comp {} {} {}",
+        "    {} {} {} {}",
+        color_grey_mouse("comp"),
         color_grey_mouse(".."),
         color_white_bold("command interpreter"),
         color_grey_mouse(env!("CARGO_PKG_VERSION")),
@@ -1031,12 +1053,14 @@ fn show_help() {
         color_white_bold("USAGE")
     );
     println!(
-        "    comp {} {}",
+        "    {} {} {}",
+        color_grey_mouse("comp"),
         color_white_bold("[OPTIONS]"),
         color_blue_coffee_bold("<list>"),
     );
     println!(
-        "    comp {} {}",
+        "    {} {} {}",
+        color_grey_mouse("comp"),
         color_yellow_canary_bold("-f"),
         color_blue_coffee_bold("<path>"),
     );
@@ -1112,9 +1136,9 @@ fn show_version() {
     let version: &str = env!("CARGO_PKG_VERSION");
     println!(
         "  {} {}{}",
-        color_white_bold("comp"),
+        color_grey_mouse("comp"),
         color_blue_smurf_bold(version),
-        color_grey_mouse(RELEASE_STATE),
+        color_white_bold(RELEASE_STATE),
     );
 }
 

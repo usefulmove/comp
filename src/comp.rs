@@ -2,7 +2,7 @@ use colored::*;
 use std::collections::HashMap;
 use std::env;
 use std::fs;
-use std::num::{ParseIntError, ParseFloatError};
+use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
 const RELEASE_STATE: &str = "g";
@@ -39,7 +39,6 @@ int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
 bin_dec hex_bin bin_hex rgb_hex hex_rgb c_f f_c min min_ max max_ avg avg_ rand";
 
-
 fn main() {
     // enable or disable backtrace on error
     env::set_var("RUST_BACKTRACE", "0");
@@ -54,7 +53,6 @@ fn main() {
     if args.len() <= 1 {
         args.push("help".to_string());
     }
-
 
     match args[1].as_str() {
         "--help" | "help" => {
@@ -74,10 +72,7 @@ fn main() {
         "-f" | "--file" => {
             // read operations list input from file
             if args.get(2).is_none() {
-                eprintln!(
-                    "  {}: no file path provided",
-                    color_red_bold("error"),
-                );
+                eprintln!("  {}: no file path provided", color_red_bold("error"),);
                 std::process::exit(99);
             }
 
@@ -116,7 +111,6 @@ fn main() {
     cinter.process_ops();
 
     print_stack(&mut cinter.stack.clone());
-
 }
 
 struct Function {
@@ -165,101 +159,104 @@ impl Interpreter {
     }
 
     fn init(&mut self) {
-        // stack manipulation
-        self.compose_native("drop",    Interpreter::c_drop);     // drop
-        self.compose_native("dup",     Interpreter::c_dup);      // duplicate
-        self.compose_native("swap",    Interpreter::c_swap);     // swap x and y
-        self.compose_native("cls",     Interpreter::c_cls);      // clear stack
-        self.compose_native("clr",     Interpreter::c_cls);      // clear stack
-        self.compose_native("roll",    Interpreter::c_roll);     // roll stack
-        self.compose_native("rot",     Interpreter::c_rot);      // rotate stack (reverse direction from roll)
-        // memory usage
-        self.compose_native("sa",      Interpreter::c_store_a);  // store (pop value off stack and store)
-        self.compose_native("_a",      Interpreter::c_push_a);   // retrieve (push stored value onto the stack)
-        self.compose_native("sb",      Interpreter::c_store_b);  // store
-        self.compose_native("_b",      Interpreter::c_push_b);   // retrieve
-        self.compose_native("sc",      Interpreter::c_store_c);  // store
-        self.compose_native("_c",      Interpreter::c_push_c);   // retrieve
-        // math operations
-        self.compose_native("+",       Interpreter::c_add);      // add
-        self.compose_native("+_",      Interpreter::c_add_all);  // add all
-        self.compose_native("++",      Interpreter::c_add_one);  // add one
-        self.compose_native("-",       Interpreter::c_sub);      // subtract
-        self.compose_native("--",      Interpreter::c_sub_one);  // subtract one
-        self.compose_native("x",       Interpreter::c_mult);     // multiply
-        self.compose_native("x_",      Interpreter::c_mult_all); // multiply all
-        self.compose_native("/",       Interpreter::c_div);      // divide
-        self.compose_native("chs",     Interpreter::c_chs);      // change sign
-        self.compose_native("abs",     Interpreter::c_abs);      // absolute value
-        self.compose_native("round",   Interpreter::c_round);    // round
-        self.compose_native("int",     Interpreter::c_round);
-        self.compose_native("inv",     Interpreter::c_inv);      // invert (1/x)
-        self.compose_native("sqrt",    Interpreter::c_sqrt);     // square root
-        self.compose_native("throot",  Interpreter::c_throot);   // nth root
-        self.compose_native("proot",   Interpreter::c_proot);    // find principal roots
-        self.compose_native("^",       Interpreter::c_exp);      // exponentiation
-        self.compose_native("exp",     Interpreter::c_exp);
-        self.compose_native("%",       Interpreter::c_mod);      // modulus
-        self.compose_native("mod",     Interpreter::c_mod);
-        self.compose_native("!",       Interpreter::c_fact);     // factorial
-        self.compose_native("gcd",     Interpreter::c_gcd);      // greatest common divisor
-        self.compose_native("pi",      Interpreter::c_pi);       // pi
-        self.compose_native("e",       Interpreter::c_euler);    // Euler's constant
-        self.compose_native("deg_rad", Interpreter::c_degrad);   // degrees to radians
-        self.compose_native("rad_deg", Interpreter::c_raddeg);   // radians to degrees
-        self.compose_native("sin",     Interpreter::c_sin);      // sine
-        self.compose_native("asin",    Interpreter::c_asin);     // arcsine
-        self.compose_native("cos",     Interpreter::c_cos);      // cosine
-        self.compose_native("acos",    Interpreter::c_acos);     // arccosine
-        self.compose_native("tan",     Interpreter::c_tan);      // tangent
-        self.compose_native("atan",    Interpreter::c_atan);     // arctangent
-        self.compose_native("log2",    Interpreter::c_log2);     // logarithm (base 2)
-        self.compose_native("log",     Interpreter::c_log10);    // logarithm (base 10)
-        self.compose_native("log10",   Interpreter::c_log10);
-        self.compose_native("logn",    Interpreter::c_logn);     // logarithm (base n)
-        self.compose_native("ln",      Interpreter::c_ln);       // natural logarithm
-        self.compose_native("rand",    Interpreter::c_rand);     // random number
-        self.compose_native("min",     Interpreter::c_min);      // minimum
-        self.compose_native("min_",    Interpreter::c_min_all);  // minimum
-        self.compose_native("max",     Interpreter::c_max);      // maximum
-        self.compose_native("max_",    Interpreter::c_max_all);  // maximum all
-        self.compose_native("avg",     Interpreter::c_avg);      // average
-        self.compose_native("avg_",    Interpreter::c_avg_all);  // average all
-        // control flow
-        self.compose_native("(",       Interpreter::c_function); // function definition
-        self.compose_native("ifeq",    Interpreter::c_ifeq);     // ifequal..else
-        self.compose_native("<",       Interpreter::c_comment);  // function comment
-        // conversion
-        self.compose_native("dec_hex", Interpreter::c_dechex);   // decimal to hexadecimal
-        self.compose_native("hex_dec", Interpreter::c_hexdec);   // hexadecimal to decimal
-        self.compose_native("dec_bin", Interpreter::c_decbin);   // decimal to binary
-        self.compose_native("bin_dec", Interpreter::c_bindec);   // binary to decimal
-        self.compose_native("bin_hex", Interpreter::c_binhex);   // binary to hexadecimal
-        self.compose_native("hex_bin", Interpreter::c_hexbin);   // hexadecimal to binary
-        self.compose_native("c_f",     Interpreter::c_celfah);   // Celsius to Fahrenheit
-        self.compose_native("f_c",     Interpreter::c_fahcel);   // Fahrenheit to Celsius
-        self.compose_native("mi_km",   Interpreter::c_mikm);     // miles to kilometers
-        self.compose_native("km_mi",   Interpreter::c_kmmi);     // kilometers to miles
-        self.compose_native("hex_rgb", Interpreter::c_hexrgb);   // hexadecimal string to RGB
-        self.compose_native("rgb_hex", Interpreter::c_rgbhex);   // RGB to hexadecimal string
+        /* stack manipulation */
+        self.compose_native("drop", Interpreter::c_drop); // drop
+        self.compose_native("dup", Interpreter::c_dup); // duplicate
+        self.compose_native("swap", Interpreter::c_swap); // swap x and y
+        self.compose_native("cls", Interpreter::c_cls); // clear stack
+        self.compose_native("clr", Interpreter::c_cls); // clear stack
+        self.compose_native("roll", Interpreter::c_roll); // roll stack
+        self.compose_native("rot", Interpreter::c_rot); // rotate stack (reverse direction from roll)
+        /* memory usage */
+        self.compose_native("sa", Interpreter::c_store_a); // store (pop value off stack and store)
+        self.compose_native("_a", Interpreter::c_push_a); // retrieve (push stored value onto the stack)
+        self.compose_native("sb", Interpreter::c_store_b); // store
+        self.compose_native("_b", Interpreter::c_push_b); // retrieve
+        self.compose_native("sc", Interpreter::c_store_c); // store
+        self.compose_native("_c", Interpreter::c_push_c); // retrieve
+        /* math operations */
+        self.compose_native("+", Interpreter::c_add); // add
+        self.compose_native("+_", Interpreter::c_add_all); // add all
+        self.compose_native("++", Interpreter::c_add_one); // add one
+        self.compose_native("-", Interpreter::c_sub); // subtract
+        self.compose_native("--", Interpreter::c_sub_one); // subtract one
+        self.compose_native("x", Interpreter::c_mult); // multiply
+        self.compose_native("x_", Interpreter::c_mult_all); // multiply all
+        self.compose_native("/", Interpreter::c_div); // divide
+        self.compose_native("chs", Interpreter::c_chs); // change sign
+        self.compose_native("abs", Interpreter::c_abs); // absolute value
+        self.compose_native("round", Interpreter::c_round); // round
+        self.compose_native("int", Interpreter::c_round);
+        self.compose_native("inv", Interpreter::c_inv); // invert (1/x)
+        self.compose_native("sqrt", Interpreter::c_sqrt); // square root
+        self.compose_native("throot", Interpreter::c_throot); // nth root
+        self.compose_native("proot", Interpreter::c_proot); // find principal roots
+        self.compose_native("^", Interpreter::c_exp); // exponentiation
+        self.compose_native("exp", Interpreter::c_exp);
+        self.compose_native("%", Interpreter::c_mod); // modulus
+        self.compose_native("mod", Interpreter::c_mod);
+        self.compose_native("!", Interpreter::c_fact); // factorial
+        self.compose_native("gcd", Interpreter::c_gcd); // greatest common divisor
+        self.compose_native("pi", Interpreter::c_pi); // pi
+        self.compose_native("e", Interpreter::c_euler); // Euler's constant
+        self.compose_native("deg_rad", Interpreter::c_degrad); // degrees to radians
+        self.compose_native("rad_deg", Interpreter::c_raddeg); // radians to degrees
+        self.compose_native("sin", Interpreter::c_sin); // sine
+        self.compose_native("asin", Interpreter::c_asin); // arcsine
+        self.compose_native("cos", Interpreter::c_cos); // cosine
+        self.compose_native("acos", Interpreter::c_acos); // arccosine
+        self.compose_native("tan", Interpreter::c_tan); // tangent
+        self.compose_native("atan", Interpreter::c_atan); // arctangent
+        self.compose_native("log2", Interpreter::c_log2); // logarithm (base 2)
+        self.compose_native("log", Interpreter::c_log10); // logarithm (base 10)
+        self.compose_native("log10", Interpreter::c_log10);
+        self.compose_native("logn", Interpreter::c_logn); // logarithm (base n)
+        self.compose_native("ln", Interpreter::c_ln); // natural logarithm
+        self.compose_native("rand", Interpreter::c_rand); // random number
+        self.compose_native("min", Interpreter::c_min); // minimum
+        self.compose_native("min_", Interpreter::c_min_all); // minimum
+        self.compose_native("max", Interpreter::c_max); // maximum
+        self.compose_native("max_", Interpreter::c_max_all); // maximum all
+        self.compose_native("avg", Interpreter::c_avg); // average
+        self.compose_native("avg_", Interpreter::c_avg_all); // average all
+        /* control flow */
+        self.compose_native("(", Interpreter::c_function); // function definition
+        self.compose_native("ifeq", Interpreter::c_ifeq); // ifequal..else
+        self.compose_native("<", Interpreter::c_comment); // function comment
+        /* conversion */
+        self.compose_native("dec_hex", Interpreter::c_dechex); // decimal to hexadecimal
+        self.compose_native("hex_dec", Interpreter::c_hexdec); // hexadecimal to decimal
+        self.compose_native("dec_bin", Interpreter::c_decbin); // decimal to binary
+        self.compose_native("bin_dec", Interpreter::c_bindec); // binary to decimal
+        self.compose_native("bin_hex", Interpreter::c_binhex); // binary to hexadecimal
+        self.compose_native("hex_bin", Interpreter::c_hexbin); // hexadecimal to binary
+        self.compose_native("c_f", Interpreter::c_celfah); // Celsius to Fahrenheit
+        self.compose_native("f_c", Interpreter::c_fahcel); // Fahrenheit to Celsius
+        self.compose_native("mi_km", Interpreter::c_mikm); // miles to kilometers
+        self.compose_native("km_mi", Interpreter::c_kmmi); // kilometers to miles
+        self.compose_native("hex_rgb", Interpreter::c_hexrgb); // hexadecimal string to RGB
+        self.compose_native("rgb_hex", Interpreter::c_rgbhex); // RGB to hexadecimal string
     }
 
     fn process_node(&mut self, op: &str) {
-        if self.cmap.contains_key(op) { // native comp command?
+        if self.cmap.contains_key(op) {
+            // native comp command?
             let f = self.cmap[op];
             f(self, op);
         } else {
             let result: Option<usize> = self.is_user_function(op); // user-defined function?
 
             match result {
-                Some(index) => { // user-defined function
+                Some(index) => {
+                    // user-defined function
                     // copy user function ops (fops) into main ops
                     for i in (0..self.fns[index].fops.len()).rev() {
                         let fop: String = self.fns[index].fops[i].clone();
                         self.ops.insert(0, fop);
                     }
                 }
-                None => { // neither native command nor user-defined function
+                None => {
+                    // neither native command nor user-defined function
                     // push value onto stack
                     self.stack.push(op.to_string());
                 }
@@ -272,7 +269,8 @@ impl Interpreter {
         let element: String = self.stack.pop().unwrap();
         match self.parse_float(&element) {
             Ok(val) => val, // parse success
-            Err(_error) => { // parse fail
+            Err(_error) => {
+                // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (f)",
@@ -288,7 +286,8 @@ impl Interpreter {
         let element: String = self.stack.pop().unwrap();
         match self.parse_uint(&element) {
             Ok(val) => val, // parse success
-            Err(_error) => { // parse fail
+            Err(_error) => {
+                // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
@@ -567,15 +566,20 @@ impl Interpreter {
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
 
-        if (b*b - 4.0*a*c) < 0.0 {
-            self.stack.push((-1.0*b/(2.0*a)).to_string()); // r_1 real
-            self.stack.push(((4.0*a*c-b*b).sqrt()/(2.0*a)).to_string()); // r_1 imag
-            self.stack.push((-1.0*b/(2.0*a)).to_string()); // r_2 real
-            self.stack.push((-1.0*(4.0*a*c-b*b).sqrt()/(2.0*a)).to_string()); // r_2 imag
-          } else {
-            self.stack.push((-1.0*b+(b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // r_1 real
+        if (b * b - 4.0 * a * c) < 0.0 {
+            self.stack.push((-1.0 * b / (2.0 * a)).to_string()); // r_1 real
+            self.stack
+                .push(((4.0 * a * c - b * b).sqrt() / (2.0 * a)).to_string()); // r_1 imag
+            self.stack.push((-1.0 * b / (2.0 * a)).to_string()); // r_2 real
+            self.stack
+                .push((-1.0 * (4.0 * a * c - b * b).sqrt() / (2.0 * a)).to_string());
+        // r_2 imag
+        } else {
+            self.stack
+                .push((-1.0 * b + (b * b - 4.0 * a * c).sqrt() / (2.0 * a)).to_string()); // r_1 real
             self.stack.push(0.0.to_string()); // r_1 imag
-            self.stack.push((-1.0*b-(b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // r_2 real
+            self.stack
+                .push((-1.0 * b - (b * b - 4.0 * a * c).sqrt() / (2.0 * a)).to_string()); // r_2 real
             self.stack.push(0.0.to_string()); // r_2 imag
         }
     }
@@ -778,7 +782,7 @@ impl Interpreter {
             sum += self.pop_stack_float();
         }
 
-        self.stack.push((sum/len as f64).to_string());
+        self.stack.push((sum / len as f64).to_string());
     }
 
     fn c_rand(&mut self, op: &str) {
@@ -845,7 +849,7 @@ impl Interpreter {
 
         let a = self.pop_stack_float();
 
-        self.stack.push((a*9.0/5.0+32.0).to_string());
+        self.stack.push((a * 9.0 / 5.0 + 32.0).to_string());
     }
 
     fn c_fahcel(&mut self, op: &str) {
@@ -853,7 +857,7 @@ impl Interpreter {
 
         let a = self.pop_stack_float();
 
-        self.stack.push(((a-32.0)*5.0/9.0).to_string());
+        self.stack.push(((a - 32.0) * 5.0 / 9.0).to_string());
     }
 
     fn c_mikm(&mut self, op: &str) {
@@ -861,7 +865,7 @@ impl Interpreter {
 
         let a = self.pop_stack_float();
 
-        self.stack.push((a*1.609344).to_string());
+        self.stack.push((a * 1.609344).to_string());
     }
 
     fn c_kmmi(&mut self, op: &str) {
@@ -869,7 +873,7 @@ impl Interpreter {
 
         let a = self.pop_stack_float();
 
-        self.stack.push((a/1.609344).to_string());
+        self.stack.push((a / 1.609344).to_string());
     }
 
     fn c_hexrgb(&mut self, op: &str) {
@@ -945,7 +949,7 @@ impl Interpreter {
             while (depth > 0) || ((self.ops[0] != "fi") && (self.ops[0] != "else")) {
                 match self.ops[0].as_str() {
                     "ifeq" => depth += 1, // increase depth
-                    "fi" => depth -= 1, // decrease depth
+                    "fi" => depth -= 1,   // decrease depth
                     _ => (),
                 }
                 ifops.push(self.ops.remove(0));
@@ -958,7 +962,7 @@ impl Interpreter {
             while (depth > 0) || ((self.ops[0] != "fi") && (self.ops[0] != "else")) {
                 match self.ops[0].as_str() {
                     "ifeq" => depth += 1, // increase depth
-                    "fi" => depth -= 1, // decrease depth
+                    "fi" => depth -= 1,   // decrease depth
                     _ => (),
                 }
                 self.ops.remove(0);
@@ -988,7 +992,7 @@ impl Interpreter {
         while (depth > 0) || (self.ops[0] != end_op) {
             match self.ops[0].as_str() {
                 "ifeq" => depth += 1, // increase depth
-                "fi" => depth -= 1, // decrease depth
+                "fi" => depth -= 1,   // decrease depth
                 _ => (),
             }
             self.ops.remove(0);
@@ -1050,15 +1054,11 @@ impl Interpreter {
             a
         }
     }
-
 }
 
 fn show_help() {
     println!();
-    println!(
-        "{}",
-        color_white_bold("COMP")
-    );
+    println!("{}", color_white_bold("COMP"));
     println!(
         "    {} {} {} {}",
         color_grey_mouse("comp"),
@@ -1067,10 +1067,7 @@ fn show_help() {
         color_grey_mouse(env!("CARGO_PKG_VERSION")),
     );
     println!();
-    println!(
-        "{}",
-        color_white_bold("USAGE")
-    );
+    println!("{}", color_white_bold("USAGE"));
     println!(
         "    {} {} {}",
         color_grey_mouse("comp"),
@@ -1091,9 +1088,9 @@ fn show_help() {
     );
     println!(
         "    {}{} {}         read from file at the specified path",
-       color_yellow_canary_bold("-f"),
-       color_white_bold(","),
-       color_yellow_canary_bold("--file"),
+        color_yellow_canary_bold("-f"),
+        color_white_bold(","),
+        color_yellow_canary_bold("--file"),
     );
     println!(
         "        {}         show help information",
@@ -1168,20 +1165,14 @@ fn print_stack(stack: &mut Vec<String>) {
                 println!(
                     "  {}",
                     // format top element
-                    color_green_eggs_bold(
-                        stack.remove(0)
-                             .as_str()
-                    ),
-                ) 
+                    color_green_eggs_bold(stack.remove(0).as_str()),
+                )
             }
             _ => {
                 println!(
                     "  {}",
                     // format other elements
-                    color_blue_smurf_bold(
-                        stack.remove(0)
-                             .as_str()
-                     ),
+                    color_blue_smurf_bold(stack.remove(0).as_str()),
                 )
             }
         }

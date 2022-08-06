@@ -567,20 +567,24 @@ impl Interpreter {
         let a: f64 = self.pop_stack_float();
 
         if (b * b - 4.0 * a * c) < 0.0 {
-            self.stack.push((-1.0 * b / (2.0 * a)).to_string()); // r_1 real
             self.stack
-                .push(((4.0 * a * c - b * b).sqrt() / (2.0 * a)).to_string()); // r_1 imag
-            self.stack.push((-1.0 * b / (2.0 * a)).to_string()); // r_2 real
+                .push((-1.0*b/(2.0*a)).to_string()); // r_1 real
             self.stack
-                .push((-1.0 * (4.0 * a * c - b * b).sqrt() / (2.0 * a)).to_string());
+                .push(((4.0*a*c - b*b).sqrt() / (2.0*a)).to_string()); // r_1 imag
+            self.stack
+                .push((-1.0*b/(2.0*a)).to_string()); // r_2 real
+            self.stack
+                .push((-1.0*(4.0*a*c - b*b).sqrt() / (2.0*a)).to_string());
         // r_2 imag
         } else {
             self.stack
-                .push((-1.0 * b + (b * b - 4.0 * a * c).sqrt() / (2.0 * a)).to_string()); // r_1 real
-            self.stack.push(0.0.to_string()); // r_1 imag
+                .push((-1.0*b + (b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // r_1 real
             self.stack
-                .push((-1.0 * b - (b * b - 4.0 * a * c).sqrt() / (2.0 * a)).to_string()); // r_2 real
-            self.stack.push(0.0.to_string()); // r_2 imag
+                .push(0.0.to_string()); // r_1 imag
+            self.stack
+                .push((-1.0*b - (b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // r_2 real
+            self.stack
+                .push(0.0.to_string()); // r_2 imag
         }
     }
 

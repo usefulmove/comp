@@ -1180,7 +1180,7 @@ fn print_stack(stack: &mut Vec<String>) {
 }
 
 fn color_red_bold(message: &str) -> ColoredString {
-    message.truecolor(255, 20, 25).bold()
+    message.truecolor(241, 95, 78).bold()
 }
 
 fn _color_orange_sherbet_bold(message: &str) -> ColoredString {

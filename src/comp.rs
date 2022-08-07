@@ -110,7 +110,7 @@ fn main() {
 
     // load configuration
     cinter.read_config("/home/dedmonds/repos/comp/src/comp.toml");
-    // TODO - convert call above to work with path relative to the directory the application is called from
+    // TODO (low) - convert call above to work with path relative to the directory the application is called from
 
     // process operations list
     cinter.process_ops();
@@ -1103,11 +1103,11 @@ impl Interpreter {
             std::process::exit(99);
         }
 
-        let file_contents: String = file_contents.unwrap();
+        let config_file_toml: String = file_contents.unwrap();
 
-        //println!("{}", file_contents); // debug
+        //println!("{}", config_file_toml); // debug
 
-        // deserialize configuration
+        // deserialize configuration TOML
         //TODO
 
         // update configuration

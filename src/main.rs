@@ -1118,7 +1118,7 @@ impl Interpreter {
         }
     }
 
-    // read configuration file
+    // read configuration file from home folder
     fn read_config(&mut self, filename: &str) {
         /*
         println!(
@@ -1130,7 +1130,11 @@ impl Interpreter {
         // read file contents
         let filename: String = filename.to_string();
 
-        let home_folder: String = home::home_dir().unwrap().to_str().unwrap().to_string();
+        //let home_folder: String = home::home_dir().unwrap().to_str().unwrap().to_string();
+        let home_folder: String = match home::home_dir() {
+            Some(dir) => dir.to_str().unwrap().to_string(),
+            _ => "".to_string(),
+        };
 
         let config_filename: String = format!("{}/{}", home_folder, filename);
 
@@ -1258,7 +1262,7 @@ fn print_stack(stack: &mut Vec<String>) {
                 println!(
                     "  {}",
                     // format top element
-                    color_green_eggs_bold(stack.remove(0).as_str()),
+                    color_blue_coffee_bold(stack.remove(0).as_str()),
                 )
             }
             _ => {

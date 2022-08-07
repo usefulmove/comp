@@ -38,7 +38,7 @@ const RELEASE_STATE: &str = "j";
 const CMDS: &str = "drop dup swap cls roll rot + ++ +_ - -- x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
-bin_dec hex_bin bin_hex rgb_hex hex_rgb c_f f_c min min_ max max_ avg avg_ rand";
+bin_dec hex_bin bin_hex rgb_hex hex_rgb c_f f_c a_b min min_ max max_ avg avg_ rand";
 
 fn main() {
     // enable or disable backtrace on error
@@ -270,7 +270,7 @@ impl Interpreter {
         self.compose_native("rgb_hex", Interpreter::c_rgbhex); // RGB to hexadecimal string
         self.compose_native("tip", Interpreter::c_tip); // calculate tip
         self.compose_native("tip+", Interpreter::c_tip_plus); // calculate better tip
-        self.compose_native("o_o", Interpreter::c_conv_const); // apply convert constant
+        self.compose_native("a_b", Interpreter::c_conv_const); // apply convert constant
     }
 
     fn process_node(&mut self, op: &str) {

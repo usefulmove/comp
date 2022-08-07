@@ -6,7 +6,7 @@ use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "k";
+const RELEASE_STATE: &str = "";
 
 /*
 
@@ -126,7 +126,8 @@ fn main() {
     cinter.process_ops();
 
     print_stack(&mut cinter.stack.clone());
-}
+
+} // main
 
 struct Function {
     name: String,

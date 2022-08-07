@@ -4,8 +4,9 @@ use std::env;
 use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
+use toml;
 
-const RELEASE_STATE: &str = "h";
+const RELEASE_STATE: &str = "j";
 
 /*
 
@@ -79,8 +80,8 @@ fn main() {
             // read file contents
             let filename: String = args[2].to_string();
             let path: &Path = Path::new(&filename);
-            let file_contents = fs::read_to_string(&path);
 
+            let file_contents = fs::read_to_string(&path);
             if let Err(ref error) = file_contents {
                 eprintln!(
                     "  {}: could not read [{}]: {error}",
@@ -106,6 +107,10 @@ fn main() {
             cinter.ops = (&args[1..]).to_vec();
         }
     };
+
+    // load configuration
+    cinter.read_config("/home/dedmonds/repos/comp/src/comp.toml");
+    // TODO - convert call above to work with path relative to the directory the application is called from
 
     // process operations list
     cinter.process_ops();
@@ -1075,6 +1080,32 @@ impl Interpreter {
         } else {
             a
         }
+    }
+
+    // read configuration file
+    fn read_config(&mut self, input_filename_str: &str) {
+        println!(
+            "  reading configuration file [{}]",
+            color_blue_coffee_bold(input_filename_str),
+        );
+
+        // read file contents
+        let filename: String = input_filename_str.to_string();
+        let path: &Path = Path::new(&filename);
+
+        let file_contents = fs::read_to_string(&path);
+        if let Err(ref error) = file_contents {
+            eprintln!(
+                "  {}: could not read [{}]: {error}",
+                color_red_bold("error"),
+                color_blue_coffee_bold(path.display().to_string().as_str()),
+            );
+            std::process::exit(99);
+        }
+
+        let file_contents = file_contents.unwrap();
+
+        println!("{}", file_contents);
     }
 }
 

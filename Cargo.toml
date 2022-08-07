@@ -12,3 +12,4 @@ path = "src/comp.rs"
 [dependencies]
 colored = "2"
 rand = "0.8.5"
+toml = "0.5.9"

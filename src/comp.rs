@@ -67,6 +67,17 @@ fn main() {
             show_version();
             return;
         }
+        "--config" | "config" => {
+            // display and write config file
+            println!(
+                "  configuration file [{}] cannot be generated in this release",
+                color_blue_smurf_bold("comp.toml"),
+            );
+            //TODO (future enhancement)
+            //show_config();
+            //write_config();
+            return;
+        }
         "mona" => {
             println!("{MONA}");
             return;
@@ -111,7 +122,7 @@ fn main() {
 
     // load configuration
     cinter.read_config("/home/dedmonds/repos/comp/src/comp.toml");
-    // TODO (low) - convert call above to work with path relative to the directory the application is called from
+    // TODO (future enhancement) - convert call above to work with path relative to the directory the application is called from
 
     // process operations list
     cinter.process_ops();
@@ -126,13 +137,17 @@ struct Function {
 
 #[derive(Deserialize)]
 struct Config {
-    settings: Settings,
+    conv_const: f64,
 }
 
-#[derive(Deserialize)]
-struct Settings {
-    name: String,
-    verbose: String,
+impl Config {
+    // constructor
+    fn new() -> Config {
+        let o = Config {
+            conv_const: 1.0,
+        };
+        o
+    }
 }
 
 struct Interpreter {
@@ -143,6 +158,7 @@ struct Interpreter {
     ops: Vec<String>,
     fns: Vec<Function>,
     cmap: HashMap<String, fn(&mut Interpreter, &str)>,
+    config: Config,
 }
 
 impl Interpreter {
@@ -156,6 +172,7 @@ impl Interpreter {
             ops: Vec::new(),
             fns: Vec::new(),
             cmap: HashMap::new(),
+            config: Config::new(),
         };
         cint.init();
 
@@ -255,6 +272,7 @@ impl Interpreter {
         self.compose_native("rgb_hex", Interpreter::c_rgbhex); // RGB to hexadecimal string
         self.compose_native("tip", Interpreter::c_tip); // calculate tip
         self.compose_native("tip+", Interpreter::c_tip_plus); // calculate better tip
+        self.compose_native("o_o", Interpreter::c_conv_const); // apply convert constant
     }
 
     fn process_node(&mut self, op: &str) {
@@ -952,6 +970,14 @@ impl Interpreter {
         self.stack.push((a*0.20).to_string());
     }
 
+    fn c_conv_const(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a: f64 = self.pop_stack_float();
+
+        self.stack.push((a*self.config.conv_const).to_string());
+    }
+
     // -- control flow ---------------------------------------------------------
 
     fn c_function(&mut self, _op: &str) {
@@ -1096,10 +1122,12 @@ impl Interpreter {
 
     // read configuration file
     fn read_config(&mut self, filename: &str) {
+        /*
         println!(
             "  reading configuration file [{}]",
             color_blue_coffee_bold(filename),
         );
+        */
 
         // read file contents
         let filename: String = filename.to_string();
@@ -1117,14 +1145,9 @@ impl Interpreter {
 
         let config_file_toml: String = file_contents.unwrap();
 
-        println!("{}", config_file_toml); // debug
-
-        // deserialize configuration TOML
+        // deserialize configuration TOML and update configuration
         let config: Config = toml::from_str(config_file_toml.as_str()).unwrap();
-        println!("config complete: config.settings.verbose={}", config.settings.verbose);
-
-        // update configuration
-        //TODO
+        self.config = config;
 
     }
 

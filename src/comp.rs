@@ -5,7 +5,6 @@ use std::env;
 use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
-use toml;
 
 const RELEASE_STATE: &str = "j";
 
@@ -143,10 +142,9 @@ struct Config {
 impl Config {
     // constructor
     fn new() -> Config {
-        let o = Config {
+        Config {
             conv_const: 1.0,
-        };
-        o
+        }
     }
 }
 
@@ -1134,20 +1132,15 @@ impl Interpreter {
         let path: &Path = Path::new(&filename);
 
         let file_contents = fs::read_to_string(&path);
-        if let Err(ref error) = file_contents {
-            eprintln!(
-                "  {}: could not read [{}]: {error}",
-                color_red_bold("error"),
-                color_blue_coffee_bold(path.display().to_string().as_str()),
-            );
-            std::process::exit(99);
+        if let Err(ref _error) = file_contents {
+            // do nothing - default config will be used
+        } else {
+            let config_file_toml: String = file_contents.unwrap();
+
+            // deserialize configuration TOML and update configuration
+            let config: Config = toml::from_str(config_file_toml.as_str()).unwrap();
+            self.config = config;
         }
-
-        let config_file_toml: String = file_contents.unwrap();
-
-        // deserialize configuration TOML and update configuration
-        let config: Config = toml::from_str(config_file_toml.as_str()).unwrap();
-        self.config = config;
 
     }
 

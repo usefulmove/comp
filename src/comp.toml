@@ -1,4 +1,3 @@
-[options]
+[settings]
 name = "comp"
-version = "0.21.0"
 verbose = "false"

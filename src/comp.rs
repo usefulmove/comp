@@ -1,4 +1,5 @@
 use colored::*;
+use serde::Deserialize;
 use std::collections::HashMap;
 use std::env;
 use std::fs;
@@ -121,6 +122,17 @@ fn main() {
 struct Function {
     name: String,
     fops: Vec<String>,
+}
+
+#[derive(Deserialize)]
+struct Config {
+    settings: Settings,
+}
+
+#[derive(Deserialize)]
+struct Settings {
+    name: String,
+    verbose: String,
 }
 
 struct Interpreter {
@@ -1105,10 +1117,11 @@ impl Interpreter {
 
         let config_file_toml: String = file_contents.unwrap();
 
-        //println!("{}", config_file_toml); // debug
+        println!("{}", config_file_toml); // debug
 
         // deserialize configuration TOML
-        //TODO
+        let config: Config = toml::from_str(config_file_toml.as_str()).unwrap();
+        println!("config complete: config.settings.verbose={}", config.settings.verbose);
 
         // update configuration
         //TODO

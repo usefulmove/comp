@@ -13,3 +13,4 @@ path = "src/comp.rs"
 colored = "2"
 rand = "0.8.5"
 toml = "0.5.9"
+serde = { version = "1.0", features = ["derive"] }

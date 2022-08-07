@@ -70,7 +70,7 @@ fn main() {
         "--config" | "config" => {
             // display and write config file
             println!(
-                "  configuration file [{}] cannot be generated in this release",
+                "  configuration file [{}] cannot be generated using this version of comp",
                 color_blue_smurf_bold("comp.toml"),
             );
             //TODO (future enhancement)

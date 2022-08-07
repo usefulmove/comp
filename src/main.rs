@@ -6,7 +6,7 @@ use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "j";
+const RELEASE_STATE: &str = "k";
 
 /*
 
@@ -47,7 +47,7 @@ fn main() {
     // construct command interpreter
     let mut cinter = Interpreter::new();
 
-    // get command line arguments and collect into a vector
+    // get command arguments
     let mut args: Vec<String> = env::args().collect();
 
     // if no arguments are passed, behave as if help flag was passed
@@ -603,21 +603,21 @@ impl Interpreter {
 
         if (b * b - 4.0 * a * c) < 0.0 {
             self.stack
-                .push((-1.0*b/(2.0*a)).to_string()); // r_1 real
+                .push((-1.0 * b / (2.0 * a)).to_string()); // r_1 real
             self.stack
-                .push(((4.0*a*c - b*b).sqrt() / (2.0*a)).to_string()); // r_1 imag
+                .push(((4.0 * a * c - b * b).sqrt() / (2.0 * a)).to_string()); // r_1 imag
             self.stack
-                .push((-1.0*b/(2.0*a)).to_string()); // r_2 real
+                .push((-1.0 * b / (2.0 * a)).to_string()); // r_2 real
             self.stack
-                .push((-1.0*(4.0*a*c - b*b).sqrt() / (2.0*a)).to_string());
+                .push((-1.0 * (4.0 * a * c - b * b).sqrt() / (2.0 * a)).to_string());
         // r_2 imag
         } else {
             self.stack
-                .push((-1.0*b + (b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // r_1 real
+                .push((-1.0 * b + (b * b - 4.0 * a * c).sqrt() / (2.0 * a)).to_string()); // r_1 real
             self.stack
                 .push(0.0.to_string()); // r_1 imag
             self.stack
-                .push((-1.0*b - (b*b-4.0*a*c).sqrt()/(2.0*a)).to_string()); // r_2 real
+                .push((-1.0 * b - (b * b - 4.0 * a * c).sqrt() / (2.0 * a)).to_string()); // r_2 real
             self.stack
                 .push(0.0.to_string()); // r_2 imag
         }
@@ -957,7 +957,7 @@ impl Interpreter {
 
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push((a*0.15).to_string());
+        self.stack.push((a * 0.15).to_string());
     }
 
     fn c_tip_plus(&mut self, op: &str) {
@@ -965,7 +965,7 @@ impl Interpreter {
 
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push((a*0.20).to_string());
+        self.stack.push((a * 0.20).to_string());
     }
 
     fn c_conv_const(&mut self, op: &str) {
@@ -973,7 +973,7 @@ impl Interpreter {
 
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push((a*self.config.conv_const).to_string());
+        self.stack.push((a * self.config.conv_const).to_string());
     }
 
     // -- control flow ---------------------------------------------------------
@@ -1141,9 +1141,7 @@ impl Interpreter {
             let config: Config = toml::from_str(config_file_toml.as_str()).unwrap();
             self.config = config;
         }
-
     }
-
 }
 
 fn show_help() {

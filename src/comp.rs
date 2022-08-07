@@ -5,7 +5,7 @@ use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "g";
+const RELEASE_STATE: &str = "h";
 
 /*
 
@@ -236,6 +236,8 @@ impl Interpreter {
         self.compose_native("km_mi", Interpreter::c_kmmi); // kilometers to miles
         self.compose_native("hex_rgb", Interpreter::c_hexrgb); // hexadecimal string to RGB
         self.compose_native("rgb_hex", Interpreter::c_rgbhex); // RGB to hexadecimal string
+        self.compose_native("tip", Interpreter::c_tip); // calculate tip
+        self.compose_native("tip+", Interpreter::c_tip_plus); // calculate better tip
     }
 
     fn process_node(&mut self, op: &str) {
@@ -915,6 +917,22 @@ impl Interpreter {
         let r: u64 = self.pop_stack_uint();
 
         self.stack.push(format!("{:02x}{:02x}{:02x}", r, g, b));
+    }
+
+    fn c_tip(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a: f64 = self.pop_stack_float();
+
+        self.stack.push((a*0.15).to_string());
+    }
+
+    fn c_tip_plus(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a: f64 = self.pop_stack_float();
+
+        self.stack.push((a*0.20).to_string());
     }
 
     // -- control flow ---------------------------------------------------------

@@ -1268,7 +1268,7 @@ fn print_stack(stack: &mut Vec<String>) {
                 println!(
                     "  {}",
                     // format other elements
-                    color_blue_smurf_bold(stack.remove(0).as_str()),
+                    color_blue_smurf(stack.remove(0).as_str()),
                 )
             }
         }
@@ -1289,6 +1289,10 @@ fn color_yellow_canary_bold(message: &str) -> ColoredString {
 
 fn color_green_eggs_bold(message: &str) -> ColoredString {
     message.truecolor(135, 255, 175).bold()
+}
+
+fn color_blue_smurf(message: &str) -> ColoredString {
+    message.truecolor(0, 128, 255)
 }
 
 fn color_blue_smurf_bold(message: &str) -> ColoredString {

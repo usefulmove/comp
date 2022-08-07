@@ -1,4 +1,5 @@
 use colored::*;
+use home;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::env;
@@ -120,8 +121,7 @@ fn main() {
     };
 
     // load configuration
-    cinter.read_config("/home/dedmonds/repos/comp/src/comp.toml");
-    // TODO (future enhancement) - convert call above to work with path relative to the directory the application is called from
+    cinter.read_config("comp.toml");
 
     // process operations list
     cinter.process_ops();
@@ -1129,7 +1129,12 @@ impl Interpreter {
 
         // read file contents
         let filename: String = filename.to_string();
-        let path: &Path = Path::new(&filename);
+
+        let home_folder: String = home::home_dir().unwrap().to_str().unwrap().to_string();
+
+        let config_filename: String = format!("{}/{}", home_folder, filename);
+
+        let path: &Path = Path::new(&config_filename);
 
         let file_contents = fs::read_to_string(&path);
         if let Err(ref _error) = file_contents {

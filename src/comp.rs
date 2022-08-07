@@ -91,7 +91,7 @@ fn main() {
                 std::process::exit(99);
             }
 
-            let file_contents = file_contents.unwrap();
+            let file_contents: String = file_contents.unwrap();
 
             // create operations list vector from file contents - split elements
             let operations = file_contents.split_whitespace().map(|o| o.to_string());
@@ -1083,14 +1083,14 @@ impl Interpreter {
     }
 
     // read configuration file
-    fn read_config(&mut self, input_filename_str: &str) {
+    fn read_config(&mut self, filename: &str) {
         println!(
             "  reading configuration file [{}]",
-            color_blue_coffee_bold(input_filename_str),
+            color_blue_coffee_bold(filename),
         );
 
         // read file contents
-        let filename: String = input_filename_str.to_string();
+        let filename: String = filename.to_string();
         let path: &Path = Path::new(&filename);
 
         let file_contents = fs::read_to_string(&path);
@@ -1103,10 +1103,18 @@ impl Interpreter {
             std::process::exit(99);
         }
 
-        let file_contents = file_contents.unwrap();
+        let file_contents: String = file_contents.unwrap();
 
-        println!("{}", file_contents);
+        //println!("{}", file_contents); // debug
+
+        // deserialize configuration
+        //TODO
+
+        // update configuration
+        //TODO
+
     }
+
 }
 
 fn show_help() {

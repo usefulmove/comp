@@ -6,7 +6,7 @@ use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "a";
+const RELEASE_STATE: &str = "b";
 
 /*
 
@@ -66,17 +66,6 @@ fn main() {
             show_version();
             return;
         }
-        "--config" | "config" => {
-            // display and write config file
-            println!(
-                "  configuration file [{}] cannot be generated using this version of comp",
-                color_blue_smurf_bold("comp.toml"),
-            );
-            //TODO (future enhancement)
-            //show_config();
-            //write_config();
-            return;
-        }
         "mona" => {
             println!("{MONA}");
             return;
@@ -125,7 +114,11 @@ fn main() {
     // process operations list
     cinter.process_ops();
 
-    output_stack(&mut cinter.stack.clone(), cinter.config.show_stack_level);
+    output_stack(
+        &mut cinter.stack.clone(),
+        cinter.config.show_stack_level,
+        cinter.config.monochrome,
+    );
 
 } // main
 
@@ -138,6 +131,7 @@ struct Function {
 struct Config {
     show_stack_level: bool,
     conversion_constant: f64,
+    monochrome: bool,
 }
 
 impl Config {
@@ -146,6 +140,7 @@ impl Config {
         Config {
             show_stack_level: false,
             conversion_constant: 1.0,
+            monochrome: false,
         }
     }
 }
@@ -1257,10 +1252,16 @@ fn show_version() {
     );
 }
 
-fn output_stack(stack: &mut Vec<String>, annotate: bool) {
-    let mut color_f: fn(&str) -> colored::ColoredString = color_blank;
+fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
+    let mut f_color_annotate: fn(&str) -> colored::ColoredString = color_blank;
+    let mut f_color_stack_high: fn(&str) -> colored::ColoredString = color_blue_coffee_bold;
+    let mut f_color_stack: fn(&str) -> colored::ColoredString = color_blue_smurf;
     if annotate {
-        color_f = color_charcoal_cream;
+        f_color_annotate = color_charcoal_cream;
+    }
+    if monochrome {
+        f_color_stack_high = color_white;
+        f_color_stack = color_white;
     }
 
     while !stack.is_empty() {
@@ -1270,16 +1271,16 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool) {
                 println!(
                     // top element
                     "{}  {}",
-                    color_f(level_map(level)),
-                    color_blue_coffee_bold(stack.remove(0).as_str()),
+                    f_color_annotate(level_map(level)),
+                    f_color_stack_high(stack.remove(0).as_str()),
                 )
             }
             _ => {
                 println!(
                     // all other elements
                     "{}  {}",
-                    color_f(level_map(level)),
-                    color_blue_smurf(stack.remove(0).as_str()),
+                    f_color_annotate(level_map(level)),
+                    f_color_stack(stack.remove(0).as_str()),
                 )
             }
         }
@@ -1331,6 +1332,10 @@ fn color_blue_coffee_bold(message: &str) -> ColoredString {
 
 fn color_white_bold(message: &str) -> ColoredString {
     message.truecolor(255, 255, 255).bold()
+}
+
+fn color_white(message: &str) -> ColoredString {
+    message.truecolor(255, 255, 255)
 }
 
 fn color_grey_mouse(message: &str) -> ColoredString {

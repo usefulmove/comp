@@ -256,6 +256,8 @@ mod comp_tests {
         test_cinter.c_hexdec("");
         test_cinter.c_decbin("");
         test_cinter.c_bindec("");
+        test_cinter.c_ftm("");
+        test_cinter.c_mft("");
 
         assert!(test_cinter.pop_stack_float() == 100.0);
     }

@@ -6,7 +6,7 @@ use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "c";
+const RELEASE_STATE: &str = "d";
 
 /*
 
@@ -36,7 +36,7 @@ const RELEASE_STATE: &str = "c";
 
 // -- command list -------------------------------------------------------------
 const CMDS: &str = "drop dup swap cls roll rot + ++ +_ - -- x x_ / chs abs round \
-int inv sqrt throot proot ^ exp % mod ! gcd pi e deg_rad rad_deg sin asin cos \
+int inv sqrt throot proot ^ exp % mod ! gcd pi e g deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
 bin_dec hex_bin bin_hex rgb_hex hex_rgb c_f f_c a_b min min_ max max_ avg avg_ rand";
 
@@ -228,6 +228,7 @@ impl Interpreter {
         self.compose_native("gcd", Interpreter::c_gcd); // greatest common divisor
         self.compose_native("pi", Interpreter::c_pi); // pi
         self.compose_native("e", Interpreter::c_euler); // Euler's constant
+        self.compose_native("g", Interpreter::c_accelg); // standard acceleration due to gravity (m/s2)
         self.compose_native("deg_rad", Interpreter::c_degrad); // degrees to radians
         self.compose_native("rad_deg", Interpreter::c_raddeg); // radians to degrees
         self.compose_native("sin", Interpreter::c_sin); // sine
@@ -263,6 +264,8 @@ impl Interpreter {
         self.compose_native("f_c", Interpreter::c_fahcel); // Fahrenheit to Celsius
         self.compose_native("mi_km", Interpreter::c_mikm); // miles to kilometers
         self.compose_native("km_mi", Interpreter::c_kmmi); // kilometers to miles
+        self.compose_native("ft_m", Interpreter::c_ftm); // feet to meters
+        self.compose_native("m_ft", Interpreter::c_mft); // meters to feet
         self.compose_native("hex_rgb", Interpreter::c_hexrgb); // hexadecimal string to RGB
         self.compose_native("rgb_hex", Interpreter::c_rgbhex); // RGB to hexadecimal string
         self.compose_native("tip", Interpreter::c_tip); // calculate tip
@@ -663,6 +666,10 @@ impl Interpreter {
         self.stack.push(std::f64::consts::E.to_string());
     }
 
+    fn c_accelg(&mut self, _op: &str) {
+        self.stack.push(9.80665.to_string());
+    }
+
     fn c_degrad(&mut self, op: &str) {
         Interpreter::check_stack_error(self, 1, op);
 
@@ -910,6 +917,22 @@ impl Interpreter {
         let a = self.pop_stack_float();
 
         self.stack.push((a / 1.609344).to_string());
+    }
+
+    fn c_ftm(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a = self.pop_stack_float();
+
+        self.stack.push((a / 3.281).to_string());
+    }
+
+    fn c_mft(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        let a = self.pop_stack_float();
+
+        self.stack.push((a * 3.281).to_string());
     }
 
     fn c_hexrgb(&mut self, op: &str) {

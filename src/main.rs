@@ -6,7 +6,7 @@ use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "";
+const RELEASE_STATE: &str = "a";
 
 /*
 
@@ -125,7 +125,7 @@ fn main() {
     // process operations list
     cinter.process_ops();
 
-    print_stack(&mut cinter.stack.clone());
+    output_stack(&mut cinter.stack.clone(), cinter.config.show_stack_level);
 
 } // main
 
@@ -136,14 +136,16 @@ struct Function {
 
 #[derive(Deserialize)]
 struct Config {
-    conv_const: f64,
+    show_stack_level: bool,
+    conversion_constant: f64,
 }
 
 impl Config {
     // constructor
     fn new() -> Config {
         Config {
-            conv_const: 1.0,
+            show_stack_level: false,
+            conversion_constant: 1.0,
         }
     }
 }
@@ -973,7 +975,7 @@ impl Interpreter {
 
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push((a * self.config.conv_const).to_string());
+        self.stack.push((a * self.config.conversion_constant).to_string());
     }
 
     // -- control flow ---------------------------------------------------------
@@ -1255,25 +1257,48 @@ fn show_version() {
     );
 }
 
-fn print_stack(stack: &mut Vec<String>) {
+fn output_stack(stack: &mut Vec<String>, annotate: bool) {
+    let mut color_f: fn(&str) -> colored::ColoredString = color_blank;
+    if annotate {
+        color_f = color_charcoal_cream;
+    }
+
     while !stack.is_empty() {
-        match stack.len() {
+        let level: u32 = stack.len() as u32;
+        match level {
             1 => {
                 println!(
-                    "  {}",
-                    // format top element
+                    // top element
+                    "{}  {}",
+                    color_f(level_map(level)),
                     color_blue_coffee_bold(stack.remove(0).as_str()),
                 )
             }
             _ => {
                 println!(
-                    "  {}",
-                    // format other elements
+                    // all other elements
+                    "{}  {}",
+                    color_f(level_map(level)),
                     color_blue_smurf(stack.remove(0).as_str()),
                 )
             }
         }
     }
+}
+
+fn level_map(level: u32) -> &'static str {
+    let ret: &str = match level {
+        1 => "a.",
+        2 => "b.",
+        3 => "c.",
+        4 => "d.",
+        5 => "e.",
+        6 => "f.",
+        7 => "g.",
+        8 => "h.",
+        _ => "  ",
+    };
+    ret
 }
 
 fn color_red_bold(message: &str) -> ColoredString {
@@ -1312,8 +1337,12 @@ fn color_grey_mouse(message: &str) -> ColoredString {
     message.truecolor(155, 155, 155)
 }
 
-fn _color_charcoal_creamy_bold(message: &str) -> ColoredString {
-    message.truecolor(38, 38, 38).bold()
+fn color_charcoal_cream(message: &str) -> ColoredString {
+    message.truecolor(102, 102, 102)
+}
+
+fn color_blank(_message: &str) -> ColoredString {
+    "".truecolor(0, 0, 0)
 }
 
 // -- mona ---------------------------------------------------------------------

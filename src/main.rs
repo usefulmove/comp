@@ -6,7 +6,7 @@ use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "b";
+const RELEASE_STATE: &str = "c";
 
 /*
 
@@ -1141,11 +1141,26 @@ impl Interpreter {
         if let Err(ref _error) = file_contents {
             // do nothing - default config will be used
         } else {
+            // read file successfully
             let config_file_toml: String = file_contents.unwrap();
 
             // deserialize configuration TOML and update configuration
-            let config: Config = toml::from_str(config_file_toml.as_str()).unwrap();
-            self.config = config;
+            //let config: Config = toml::from_str(config_file_toml.as_str()).unwrap();
+            let rslt: Result<Config, toml::de::Error> = toml::from_str(config_file_toml.as_str());
+            let cfg: Config = match rslt {
+                Ok(c) => c,
+                Err(_error) => {
+                    // parse fail
+                    eprintln!(
+                        "  {}: configuration file [{}] (ignored) is corrupt or is incorrectly constructed",
+                        color_yellow_canary_bold("warning"),
+                        color_blue_smurf_bold("conf.toml"),
+                    );
+                    Config::new()
+                }
+            };
+
+            self.config = cfg;
         }
     }
 }

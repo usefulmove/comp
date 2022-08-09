@@ -138,7 +138,7 @@ impl Config {
     // constructor
     fn new() -> Config {
         Config {
-            show_stack_level: false,
+            show_stack_level: true,
             conversion_constant: 1.0,
             monochrome: false,
         }

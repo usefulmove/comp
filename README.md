@@ -1,4 +1,4 @@
-# Comp interpreter
+# Comp Interpreter
 
 <img src="https://raw.githubusercontent.com/usefulmove/comp/main/assets/system-preferences-icon-64x64.png" align="right"/>
 

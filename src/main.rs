@@ -6,7 +6,7 @@ use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "d";
+const RELEASE_STATE: &str = "e";
 
 /*
 
@@ -261,7 +261,9 @@ impl Interpreter {
         self.compose_native("bin_hex", Interpreter::c_binhex); // binary to hexadecimal
         self.compose_native("hex_bin", Interpreter::c_hexbin); // hexadecimal to binary
         self.compose_native("c_f", Interpreter::c_celfah); // Celsius to Fahrenheit
+        self.compose_native("C_F", Interpreter::c_celfah);
         self.compose_native("f_c", Interpreter::c_fahcel); // Fahrenheit to Celsius
+        self.compose_native("F_C", Interpreter::c_fahcel);
         self.compose_native("mi_km", Interpreter::c_mikm); // miles to kilometers
         self.compose_native("km_mi", Interpreter::c_kmmi); // kilometers to miles
         self.compose_native("ft_m", Interpreter::c_ftm); // feet to meters

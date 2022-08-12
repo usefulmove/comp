@@ -6,7 +6,7 @@ use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "e";
+const RELEASE_STATE: &str = "f";
 
 /*
 
@@ -38,7 +38,7 @@ const RELEASE_STATE: &str = "e";
 const CMDS: &str = "drop dup swap cls roll rot + ++ +_ - -- x x_ / chs abs round \
 int inv sqrt throot proot ^ exp % mod ! gcd pi e g deg_rad rad_deg sin asin cos \
 acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
-bin_dec hex_bin bin_hex rgb_hex hex_rgb c_f f_c a_b min min_ max max_ avg avg_ rand";
+bin_dec hex_bin bin_hex rgb_hex hex_rgb C_F F_C a_b min min_ max max_ avg avg_ rand";
 
 fn main() {
     // enable or disable backtrace on error
@@ -251,8 +251,9 @@ impl Interpreter {
         self.compose_native("avg_", Interpreter::c_avg_all); // average all
         /* control flow */
         self.compose_native("(", Interpreter::c_function); // function definition
-        self.compose_native("ifeq", Interpreter::c_ifeq); // ifequal..else
+        self.compose_native("ifeq", Interpreter::c_ifeq); // ifequal .. else
         self.compose_native("<", Interpreter::c_comment); // function comment
+        self.compose_native("pln", Interpreter::c_println); // print line
         /* conversion */
         self.compose_native("dec_hex", Interpreter::c_dechex); // decimal to hexadecimal
         self.compose_native("hex_dec", Interpreter::c_hexdec); // hexadecimal to decimal
@@ -302,6 +303,10 @@ impl Interpreter {
     }
 
     // pop from stack helpers --------------------------------------------------
+    fn pop_stack_string(&mut self) -> String {
+        self.stack.pop().unwrap()
+    }
+
     fn pop_stack_float(&mut self) -> f64 {
         let element: String = self.stack.pop().unwrap();
         match self.parse_float(&element) {
@@ -416,9 +421,8 @@ impl Interpreter {
         Interpreter::check_stack_error(self, 1, op);
 
         let end: usize = self.stack.len() - 1;
-        let o: String = self.stack[end].clone(); // remove last
 
-        self.stack.push(o);
+        self.stack.push(self.stack[end].clone()); // remove last
     }
 
     fn c_swap(&mut self, op: &str) {
@@ -1104,6 +1108,12 @@ impl Interpreter {
                 _ => (),
             }
         }
+    }
+
+    fn c_println(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 1, op);
+
+        println!("{}", self.pop_stack_string());
     }
 
     // support functions -------------------------------------------------------

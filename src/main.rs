@@ -1420,6 +1420,10 @@ fn _color_rgb(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
     message.truecolor(r, g, b)
 }
 
+fn color_rgb(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
+    message.truecolor(r, g, b)
+}
+
 fn color_rgb_bold(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
     message.truecolor(r, g, b).bold()
 }
@@ -1475,15 +1479,15 @@ fn color_blank(_message: &str) -> ColoredString {
 fn format_rgb(r: u8, g: u8, b: u8) -> String {
     format!(
         "{} {} {}",
-        color_rgb_bold(
+        color_rgb(
             r.to_string().as_str(),
             r, g, b
         ),
-        color_rgb_bold(
+        color_rgb(
             g.to_string().as_str(),
             r, g, b
         ),
-        color_rgb_bold(
+        color_rgb(
             b.to_string().as_str(),
             r, g, b
         ),

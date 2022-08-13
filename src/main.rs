@@ -1472,7 +1472,8 @@ fn color_blank(_message: &str) -> ColoredString {
 
 fn print_rgb(r: u8, g: u8, b: u8) {
     println!(
-        "  ( {} {} {} )  ( {} )",
+        "  {} {} {} {} {}",
+        color_grey_mouse("("),
         color_rgb_bold(
             r.to_string().as_str(),
             r, g, b
@@ -1485,10 +1486,16 @@ fn print_rgb(r: u8, g: u8, b: u8) {
             b.to_string().as_str(),
             r, g, b
         ),
+        color_grey_mouse(")"),
+    );
+    println!(
+        "  {} {} {}",
+        color_grey_mouse("("),
         color_rgb_bold(
             format!("{:02x}{:02x}{:02x}", r, g, b).as_str(),
             r, g, b,
         ),
+        color_grey_mouse(")"),
     );
 }
 

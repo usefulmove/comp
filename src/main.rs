@@ -6,7 +6,7 @@ use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "f";
+const RELEASE_STATE: &str = "g";
 
 /*
 
@@ -274,6 +274,9 @@ impl Interpreter {
         self.compose_native("tip", Interpreter::c_tip); // calculate tip
         self.compose_native("tip+", Interpreter::c_tip_plus); // calculate better tip
         self.compose_native("a_b", Interpreter::c_conv_const); // apply convert constant
+        /* rgb colors */
+        self.compose_native("rgb", Interpreter::c_rgb); // show RGB color
+        self.compose_native("rgbh", Interpreter::c_rgbh); // show RGB color (hexadecimal)
     }
 
     fn process_node(&mut self, op: &str) {
@@ -341,10 +344,45 @@ impl Interpreter {
         }
     }
 
+    fn pop_stack_uint8(&mut self) -> u8 {
+        let element: String = self.stack.pop().unwrap();
+        match self.parse_uint8(&element) {
+            Ok(val) => val, // parse success
+            Err(_error) => {
+                // parse fail
+                eprintln!(
+                    "  {}: unknown expression [{}] is not a recognized operation \
+                    or valid value (u)",
+                    color_red_bold("error"),
+                    color_blue_coffee_bold(element.as_str()),
+                );
+                std::process::exit(99);
+            }
+        }
+    }
+
     fn pop_stack_int_from_hex(&mut self) -> i64 {
         let element: String = self.stack.pop().unwrap();
 
         match i64::from_str_radix(&element, 16) {
+            Ok(val) => val, // parse success
+            Err(_error) => {
+                // parse fail
+                eprintln!(
+                    "  {}: unknown expression [{}] is not a recognized operation \
+                    or valid value (i_h)",
+                    color_red_bold("error"),
+                    color_blue_coffee_bold(element.as_str()),
+                );
+                std::process::exit(99);
+            }
+        }
+    }
+
+    fn pop_stack_u8_from_hex(&mut self) -> u8 {
+        let element: String = self.stack.pop().unwrap();
+
+        match u8::from_str_radix(&element, 16) {
             Ok(val) => val, // parse success
             Err(_error) => {
                 // parse fail
@@ -384,6 +422,11 @@ impl Interpreter {
 
     fn parse_uint(&self, op: &str) -> Result<u64, ParseIntError> {
         let value: u64 = op.parse::<u64>()?;
+        Ok(value)
+    }
+
+    fn parse_uint8(&self, op: &str) -> Result<u8, ParseIntError> {
+        let value: u8 = op.parse::<u8>()?;
         Ok(value)
     }
     // -------------------------------------------------------------------------
@@ -1002,6 +1045,26 @@ impl Interpreter {
         self.stack.push((a * self.config.conversion_constant).to_string());
     }
 
+    fn c_rgb(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 3, op);
+
+        let b: u8 = self.pop_stack_uint8();
+        let g: u8 = self.pop_stack_uint8();
+        let r: u8 = self.pop_stack_uint8();
+
+        print_rgb(r, g, b);
+    }
+
+    fn c_rgbh(&mut self, op: &str) {
+        Interpreter::check_stack_error(self, 3, op);
+
+        let b: u8 = self.pop_stack_u8_from_hex();
+        let g: u8 = self.pop_stack_u8_from_hex();
+        let r: u8 = self.pop_stack_u8_from_hex();
+
+        print_rgb(r, g, b);
+    }
+
     // -- control flow ---------------------------------------------------------
 
     fn c_function(&mut self, _op: &str) {
@@ -1180,9 +1243,8 @@ impl Interpreter {
             let config_file_toml: String = file_contents.unwrap();
 
             // deserialize configuration TOML and update configuration
-            //let config: Config = toml::from_str(config_file_toml.as_str()).unwrap();
-            let rslt: Result<Config, toml::de::Error> = toml::from_str(config_file_toml.as_str());
-            let cfg: Config = match rslt {
+            let res: Result<Config, toml::de::Error> = toml::from_str(config_file_toml.as_str());
+            let cfg: Config = match res {
                 Ok(c) => c,
                 Err(_error) => {
                     // parse fail
@@ -1352,6 +1414,14 @@ fn level_map(level: u32) -> &'static str {
     ret
 }
 
+fn _color_rgb(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
+    message.truecolor(r, g, b)
+}
+
+fn color_rgb_bold(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
+    message.truecolor(r, g, b).bold()
+}
+
 fn color_red_bold(message: &str) -> ColoredString {
     message.truecolor(241, 95, 78).bold()
 }
@@ -1398,6 +1468,28 @@ fn color_charcoal_cream(message: &str) -> ColoredString {
 
 fn color_blank(_message: &str) -> ColoredString {
     "".truecolor(0, 0, 0)
+}
+
+fn print_rgb(r: u8, g: u8, b: u8) {
+    println!(
+        "  ( {}:{}:{} )  ( {} )",
+        color_rgb_bold(
+            r.to_string().as_str(),
+            r, g, b
+        ),
+        color_rgb_bold(
+            g.to_string().as_str(),
+            r, g, b
+        ),
+        color_rgb_bold(
+            b.to_string().as_str(),
+            r, g, b
+        ),
+        color_rgb_bold(
+            format!("{:02x}{:02x}{:02x}", r, g, b).as_str(),
+            r, g, b,
+        ),
+    );
 }
 
 // -- mona ---------------------------------------------------------------------

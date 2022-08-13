@@ -1455,7 +1455,7 @@ fn color_white_bold(message: &str) -> ColoredString {
 }
 
 fn color_white(message: &str) -> ColoredString {
-    message.truecolor(255, 255, 255)
+    message.truecolor(249, 247, 236)
 }
 
 fn color_grey_mouse(message: &str) -> ColoredString {

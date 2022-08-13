@@ -1,4 +1,3 @@
-use colored::*;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::env;
@@ -6,7 +5,9 @@ use std::fs;
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 
-const RELEASE_STATE: &str = "g";
+mod cor;
+
+const RELEASE_STATE: &str = "h";
 
 /*
 
@@ -73,7 +74,7 @@ fn main() {
         "-f" | "--file" => {
             // read operations list input from file
             if args.get(2).is_none() {
-                eprintln!("  {}: no file path provided", color_red_bold("error"),);
+                eprintln!("  {}: no file path provided", cor::color_red_bold("error"),);
                 std::process::exit(99);
             }
 
@@ -85,8 +86,8 @@ fn main() {
             if let Err(ref error) = file_contents {
                 eprintln!(
                     "  {}: could not read [{}]: {error}",
-                    color_red_bold("error"),
-                    color_blue_coffee_bold(path.display().to_string().as_str()),
+                    cor::color_red_bold("error"),
+                    cor::color_blue_coffee_bold(path.display().to_string().as_str()),
                 );
                 std::process::exit(99);
             }
@@ -319,8 +320,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (f)",
-                    color_red_bold("error"),
-                    color_blue_coffee_bold(element.as_str()),
+                    cor::color_red_bold("error"),
+                    cor::color_blue_coffee_bold(element.as_str()),
                 );
                 std::process::exit(99);
             }
@@ -336,8 +337,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                    color_red_bold("error"),
-                    color_blue_coffee_bold(element.as_str()),
+                    cor::color_red_bold("error"),
+                    cor::color_blue_coffee_bold(element.as_str()),
                 );
                 std::process::exit(99);
             }
@@ -353,8 +354,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                    color_red_bold("error"),
-                    color_blue_coffee_bold(element.as_str()),
+                    cor::color_red_bold("error"),
+                    cor::color_blue_coffee_bold(element.as_str()),
                 );
                 std::process::exit(99);
             }
@@ -371,8 +372,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
-                    color_red_bold("error"),
-                    color_blue_coffee_bold(element.as_str()),
+                    cor::color_red_bold("error"),
+                    cor::color_blue_coffee_bold(element.as_str()),
                 );
                 std::process::exit(99);
             }
@@ -389,8 +390,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
-                    color_red_bold("error"),
-                    color_blue_coffee_bold(element.as_str()),
+                    cor::color_red_bold("error"),
+                    cor::color_blue_coffee_bold(element.as_str()),
                 );
                 std::process::exit(99);
             }
@@ -407,8 +408,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_b)",
-                    color_red_bold("error"),
-                    color_blue_coffee_bold(element.as_str()),
+                    cor::color_red_bold("error"),
+                    cor::color_blue_coffee_bold(element.as_str()),
                 );
                 std::process::exit(99);
             }
@@ -437,8 +438,8 @@ impl Interpreter {
             eprintln!(
                 "  {}: [{}] operation called without at least {min_depth} \
                 element(s) on stack",
-                color_red_bold("error"),
-                color_blue_coffee_bold(command),
+                cor::color_red_bold("error"),
+                cor::color_blue_coffee_bold(command),
             );
             std::process::exit(99);
         }
@@ -453,8 +454,8 @@ impl Interpreter {
         } else {
             eprintln!(
                 "  {}: [{}] operation called on empty stack",
-                color_yellow_canary_bold("warning"),
-                color_blue_coffee_bold(op),
+                cor::color_yellow_canary_bold("warning"),
+                cor::color_blue_coffee_bold(op),
             );
             // do not stop execution
         }
@@ -992,8 +993,8 @@ impl Interpreter {
         if she.len() < 5 {
             eprintln!(
                 "  {}: argument too short [{}] is not of sufficient length",
-                color_red_bold("error"),
-                color_blue_coffee_bold(she.as_str()),
+                cor::color_red_bold("error"),
+                cor::color_blue_coffee_bold(she.as_str()),
             );
             std::process::exit(99);
         }
@@ -1220,7 +1221,7 @@ impl Interpreter {
         /*
         println!(
             "  reading configuration file [{}]",
-            color_blue_coffee_bold(filename),
+            cor::color_blue_coffee_bold(filename),
         );
         */
 
@@ -1252,8 +1253,8 @@ impl Interpreter {
                     // parse fail
                     eprintln!(
                         "  {}: configuration file [{}] (ignored) is corrupt or is incorrectly constructed",
-                        color_yellow_canary_bold("warning"),
-                        color_blue_smurf_bold("conf.toml"),
+                        cor::color_yellow_canary_bold("warning"),
+                        cor::color_blue_smurf_bold("conf.toml"),
                     );
                     Config::new()
                 }
@@ -1266,93 +1267,93 @@ impl Interpreter {
 
 fn show_help() {
     println!();
-    println!("{}", color_white_bold("COMP"));
+    println!("{}", cor::color_white_bold("COMP"));
     println!(
         "    {} {} {} {}",
-        color_grey_mouse("comp"),
-        color_grey_mouse(".."),
-        color_white_bold("command interpreter"),
-        color_grey_mouse(env!("CARGO_PKG_VERSION")),
+        cor::color_grey_mouse("comp"),
+        cor::color_grey_mouse(".."),
+        cor::color_white_bold("command interpreter"),
+        cor::color_grey_mouse(env!("CARGO_PKG_VERSION")),
     );
     println!();
-    println!("{}", color_white_bold("USAGE"));
+    println!("{}", cor::color_white_bold("USAGE"));
     println!(
         "    {} {} {}",
-        color_grey_mouse("comp"),
-        color_white_bold("[OPTIONS]"),
-        color_blue_coffee_bold("<list>"),
+        cor::color_grey_mouse("comp"),
+        cor::color_white_bold("[OPTIONS]"),
+        cor::color_blue_coffee_bold("<list>"),
     );
     println!(
         "    {} {} {}",
-        color_grey_mouse("comp"),
-        color_yellow_canary_bold("-f"),
-        color_blue_coffee_bold("<path>"),
+        cor::color_grey_mouse("comp"),
+        cor::color_yellow_canary_bold("-f"),
+        cor::color_blue_coffee_bold("<path>"),
     );
     println!();
-    println!("{}", color_white_bold("OPTIONS"));
+    println!("{}", cor::color_white_bold("OPTIONS"));
     println!(
         "        {}      show version",
-        color_yellow_canary_bold("--version"),
+        cor::color_yellow_canary_bold("--version"),
     );
     println!(
         "    {}{} {}         read from file at the specified path",
-        color_yellow_canary_bold("-f"),
-        color_white_bold(","),
-        color_yellow_canary_bold("--file"),
+        cor::color_yellow_canary_bold("-f"),
+        cor::color_white_bold(","),
+        cor::color_yellow_canary_bold("--file"),
     );
     println!(
         "        {}         show help information",
-        color_yellow_canary_bold("--help"),
+        cor::color_yellow_canary_bold("--help"),
     );
     println!();
-    println!("{}", color_white_bold("DESCRIPTION"));
+    println!("{}", cor::color_white_bold("DESCRIPTION"));
     println!(
         "The comp interpreter takes a {} sequence of (postfix) operations as \
     command line arguments or a {} argument that specifies the path to a file \
     containing a list of operations. Each operation is either a command ({}) \
     or a {}. The available commands are listed below.",
-        color_blue_coffee_bold("<list>"),
-        color_blue_coffee_bold("<path>"),
-        color_green_eggs_bold("symbol"),
-        color_blue_smurf_bold("value"),
+        cor::color_blue_coffee_bold("<list>"),
+        cor::color_blue_coffee_bold("<path>"),
+        cor::color_green_eggs_bold("symbol"),
+        cor::color_blue_smurf_bold("value"),
     );
     println!();
     println!(
         "    Usage Guide:   {}",
-        color_grey_mouse("https://github.com/usefulmove/comp/blob/main/USAGE.md"),
+        cor::color_grey_mouse("https://github.com/usefulmove/comp/blob/main/USAGE.md"),
     );
     println!(
         "    Repository:    {}",
-        color_grey_mouse("https://github.com/usefulmove/comp#readme"),
+        cor::color_grey_mouse("https://github.com/usefulmove/comp#readme"),
     );
     println!();
-    println!("{}", color_white_bold("EXAMPLES"));
+    println!("{}", cor::color_white_bold("EXAMPLES"));
     println!(
         "    {} {} {}                  {}",
-        color_grey_mouse("comp"),
-        color_blue_smurf_bold("1 2"),
-        color_green_eggs_bold("+"),
-        color_white_bold("add 1 and 2"),
+        cor::color_grey_mouse("comp"),
+        cor::color_blue_smurf_bold("1 2"),
+        cor::color_green_eggs_bold("+"),
+        cor::color_white_bold("add 1 and 2"),
     );
     println!(
         "    {} {} {}                  {}",
-        color_grey_mouse("comp"),
-        color_blue_smurf_bold("5 2"),
-        color_green_eggs_bold("/"),
-        color_white_bold("divide 5 by 2"),
+        cor::color_grey_mouse("comp"),
+        cor::color_blue_smurf_bold("5 2"),
+        cor::color_green_eggs_bold("/"),
+        cor::color_white_bold("divide 5 by 2"),
     );
     println!(
         "    {} {} {} {} {}      {}",
-        color_grey_mouse("comp"),
-        color_blue_smurf_bold("3"),
-        color_green_eggs_bold("dup x"),
-        color_blue_smurf_bold("4"),
-        color_green_eggs_bold("dup x +"),
-        color_white_bold("sum of the squares of 3 and 4"),
+        cor::color_grey_mouse("comp"),
+        cor::color_blue_smurf_bold("3"),
+        cor::color_green_eggs_bold("dup x"),
+        cor::color_blue_smurf_bold("4"),
+        cor::color_green_eggs_bold("dup x +"),
+        cor::color_white_bold("sum of the squares of 3 and 4"),
     );
     println!();
-    println!("{}", color_white_bold("COMMANDS"));
-    println!("{}", color_grey_mouse(CMDS));
+    println!("{}", cor::color_white_bold("COMMANDS"));
+    println!("{}", cor::color_grey_mouse(CMDS));
     println!();
 }
 
@@ -1360,22 +1361,22 @@ fn show_version() {
     let version: &str = env!("CARGO_PKG_VERSION");
     println!(
         "  {} {}{}",
-        color_grey_mouse("comp"),
-        color_blue_smurf_bold(version),
-        color_white_bold(RELEASE_STATE),
+        cor::color_grey_mouse("comp"),
+        cor::color_blue_smurf_bold(version),
+        cor::color_white_bold(RELEASE_STATE),
     );
 }
 
 fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
-    let mut f_color_annotate: fn(&str) -> colored::ColoredString = color_blank;
-    let mut f_color_stack_high: fn(&str) -> colored::ColoredString = color_blue_coffee_bold;
-    let mut f_color_stack: fn(&str) -> colored::ColoredString = color_blue_smurf;
+    let mut f_color_annotate: fn(&str) -> colored::ColoredString = cor::color_blank;
+    let mut f_color_stack_high: fn(&str) -> colored::ColoredString = cor::color_blue_coffee_bold;
+    let mut f_color_stack: fn(&str) -> colored::ColoredString = cor::color_blue_smurf;
     if annotate {
-        f_color_annotate = color_charcoal_cream;
+        f_color_annotate = cor::color_charcoal_cream;
     }
     if monochrome {
-        f_color_stack_high = color_white;
-        f_color_stack = color_white;
+        f_color_stack_high = cor::color_white;
+        f_color_stack = cor::color_white;
     }
 
     while !stack.is_empty() {
@@ -1416,74 +1417,18 @@ fn level_map(level: u32) -> &'static str {
     ret
 }
 
-fn color_rgb(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
-    message.truecolor(r, g, b)
-}
-
-fn color_rgb_bold(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
-    message.truecolor(r, g, b).bold()
-}
-
-fn color_red_bold(message: &str) -> ColoredString {
-    message.truecolor(241, 95, 78).bold()
-}
-
-fn _color_orange_sherbet_bold(message: &str) -> ColoredString {
-    message.truecolor(239, 157, 110).bold()
-}
-
-fn color_yellow_canary_bold(message: &str) -> ColoredString {
-    message.truecolor(255, 252, 103).bold()
-}
-
-fn color_green_eggs_bold(message: &str) -> ColoredString {
-    message.truecolor(135, 255, 175).bold()
-}
-
-fn color_blue_smurf(message: &str) -> ColoredString {
-    message.truecolor(0, 128, 255)
-}
-
-fn color_blue_smurf_bold(message: &str) -> ColoredString {
-    message.truecolor(0, 128, 255).bold()
-}
-
-fn color_blue_coffee_bold(message: &str) -> ColoredString {
-    message.truecolor(0, 192, 255).bold()
-}
-
-fn color_white_bold(message: &str) -> ColoredString {
-    message.truecolor(249, 247, 236).bold()
-}
-
-fn color_white(message: &str) -> ColoredString {
-    message.truecolor(249, 247, 236)
-}
-
-fn color_grey_mouse(message: &str) -> ColoredString {
-    message.truecolor(155, 155, 155)
-}
-
-fn color_charcoal_cream(message: &str) -> ColoredString {
-    message.truecolor(102, 102, 102)
-}
-
-fn color_blank(_message: &str) -> ColoredString {
-    "".truecolor(0, 0, 0)
-}
-
 fn _format_rgb(r: u8, g: u8, b: u8) -> String {
     format!(
         "{} {} {}",
-        color_rgb(
+        cor::color_rgb(
             r.to_string().as_str(),
             r, g, b
         ),
-        color_rgb(
+        cor::color_rgb(
             g.to_string().as_str(),
             r, g, b
         ),
-        color_rgb(
+        cor::color_rgb(
             b.to_string().as_str(),
             r, g, b
         ),
@@ -1497,15 +1442,15 @@ fn format_rgb_shadow(r: u8, g: u8, b: u8) -> String {
 
     format!(
         "{} {} {}",
-        color_rgb(
+        cor::color_rgb(
             r.to_string().as_str(),
             r_s, g_s, b_s,
         ),
-        color_rgb(
+        cor::color_rgb(
             g.to_string().as_str(),
             r_s, g_s, b_s,
         ),
-        color_rgb(
+        cor::color_rgb(
             b.to_string().as_str(),
             r_s, g_s, b_s,
         ),
@@ -1515,7 +1460,7 @@ fn format_rgb_shadow(r: u8, g: u8, b: u8) -> String {
 fn format_rgb_hex(r: u8, g: u8, b: u8) -> String {
     format!(
         "{}",
-        color_rgb_bold(
+        cor::color_rgb_bold(
             format!("{:02x}{:02x}{:02x}", r, g, b).as_str(),
             r, g, b,
         ),

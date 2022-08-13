@@ -1451,7 +1451,7 @@ fn color_blue_coffee_bold(message: &str) -> ColoredString {
 }
 
 fn color_white_bold(message: &str) -> ColoredString {
-    message.truecolor(255, 255, 255).bold()
+    message.truecolor(249, 247, 236).bold()
 }
 
 fn color_white(message: &str) -> ColoredString {

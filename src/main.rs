@@ -1472,7 +1472,7 @@ fn color_blank(_message: &str) -> ColoredString {
 
 fn print_rgb(r: u8, g: u8, b: u8) {
     println!(
-        "  ( {}:{}:{} )  ( {} )",
+        "  ( {} {} {} )  ( {} )",
         color_rgb_bold(
             r.to_string().as_str(),
             r, g, b

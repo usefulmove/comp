@@ -1052,7 +1052,7 @@ impl Interpreter {
         let g: u8 = self.pop_stack_uint8();
         let r: u8 = self.pop_stack_uint8();
 
-        self.stack.push(format_rgb(r, g, b));
+        self.stack.push(format_rgb_shadow(r, g, b));
         self.stack.push(format_rgb_hex(r, g, b));
     }
 
@@ -1063,7 +1063,7 @@ impl Interpreter {
         let g: u8 = self.pop_stack_u8_from_hex();
         let r: u8 = self.pop_stack_u8_from_hex();
 
-        self.stack.push(format_rgb(r, g, b));
+        self.stack.push(format_rgb_shadow(r, g, b));
         self.stack.push(format_rgb_hex(r, g, b));
     }
 
@@ -1416,10 +1416,6 @@ fn level_map(level: u32) -> &'static str {
     ret
 }
 
-fn _color_rgb(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
-    message.truecolor(r, g, b)
-}
-
 fn color_rgb(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
     message.truecolor(r, g, b)
 }
@@ -1476,7 +1472,7 @@ fn color_blank(_message: &str) -> ColoredString {
     "".truecolor(0, 0, 0)
 }
 
-fn format_rgb(r: u8, g: u8, b: u8) -> String {
+fn _format_rgb(r: u8, g: u8, b: u8) -> String {
     format!(
         "{} {} {}",
         color_rgb(
@@ -1490,6 +1486,28 @@ fn format_rgb(r: u8, g: u8, b: u8) -> String {
         color_rgb(
             b.to_string().as_str(),
             r, g, b
+        ),
+    )
+}
+
+fn format_rgb_shadow(r: u8, g: u8, b: u8) -> String {
+    let r_s: u8 = ( (r as f64) * 0.7 ) as u8;
+    let g_s: u8 = ( (g as f64) * 0.7 ) as u8;
+    let b_s: u8 = ( (b as f64) * 0.7 ) as u8;
+
+    format!(
+        "{} {} {}",
+        color_rgb(
+            r.to_string().as_str(),
+            r_s, g_s, b_s,
+        ),
+        color_rgb(
+            g.to_string().as_str(),
+            r_s, g_s, b_s,
+        ),
+        color_rgb(
+            b.to_string().as_str(),
+            r_s, g_s, b_s,
         ),
     )
 }

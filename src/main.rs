@@ -1052,7 +1052,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_uint8();
         let r: u8 = self.pop_stack_uint8();
 
-        print_rgb(r, g, b);
+        self.stack.push(format_rgb(r, g, b));
+        self.stack.push(format_rgb_hex(r, g, b));
     }
 
     fn c_rgbh(&mut self, op: &str) {
@@ -1062,7 +1063,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_u8_from_hex();
         let r: u8 = self.pop_stack_u8_from_hex();
 
-        print_rgb(r, g, b);
+        self.stack.push(format_rgb(r, g, b));
+        self.stack.push(format_rgb_hex(r, g, b));
     }
 
     // -- control flow ---------------------------------------------------------
@@ -1470,10 +1472,9 @@ fn color_blank(_message: &str) -> ColoredString {
     "".truecolor(0, 0, 0)
 }
 
-fn print_rgb(r: u8, g: u8, b: u8) {
-    println!(
-        "  {} {} {} {} {}",
-        color_grey_mouse("_"),
+fn format_rgb(r: u8, g: u8, b: u8) -> String {
+    format!(
+        "{} {} {}",
         color_rgb_bold(
             r.to_string().as_str(),
             r, g, b
@@ -1486,17 +1487,17 @@ fn print_rgb(r: u8, g: u8, b: u8) {
             b.to_string().as_str(),
             r, g, b
         ),
-        color_grey_mouse("_"),
-    );
-    println!(
-        "  {} {} {}",
-        color_grey_mouse("_"),
+    )
+}
+
+fn format_rgb_hex(r: u8, g: u8, b: u8) -> String {
+    format!(
+        "{}",
         color_rgb_bold(
             format!("{:02x}{:02x}{:02x}", r, g, b).as_str(),
             r, g, b,
         ),
-        color_grey_mouse("_"),
-    );
+    )
 }
 
 // -- mona ---------------------------------------------------------------------

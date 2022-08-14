@@ -8,6 +8,11 @@ pub fn color_rgb_bold(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredStr
     message.truecolor(r, g, b).bold()
 }
 
+#[allow(dead_code)]
+pub fn color_rgb_bg(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
+    message.truecolor(r, g, b)
+}
+
 pub fn color_red_bold(message: &str) -> ColoredString {
     message.truecolor(241, 95, 78).bold()
 }
@@ -76,9 +81,9 @@ pub fn format_rgb(r: u8, g: u8, b: u8) -> String {
 }
 
 pub fn format_rgb_shadow(r: u8, g: u8, b: u8) -> String {
-    let r_s: u8 = ( (r as f64) * 0.7 ) as u8;
-    let g_s: u8 = ( (g as f64) * 0.7 ) as u8;
-    let b_s: u8 = ( (b as f64) * 0.7 ) as u8;
+    let r_s: u8 = ( (r as f64) * 0.75 ) as u8;
+    let g_s: u8 = ( (g as f64) * 0.75 ) as u8;
+    let b_s: u8 = ( (b as f64) * 0.75 ) as u8;
 
     format!(
         "{} {} {}",

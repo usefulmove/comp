@@ -15,8 +15,8 @@ const RELEASE_STATE: &str = "j";
     either be symbols (commands) or values. each
     calculation is a list of operations that are
     processed in order of occurrence. this is an
-    implementation of a lisp interpreter for rev-
-    erse polish notation s-expressions (sexp).
+    implementation of a list processor (lisp) for
+    reverse polish notation s-expressions (sexp).
 
       operations list structure
         (object : command or value)

@@ -1417,7 +1417,8 @@ fn level_map(level: u32) -> &'static str {
     ret
 }
 
-fn _format_rgb(r: u8, g: u8, b: u8) -> String {
+#[allow(dead_code)]
+fn format_rgb(r: u8, g: u8, b: u8) -> String {
     format!(
         "{} {} {}",
         cor::color_rgb(

@@ -7,7 +7,7 @@ use std::path::Path;
 
 mod cor;
 
-const RELEASE_STATE: &str = "h";
+const RELEASE_STATE: &str = "i";
 
 /*
 
@@ -87,7 +87,7 @@ fn main() {
                 eprintln!(
                     "  {}: could not read [{}]: {error}",
                     cor::color_red_bold("error"),
-                    cor::color_blue_coffee_bold(path.display().to_string().as_str()),
+                    cor::color_blue_coffee_bold(&path.display().to_string()),
                 );
                 std::process::exit(99);
             }
@@ -321,7 +321,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (f)",
                     cor::color_red_bold("error"),
-                    cor::color_blue_coffee_bold(element.as_str()),
+                    cor::color_blue_coffee_bold(&element),
                 );
                 std::process::exit(99);
             }
@@ -338,7 +338,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
                     cor::color_red_bold("error"),
-                    cor::color_blue_coffee_bold(element.as_str()),
+                    cor::color_blue_coffee_bold(&element),
                 );
                 std::process::exit(99);
             }
@@ -355,7 +355,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
                     cor::color_red_bold("error"),
-                    cor::color_blue_coffee_bold(element.as_str()),
+                    cor::color_blue_coffee_bold(&element),
                 );
                 std::process::exit(99);
             }
@@ -373,7 +373,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
                     cor::color_red_bold("error"),
-                    cor::color_blue_coffee_bold(element.as_str()),
+                    cor::color_blue_coffee_bold(&element),
                 );
                 std::process::exit(99);
             }
@@ -391,7 +391,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
                     cor::color_red_bold("error"),
-                    cor::color_blue_coffee_bold(element.as_str()),
+                    cor::color_blue_coffee_bold(&element),
                 );
                 std::process::exit(99);
             }
@@ -409,7 +409,7 @@ impl Interpreter {
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_b)",
                     cor::color_red_bold("error"),
-                    cor::color_blue_coffee_bold(element.as_str()),
+                    cor::color_blue_coffee_bold(&element),
                 );
                 std::process::exit(99);
             }
@@ -994,7 +994,7 @@ impl Interpreter {
             eprintln!(
                 "  {}: argument too short [{}] is not of sufficient length",
                 cor::color_red_bold("error"),
-                cor::color_blue_coffee_bold(she.as_str()),
+                cor::color_blue_coffee_bold(&she),
             );
             std::process::exit(99);
         }
@@ -1246,7 +1246,7 @@ impl Interpreter {
             let config_file_toml: String = file_contents.unwrap();
 
             // deserialize configuration TOML and update configuration
-            let res: Result<Config, toml::de::Error> = toml::from_str(config_file_toml.as_str());
+            let res: Result<Config, toml::de::Error> = toml::from_str(&config_file_toml);
             let cfg: Config = match res {
                 Ok(c) => c,
                 Err(_error) => {
@@ -1387,7 +1387,7 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
                     // top element
                     "{}  {}",
                     f_color_annotate(level_map(level)),
-                    f_color_stack_high(stack.remove(0).as_str()),
+                    f_color_stack_high(&stack.remove(0)),
                 )
             }
             _ => {
@@ -1395,7 +1395,7 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
                     // all other elements
                     "{}  {}",
                     f_color_annotate(level_map(level)),
-                    f_color_stack(stack.remove(0).as_str()),
+                    f_color_stack(&stack.remove(0)),
                 )
             }
         }
@@ -1422,15 +1422,15 @@ fn format_rgb(r: u8, g: u8, b: u8) -> String {
     format!(
         "{} {} {}",
         cor::color_rgb(
-            r.to_string().as_str(),
+            &r.to_string(),
             r, g, b
         ),
         cor::color_rgb(
-            g.to_string().as_str(),
+            &g.to_string(),
             r, g, b
         ),
         cor::color_rgb(
-            b.to_string().as_str(),
+            &b.to_string(),
             r, g, b
         ),
     )
@@ -1444,15 +1444,15 @@ fn format_rgb_shadow(r: u8, g: u8, b: u8) -> String {
     format!(
         "{} {} {}",
         cor::color_rgb(
-            r.to_string().as_str(),
+            &r.to_string(),
             r_s, g_s, b_s,
         ),
         cor::color_rgb(
-            g.to_string().as_str(),
+            &g.to_string(),
             r_s, g_s, b_s,
         ),
         cor::color_rgb(
-            b.to_string().as_str(),
+            &b.to_string(),
             r_s, g_s, b_s,
         ),
     )
@@ -1462,7 +1462,7 @@ fn format_rgb_hex(r: u8, g: u8, b: u8) -> String {
     format!(
         "{}",
         cor::color_rgb_bold(
-            format!("{:02x}{:02x}{:02x}", r, g, b).as_str(),
+            &format!("{:02x}{:02x}{:02x}", r, g, b),
             r, g, b,
         ),
     )

@@ -1,4 +1,4 @@
-use crate::Interpreter;
+use crate::cmdin::Interpreter;
 
 #[cfg(test)]
 

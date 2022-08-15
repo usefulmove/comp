@@ -913,8 +913,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_uint8();
         let r: u8 = self.pop_stack_uint8();
 
-        self.stack.push(poc::format_rgb_shadow(r, g, b));
-        self.stack.push(poc::format_rgb_hex(r, g, b));
+        self.stack.push(self.format_rgb_shadow(r, g, b));
+        self.stack.push(self.format_rgb_hex(r, g, b));
     }
 
     pub fn c_rgbh(&mut self, op: &str) {
@@ -924,8 +924,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_u8_from_hex();
         let r: u8 = self.pop_stack_u8_from_hex();
 
-        self.stack.push(poc::format_rgb_shadow(r, g, b));
-        self.stack.push(poc::format_rgb_hex(r, g, b));
+        self.stack.push(self.format_rgb_shadow(r, g, b));
+        self.stack.push(self.format_rgb_hex(r, g, b));
     }
 
     // -- control flow ---------------------------------------------------------
@@ -1122,6 +1122,57 @@ impl Interpreter {
 
             self.config = cfg;
         }
+    }
+
+    #[allow(dead_code)]
+    fn format_rgb(&self, r: u8, g: u8, b: u8) -> String {
+        format!(
+            "{} {} {}",
+            poc::color_rgb(
+                &r.to_string(),
+                r, g, b
+            ),
+            poc::color_rgb(
+                &g.to_string(),
+                r, g, b
+            ),
+            poc::color_rgb(
+                &b.to_string(),
+                r, g, b
+            ),
+        )
+    }
+
+    fn format_rgb_shadow(&self, r: u8, g: u8, b: u8) -> String {
+        let r_s: u8 = ( (r as f64) * 0.7 ) as u8;
+        let g_s: u8 = ( (g as f64) * 0.7 ) as u8;
+        let b_s: u8 = ( (b as f64) * 0.7 ) as u8;
+
+        format!(
+            "{} {} {}",
+            poc::color_rgb(
+                &r.to_string(),
+                r_s, g_s, b_s,
+            ),
+            poc::color_rgb(
+                &g.to_string(),
+                r_s, g_s, b_s,
+            ),
+            poc::color_rgb(
+                &b.to_string(),
+                r_s, g_s, b_s,
+            ),
+        )
+    }
+
+    fn format_rgb_hex(&self, r: u8, g: u8, b: u8) -> String {
+        format!(
+            "{}",
+            poc::color_rgb_bold(
+                &format!("{:02x}{:02x}{:02x}", r, g, b),
+                r, g, b,
+            ),
+        )
     }
 }
 

@@ -19,8 +19,8 @@ pub struct Interpreter {
 
 impl Interpreter {
     // constructor
-    pub fn new() -> Interpreter {
-        let mut cint = Interpreter {
+    pub fn new() -> Self {
+        let mut cint = Self {
             stack: Vec::new(),
             mem_a: 0.0,
             mem_b: 0.0,
@@ -44,100 +44,100 @@ impl Interpreter {
     }
 
     // add native command to interpreter
-    pub fn compose_native(&mut self, name: &str, func: fn(&mut Interpreter, &str)) {
+    pub fn compose_native(&mut self, name: &str, func: fn(&mut Self, &str)) {
         self.cmap.insert(name.to_string(), func);
     }
 
     fn init(&mut self) {
         /* stack manipulation */
-        self.compose_native("drop", Interpreter::c_drop); // drop
-        self.compose_native("dup", Interpreter::c_dup); // duplicate
-        self.compose_native("swap", Interpreter::c_swap); // swap x and y
-        self.compose_native("cls", Interpreter::c_cls); // clear stack
-        self.compose_native("clr", Interpreter::c_cls); // clear stack
-        self.compose_native("roll", Interpreter::c_roll); // roll stack
-        self.compose_native("rot", Interpreter::c_rot); // rotate stack (reverse direction from roll)
+        self.compose_native("drop", Self::c_drop); // drop
+        self.compose_native("dup", Self::c_dup); // duplicate
+        self.compose_native("swap", Self::c_swap); // swap x and y
+        self.compose_native("cls", Self::c_cls); // clear stack
+        self.compose_native("clr", Self::c_cls); // clear stack
+        self.compose_native("roll", Self::c_roll); // roll stack
+        self.compose_native("rot", Self::c_rot); // rotate stack (reverse direction from roll)
         /* memory usage */
-        self.compose_native("sa", Interpreter::c_store_a); // store (pop value off stack and store)
-        self.compose_native("_a", Interpreter::c_push_a); // retrieve (push stored value onto the stack)
-        self.compose_native("sb", Interpreter::c_store_b); // store
-        self.compose_native("_b", Interpreter::c_push_b); // retrieve
-        self.compose_native("sc", Interpreter::c_store_c); // store
-        self.compose_native("_c", Interpreter::c_push_c); // retrieve
+        self.compose_native("sa", Self::c_store_a); // store (pop value off stack and store)
+        self.compose_native("_a", Self::c_push_a); // retrieve (push stored value onto the stack)
+        self.compose_native("sb", Self::c_store_b); // store
+        self.compose_native("_b", Self::c_push_b); // retrieve
+        self.compose_native("sc", Self::c_store_c); // store
+        self.compose_native("_c", Self::c_push_c); // retrieve
         /* math operations */
-        self.compose_native("+", Interpreter::c_add); // add
-        self.compose_native("+_", Interpreter::c_add_all); // add all
-        self.compose_native("++", Interpreter::c_add_one); // add one
-        self.compose_native("-", Interpreter::c_sub); // subtract
-        self.compose_native("--", Interpreter::c_sub_one); // subtract one
-        self.compose_native("x", Interpreter::c_mult); // multiply
-        self.compose_native("x_", Interpreter::c_mult_all); // multiply all
-        self.compose_native("/", Interpreter::c_div); // divide
-        self.compose_native("chs", Interpreter::c_chs); // change sign
-        self.compose_native("abs", Interpreter::c_abs); // absolute value
-        self.compose_native("round", Interpreter::c_round); // round
-        self.compose_native("int", Interpreter::c_round);
-        self.compose_native("inv", Interpreter::c_inv); // invert (1/x)
-        self.compose_native("sqrt", Interpreter::c_sqrt); // square root
-        self.compose_native("throot", Interpreter::c_throot); // nth root
-        self.compose_native("proot", Interpreter::c_proot); // find principal roots
-        self.compose_native("^", Interpreter::c_exp); // exponentiation
-        self.compose_native("exp", Interpreter::c_exp);
-        self.compose_native("%", Interpreter::c_mod); // modulus
-        self.compose_native("mod", Interpreter::c_mod);
-        self.compose_native("!", Interpreter::c_fact); // factorial
-        self.compose_native("gcd", Interpreter::c_gcd); // greatest common divisor
-        self.compose_native("pi", Interpreter::c_pi); // pi
-        self.compose_native("e", Interpreter::c_euler); // Euler's constant
-        self.compose_native("g", Interpreter::c_accelg); // standard acceleration due to gravity (m/s2)
-        self.compose_native("deg_rad", Interpreter::c_degrad); // degrees to radians
-        self.compose_native("rad_deg", Interpreter::c_raddeg); // radians to degrees
-        self.compose_native("sin", Interpreter::c_sin); // sine
-        self.compose_native("asin", Interpreter::c_asin); // arcsine
-        self.compose_native("cos", Interpreter::c_cos); // cosine
-        self.compose_native("acos", Interpreter::c_acos); // arccosine
-        self.compose_native("tan", Interpreter::c_tan); // tangent
-        self.compose_native("atan", Interpreter::c_atan); // arctangent
-        self.compose_native("log2", Interpreter::c_log2); // logarithm (base 2)
-        self.compose_native("log", Interpreter::c_log10); // logarithm (base 10)
-        self.compose_native("log10", Interpreter::c_log10);
-        self.compose_native("logn", Interpreter::c_logn); // logarithm (base n)
-        self.compose_native("ln", Interpreter::c_ln); // natural logarithm
-        self.compose_native("rand", Interpreter::c_rand); // random number
-        self.compose_native("min", Interpreter::c_min); // minimum
-        self.compose_native("min_", Interpreter::c_min_all); // minimum
-        self.compose_native("max", Interpreter::c_max); // maximum
-        self.compose_native("max_", Interpreter::c_max_all); // maximum all
-        self.compose_native("avg", Interpreter::c_avg); // average
-        self.compose_native("avg_", Interpreter::c_avg_all); // average all
+        self.compose_native("+", Self::c_add); // add
+        self.compose_native("+_", Self::c_add_all); // add all
+        self.compose_native("++", Self::c_add_one); // add one
+        self.compose_native("-", Self::c_sub); // subtract
+        self.compose_native("--", Self::c_sub_one); // subtract one
+        self.compose_native("x", Self::c_mult); // multiply
+        self.compose_native("x_", Self::c_mult_all); // multiply all
+        self.compose_native("/", Self::c_div); // divide
+        self.compose_native("chs", Self::c_chs); // change sign
+        self.compose_native("abs", Self::c_abs); // absolute value
+        self.compose_native("round", Self::c_round); // round
+        self.compose_native("int", Self::c_round);
+        self.compose_native("inv", Self::c_inv); // invert (1/x)
+        self.compose_native("sqrt", Self::c_sqrt); // square root
+        self.compose_native("throot", Self::c_throot); // nth root
+        self.compose_native("proot", Self::c_proot); // find principal roots
+        self.compose_native("^", Self::c_exp); // exponentiation
+        self.compose_native("exp", Self::c_exp);
+        self.compose_native("%", Self::c_mod); // modulus
+        self.compose_native("mod", Self::c_mod);
+        self.compose_native("!", Self::c_fact); // factorial
+        self.compose_native("gcd", Self::c_gcd); // greatest common divisor
+        self.compose_native("pi", Self::c_pi); // pi
+        self.compose_native("e", Self::c_euler); // Euler's constant
+        self.compose_native("g", Self::c_accelg); // standard acceleration due to gravity (m/s2)
+        self.compose_native("deg_rad", Self::c_degrad); // degrees to radians
+        self.compose_native("rad_deg", Self::c_raddeg); // radians to degrees
+        self.compose_native("sin", Self::c_sin); // sine
+        self.compose_native("asin", Self::c_asin); // arcsine
+        self.compose_native("cos", Self::c_cos); // cosine
+        self.compose_native("acos", Self::c_acos); // arccosine
+        self.compose_native("tan", Self::c_tan); // tangent
+        self.compose_native("atan", Self::c_atan); // arctangent
+        self.compose_native("log2", Self::c_log2); // logarithm (base 2)
+        self.compose_native("log", Self::c_log10); // logarithm (base 10)
+        self.compose_native("log10", Self::c_log10);
+        self.compose_native("logn", Self::c_logn); // logarithm (base n)
+        self.compose_native("ln", Self::c_ln); // natural logarithm
+        self.compose_native("rand", Self::c_rand); // random number
+        self.compose_native("min", Self::c_min); // minimum
+        self.compose_native("min_", Self::c_min_all); // minimum
+        self.compose_native("max", Self::c_max); // maximum
+        self.compose_native("max_", Self::c_max_all); // maximum all
+        self.compose_native("avg", Self::c_avg); // average
+        self.compose_native("avg_", Self::c_avg_all); // average all
         /* control flow */
-        self.compose_native("(", Interpreter::c_function); // function definition
-        self.compose_native("ifeq", Interpreter::c_ifeq); // ifequal .. else
-        self.compose_native("<", Interpreter::c_comment); // function comment
-        self.compose_native("pln", Interpreter::c_println); // print line
+        self.compose_native("(", Self::c_function); // function definition
+        self.compose_native("ifeq", Self::c_ifeq); // ifequal .. else
+        self.compose_native("<", Self::c_comment); // function comment
+        self.compose_native("pln", Self::c_println); // print line
         /* conversion */
-        self.compose_native("dec_hex", Interpreter::c_dechex); // decimal to hexadecimal
-        self.compose_native("hex_dec", Interpreter::c_hexdec); // hexadecimal to decimal
-        self.compose_native("dec_bin", Interpreter::c_decbin); // decimal to binary
-        self.compose_native("bin_dec", Interpreter::c_bindec); // binary to decimal
-        self.compose_native("bin_hex", Interpreter::c_binhex); // binary to hexadecimal
-        self.compose_native("hex_bin", Interpreter::c_hexbin); // hexadecimal to binary
-        self.compose_native("c_f", Interpreter::c_celfah); // Celsius to Fahrenheit
-        self.compose_native("C_F", Interpreter::c_celfah);
-        self.compose_native("f_c", Interpreter::c_fahcel); // Fahrenheit to Celsius
-        self.compose_native("F_C", Interpreter::c_fahcel);
-        self.compose_native("mi_km", Interpreter::c_mikm); // miles to kilometers
-        self.compose_native("km_mi", Interpreter::c_kmmi); // kilometers to miles
-        self.compose_native("ft_m", Interpreter::c_ftm); // feet to meters
-        self.compose_native("m_ft", Interpreter::c_mft); // meters to feet
-        self.compose_native("hex_rgb", Interpreter::c_hexrgb); // hexadecimal string to RGB
-        self.compose_native("rgb_hex", Interpreter::c_rgbhex); // RGB to hexadecimal string
-        self.compose_native("tip", Interpreter::c_tip); // calculate tip
-        self.compose_native("tip+", Interpreter::c_tip_plus); // calculate better tip
-        self.compose_native("a_b", Interpreter::c_conv_const); // apply convert constant
+        self.compose_native("dec_hex", Self::c_dechex); // decimal to hexadecimal
+        self.compose_native("hex_dec", Self::c_hexdec); // hexadecimal to decimal
+        self.compose_native("dec_bin", Self::c_decbin); // decimal to binary
+        self.compose_native("bin_dec", Self::c_bindec); // binary to decimal
+        self.compose_native("bin_hex", Self::c_binhex); // binary to hexadecimal
+        self.compose_native("hex_bin", Self::c_hexbin); // hexadecimal to binary
+        self.compose_native("c_f", Self::c_celfah); // Celsius to Fahrenheit
+        self.compose_native("C_F", Self::c_celfah);
+        self.compose_native("f_c", Self::c_fahcel); // Fahrenheit to Celsius
+        self.compose_native("F_C", Self::c_fahcel);
+        self.compose_native("mi_km", Self::c_mikm); // miles to kilometers
+        self.compose_native("km_mi", Self::c_kmmi); // kilometers to miles
+        self.compose_native("ft_m", Self::c_ftm); // feet to meters
+        self.compose_native("m_ft", Self::c_mft); // meters to feet
+        self.compose_native("hex_rgb", Self::c_hexrgb); // hexadecimal string to RGB
+        self.compose_native("rgb_hex", Self::c_rgbhex); // RGB to hexadecimal string
+        self.compose_native("tip", Self::c_tip); // calculate tip
+        self.compose_native("tip+", Self::c_tip_plus); // calculate better tip
+        self.compose_native("a_b", Self::c_conv_const); // apply convert constant
         /* rgb colors */
-        self.compose_native("rgb", Interpreter::c_rgb); // show RGB color
-        self.compose_native("rgbh", Interpreter::c_rgbh); // show RGB color (hexadecimal)
+        self.compose_native("rgb", Self::c_rgb); // show RGB color
+        self.compose_native("rgbh", Self::c_rgbh); // show RGB color (hexadecimal)
     }
 
     pub fn process_node(&mut self, op: &str) {
@@ -322,7 +322,7 @@ impl Interpreter {
     }
 
     pub fn c_dup(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let end: usize = self.stack.len() - 1;
 
@@ -330,7 +330,7 @@ impl Interpreter {
     }
 
     pub fn c_swap(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let end: usize = self.stack.len() - 1;
 
@@ -342,7 +342,7 @@ impl Interpreter {
     }
 
     pub fn c_roll(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let o: String = self.stack.pop().unwrap(); // remove last
                                                    //
@@ -350,7 +350,7 @@ impl Interpreter {
     }
 
     pub fn c_rot(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let o: String = self.stack.remove(0); // remove first
                                               //
@@ -360,7 +360,7 @@ impl Interpreter {
     // ---- memory usage -------------------------------------------------------
 
     pub fn c_store_a(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         self.mem_a = self.pop_stack_float();
     }
@@ -370,7 +370,7 @@ impl Interpreter {
     }
 
     pub fn c_store_b(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         self.mem_b = self.pop_stack_float();
     }
@@ -380,7 +380,7 @@ impl Interpreter {
     }
 
     pub fn c_store_c(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         self.mem_c = self.pop_stack_float();
     }
@@ -392,7 +392,7 @@ impl Interpreter {
     // ---- math operations ----------------------------------------------------
 
     pub fn c_add(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -407,7 +407,7 @@ impl Interpreter {
     }
 
     pub fn c_add_one(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -415,7 +415,7 @@ impl Interpreter {
     }
 
     pub fn c_sub(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -424,7 +424,7 @@ impl Interpreter {
     }
 
     pub fn c_sub_one(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -432,7 +432,7 @@ impl Interpreter {
     }
 
     pub fn c_mult(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -447,7 +447,7 @@ impl Interpreter {
     }
 
     pub fn c_div(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -456,7 +456,7 @@ impl Interpreter {
     }
 
     pub fn c_chs(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -464,7 +464,7 @@ impl Interpreter {
     }
 
     pub fn c_abs(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -472,7 +472,7 @@ impl Interpreter {
     }
 
     pub fn c_round(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -480,7 +480,7 @@ impl Interpreter {
     }
 
     pub fn c_inv(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -488,7 +488,7 @@ impl Interpreter {
     }
 
     pub fn c_sqrt(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -496,7 +496,7 @@ impl Interpreter {
     }
 
     pub fn c_throot(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -505,7 +505,7 @@ impl Interpreter {
     }
 
     pub fn c_proot(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 3, op);
+        Self::check_stack_error(self, 3, op);
 
         let c: f64 = self.pop_stack_float();
         let b: f64 = self.pop_stack_float();
@@ -534,7 +534,7 @@ impl Interpreter {
     }
 
     pub fn c_exp(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -543,7 +543,7 @@ impl Interpreter {
     }
 
     pub fn c_mod(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -552,20 +552,20 @@ impl Interpreter {
     }
 
     pub fn c_fact(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push((Interpreter::factorial(a)).to_string());
+        self.stack.push((Self::factorial(a)).to_string());
     }
 
     pub fn c_gcd(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: u64 = self.pop_stack_uint();
         let a: u64 = self.pop_stack_uint();
 
-        self.stack.push(Interpreter::gcd(a, b).to_string());
+        self.stack.push(Self::gcd(a, b).to_string());
     }
 
     pub fn c_pi(&mut self, _op: &str) {
@@ -581,7 +581,7 @@ impl Interpreter {
     }
 
     pub fn c_degrad(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -589,7 +589,7 @@ impl Interpreter {
     }
 
     pub fn c_raddeg(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -597,7 +597,7 @@ impl Interpreter {
     }
 
     pub fn c_sin(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -605,7 +605,7 @@ impl Interpreter {
     }
 
     pub fn c_asin(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -613,7 +613,7 @@ impl Interpreter {
     }
 
     pub fn c_cos(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -621,7 +621,7 @@ impl Interpreter {
     }
 
     pub fn c_acos(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -629,7 +629,7 @@ impl Interpreter {
     }
 
     pub fn c_tan(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -637,7 +637,7 @@ impl Interpreter {
     }
 
     pub fn c_atan(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -645,7 +645,7 @@ impl Interpreter {
     }
 
     pub fn c_log10(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -653,7 +653,7 @@ impl Interpreter {
     }
 
     pub fn c_log2(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -661,7 +661,7 @@ impl Interpreter {
     }
 
     pub fn c_logn(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -670,7 +670,7 @@ impl Interpreter {
     }
 
     pub fn c_ln(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -678,7 +678,7 @@ impl Interpreter {
     }
 
     pub fn c_max(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -687,7 +687,7 @@ impl Interpreter {
     }
 
     pub fn c_max_all(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let mut m: f64 = 0.0;
         while !self.stack.is_empty() {
@@ -698,7 +698,7 @@ impl Interpreter {
     }
 
     pub fn c_min(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -707,7 +707,7 @@ impl Interpreter {
     }
 
     pub fn c_min_all(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let mut m: f64 = f64::MAX;
         while !self.stack.is_empty() {
@@ -718,7 +718,7 @@ impl Interpreter {
     }
 
     pub fn c_avg(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
@@ -727,7 +727,7 @@ impl Interpreter {
     }
 
     pub fn c_avg_all(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let mut sum: f64 = 0.0;
         let len: usize = self.stack.len();
@@ -739,7 +739,7 @@ impl Interpreter {
     }
 
     pub fn c_rand(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: u64 = self.pop_stack_uint();
         let num: f64 = (a as f64 * rand::random::<f64>()).floor();
@@ -750,7 +750,7 @@ impl Interpreter {
     // -- conversions ----------------------------------------------------------
 
     pub fn c_dechex(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: u64 = self.pop_stack_uint();
 
@@ -758,7 +758,7 @@ impl Interpreter {
     }
 
     pub fn c_hexdec(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_int_from_hex();
 
@@ -766,7 +766,7 @@ impl Interpreter {
     }
 
     pub fn c_decbin(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: u64 = self.pop_stack_uint();
 
@@ -774,7 +774,7 @@ impl Interpreter {
     }
 
     pub fn c_bindec(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_int_from_bin();
 
@@ -782,7 +782,7 @@ impl Interpreter {
     }
 
     pub fn c_binhex(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_int_from_bin();
 
@@ -790,7 +790,7 @@ impl Interpreter {
     }
 
     pub fn c_hexbin(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_int_from_hex();
 
@@ -798,7 +798,7 @@ impl Interpreter {
     }
 
     pub fn c_celfah(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_float();
 
@@ -806,7 +806,7 @@ impl Interpreter {
     }
 
     pub fn c_fahcel(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_float();
 
@@ -814,7 +814,7 @@ impl Interpreter {
     }
 
     pub fn c_mikm(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_float();
 
@@ -822,7 +822,7 @@ impl Interpreter {
     }
 
     pub fn c_kmmi(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_float();
 
@@ -830,7 +830,7 @@ impl Interpreter {
     }
 
     pub fn c_ftm(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_float();
 
@@ -838,7 +838,7 @@ impl Interpreter {
     }
 
     pub fn c_mft(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a = self.pop_stack_float();
 
@@ -846,7 +846,7 @@ impl Interpreter {
     }
 
     pub fn c_hexrgb(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let she: String = self.stack.pop().unwrap();
 
@@ -873,7 +873,7 @@ impl Interpreter {
     }
 
     pub fn c_rgbhex(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 3, op);
+        Self::check_stack_error(self, 3, op);
 
         let b: u64 = self.pop_stack_uint();
         let g: u64 = self.pop_stack_uint();
@@ -883,7 +883,7 @@ impl Interpreter {
     }
 
     pub fn c_tip(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -891,7 +891,7 @@ impl Interpreter {
     }
 
     pub fn c_tip_plus(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -899,7 +899,7 @@ impl Interpreter {
     }
 
     pub fn c_conv_const(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
@@ -907,7 +907,7 @@ impl Interpreter {
     }
 
     pub fn c_rgb(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 3, op);
+        Self::check_stack_error(self, 3, op);
 
         let b: u8 = self.pop_stack_uint8();
         let g: u8 = self.pop_stack_uint8();
@@ -918,7 +918,7 @@ impl Interpreter {
     }
 
     pub fn c_rgbh(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 3, op);
+        Self::check_stack_error(self, 3, op);
 
         let b: u8 = self.pop_stack_u8_from_hex();
         let g: u8 = self.pop_stack_u8_from_hex();
@@ -949,7 +949,7 @@ impl Interpreter {
     }
 
     pub fn c_ifeq(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 2, op);
 
         let b = self.pop_stack_float();
         let a = self.pop_stack_float();
@@ -1037,7 +1037,7 @@ impl Interpreter {
     }
 
     pub fn c_println(&mut self, op: &str) {
-        Interpreter::check_stack_error(self, 1, op);
+        Self::check_stack_error(self, 1, op);
 
         println!("{}", self.pop_stack_string());
     }
@@ -1063,14 +1063,14 @@ impl Interpreter {
         if n < 2.0 {
             1.0
         } else {
-            n * Interpreter::factorial(n - 1.0)
+            n * Self::factorial(n - 1.0)
         }
     }
 
     // greatest common divisor
     pub fn gcd(a: u64, b: u64) -> u64 {
         if b != 0 {
-            Interpreter::gcd(b, a % b)
+            Self::gcd(b, a % b)
         } else {
             a
         }
@@ -1190,8 +1190,8 @@ pub struct Config {
 
 impl Config {
     // constructor
-    fn new() -> Config {
-        Config {
+    fn new() -> Self {
+        Self {
             show_stack_level: true,
             conversion_constant: 1.0,
             monochrome: false,

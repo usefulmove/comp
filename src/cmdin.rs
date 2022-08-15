@@ -183,7 +183,7 @@ impl Interpreter {
                     poc::color_red_bold("error"),
                    poc::color_blue_coffee_bold(&element),
                 );
-                std::process::exit(99);
+                std::process::exit(exit_code::USAGE_ERROR);
             }
         }
     }
@@ -200,7 +200,7 @@ impl Interpreter {
                    poc::color_red_bold("error"),
                    poc::color_blue_coffee_bold(&element),
                 );
-                std::process::exit(99);
+                std::process::exit(exit_code::USAGE_ERROR);
             }
         }
     }
@@ -217,7 +217,7 @@ impl Interpreter {
                    poc::color_red_bold("error"),
                    poc::color_blue_coffee_bold(&element),
                 );
-                std::process::exit(99);
+                std::process::exit(exit_code::USAGE_ERROR);
             }
         }
     }
@@ -235,7 +235,7 @@ impl Interpreter {
                    poc::color_red_bold("error"),
                    poc::color_blue_coffee_bold(&element),
                 );
-                std::process::exit(99);
+                std::process::exit(exit_code::USAGE_ERROR);
             }
         }
     }
@@ -253,7 +253,7 @@ impl Interpreter {
                    poc::color_red_bold("error"),
                    poc::color_blue_coffee_bold(&element),
                 );
-                std::process::exit(99);
+                std::process::exit(exit_code::USAGE_ERROR);
             }
         }
     }
@@ -271,7 +271,7 @@ impl Interpreter {
                    poc::color_red_bold("error"),
                    poc::color_blue_coffee_bold(&element),
                 );
-                std::process::exit(99);
+                std::process::exit(exit_code::USAGE_ERROR);
             }
         }
     }
@@ -301,7 +301,7 @@ impl Interpreter {
                poc::color_red_bold("error"),
                poc::color_blue_coffee_bold(command),
             );
-            std::process::exit(99);
+            std::process::exit(exit_code::USAGE_ERROR);
         }
     }
 
@@ -856,7 +856,7 @@ impl Interpreter {
                poc::color_red_bold("error"),
                poc::color_blue_coffee_bold(&she),
             );
-            std::process::exit(99);
+            std::process::exit(exit_code::USAGE_ERROR);
         }
 
         let rsh: String = she[..2].to_string();

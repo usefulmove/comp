@@ -74,7 +74,7 @@ fn main() {
             // read operations list input from file
             if args.get(2).is_none() {
                 eprintln!("  {}: no file path provided", poc::color_red_bold("error"),);
-                std::process::exit(99);
+                std::process::exit(exit_code::NO_INPUT);
             }
 
             // read file contents
@@ -88,7 +88,7 @@ fn main() {
                     poc::color_red_bold("error"),
                     poc::color_blue_coffee_bold(&path.display().to_string()),
                 );
-                std::process::exit(99);
+                std::process::exit(exit_code::OS_FILE_ERROR);
             }
 
             let file_contents: String = file_contents.unwrap();
@@ -120,6 +120,7 @@ fn main() {
         cinter.config.monochrome,
     );
 
+    std::process::exit(exit_code::SUCCESS);
 } // main
 
 fn show_help() {

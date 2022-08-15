@@ -1,12 +1,11 @@
-use crate::cmdin::Interpreter;
-
 #[cfg(test)]
 
 mod comp_tests {
+    use crate::cmdin::Interpreter;
 
     #[test]
     fn test_core() {
-        let mut test_cinter = super::Interpreter::new();
+        let mut test_cinter = Interpreter::new();
 
         test_cinter.stack.push(1.0.to_string());
         test_cinter.stack.push(2.0.to_string());
@@ -60,13 +59,13 @@ mod comp_tests {
 
     #[test]
     fn test_support() {
-        assert!(super::Interpreter::gcd(55, 10) == 5);
-        assert!(super::Interpreter::factorial(10.0) == 3628800.0);
+        assert!(Interpreter::gcd(55, 10) == 5);
+        assert!(Interpreter::factorial(10.0) == 3628800.0);
     }
 
     #[test]
     fn test_roots() {
-        let mut test_cinter = super::Interpreter::new();
+        let mut test_cinter = Interpreter::new();
 
         test_cinter.stack.push(2.0.to_string());
         test_cinter.c_dup("");
@@ -102,7 +101,7 @@ mod comp_tests {
     #[test]
     #[should_panic]
     fn test_cls() {
-        let mut test_cinter = super::Interpreter::new();
+        let mut test_cinter = Interpreter::new();
 
         test_cinter.stack.push(1.0.to_string());
         test_cinter.stack.push(2.0.to_string());
@@ -123,7 +122,7 @@ mod comp_tests {
 
     #[test]
     fn test_mem() {
-        let mut test_cinter = super::Interpreter::new();
+        let mut test_cinter = Interpreter::new();
 
         test_cinter.stack.push(1.0.to_string());
         test_cinter.stack.push(2.0.to_string());
@@ -159,7 +158,7 @@ mod comp_tests {
 
     #[test]
     fn test_cmp() {
-        let mut test_cinter = super::Interpreter::new();
+        let mut test_cinter = Interpreter::new();
 
         test_cinter.stack.push(10.0.to_string());
         test_cinter.c_log10("");
@@ -183,7 +182,7 @@ mod comp_tests {
 
     #[test]
     fn test_rand() {
-        let mut test_cinter = super::Interpreter::new();
+        let mut test_cinter = Interpreter::new();
 
         test_cinter.stack.push(2.0.to_string());
         test_cinter.c_rand("");
@@ -212,7 +211,7 @@ mod comp_tests {
 
     #[test]
     fn test_minmax() {
-        let mut test_cinter = super::Interpreter::new();
+        let mut test_cinter = Interpreter::new();
 
         test_cinter.stack.push(1.0.to_string());
         test_cinter.stack.push(2.0.to_string());
@@ -245,7 +244,7 @@ mod comp_tests {
 
     #[test]
     fn test_conv() {
-        let mut test_cinter = super::Interpreter::new();
+        let mut test_cinter = Interpreter::new();
 
         test_cinter.stack.push(100.0.to_string());
         test_cinter.c_celfah("");
@@ -264,7 +263,7 @@ mod comp_tests {
 
     #[test]
     fn test_avg() {
-        let mut test_cinter = super::Interpreter::new();
+        let mut test_cinter = Interpreter::new();
 
         test_cinter.stack.push((-2.0).to_string());
         test_cinter.stack.push(2.0.to_string());
@@ -280,4 +279,5 @@ mod comp_tests {
 
         assert!(test_cinter.pop_stack_float() == 2.5);
     }
+
 }

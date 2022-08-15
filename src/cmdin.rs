@@ -1081,7 +1081,7 @@ impl Interpreter {
         /*
         println!(
             "  reading configuration file [{}]",
-           poc::color_blue_coffee_bold(filename),
+            poc::color_blue_coffee_bold(filename),
         );
         */
 

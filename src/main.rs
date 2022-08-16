@@ -258,14 +258,14 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
     // color theme
     let theme: poc::Theme = poc::Theme::new();
 
-    let mut clos_color_annotate = BoxedClosure::new(
-        |x| theme.color_blank(x)
-    );
-    let mut clos_color_stack_high = BoxedClosure::new(
+    let mut clos_color_stack_top = BoxedClosure::new(
         |x| theme.color_rgb(x, &theme.blue_coffee_bold)
     );
     let mut clos_color_stack = BoxedClosure::new(
         |x| theme.color_rgb(x, &theme.blue_smurf)
+    );
+    let mut clos_color_annotate = BoxedClosure::new(
+        |x| theme.color_blank(x)
     );
     if annotate {
         clos_color_annotate = BoxedClosure::new(
@@ -273,8 +273,8 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
         );
     }
     if monochrome {
-        clos_color_stack_high = BoxedClosure::new(
-            |x| theme.color_rgb(x, &theme.white)
+        clos_color_stack_top = BoxedClosure::new(
+            |x| theme.color_rgb(x, &theme.white_bold)
         );
         clos_color_stack = BoxedClosure::new(
             |x| theme.color_rgb(x, &theme.white)
@@ -289,7 +289,7 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
                     // top element
                     "{}  {}",
                     (clos_color_annotate.f)(level_map(level)),
-                    (clos_color_stack_high.f)(&stack.remove(0)),
+                    (clos_color_stack_top.f)(&stack.remove(0)),
                 )
             }
             _ => {

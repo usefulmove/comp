@@ -131,6 +131,21 @@ fn main() {
     std::process::exit(exit_code::SUCCESS);
 } // main
 
+struct BoxedClosure<'a> {
+    f: Box<dyn Fn(&str) -> ColoredString + 'a>,
+}
+
+impl<'a> BoxedClosure<'a> {
+    fn new<F>(f: F) -> Self
+    where
+        F: Fn(&str) -> ColoredString + 'a,
+    {
+        BoxedClosure {
+            f: Box::new(f),
+        }
+    }
+}
+
 fn show_help() {
     // color theme
     let theme: poc::Theme = poc::Theme::new();
@@ -243,28 +258,15 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
     // color theme
     let theme: poc::Theme = poc::Theme::new();
 
-    //let mut f_color_annotate: fn(&str) -> ColoredString = |x| { theme.color_blank(x) };
-    //let mut f_color_stack_high: fn(&str) -> ColoredString = |x| { theme.color_rgb(x, &theme.blue_coffee_bold) };
-    //let mut f_color_stack: fn(&str) -> ColoredString = |x| { theme.color_rgb(x, &theme.blue_smurf) };
-    //let mut f_color_annotate: Fn(&str) -> ColoredString = |x| { theme.color_blank(x) };
-    //let mut f_color_stack_high: Fn(&str) -> ColoredString = |x| { theme.color_rgb(x, &theme.blue_coffee_bold) };
-    //let mut f_color_stack: Fn(&str) -> ColoredString = |x| { theme.color_rgb(x, &theme.blue_smurf) };
-    let mut f_color_annotate;
-    let mut f_color_stack_high;
-    let mut f_color_stack;
+    let mut f_color_annotate = BoxedClosure::new(|x| theme.color_blank(x));
+    let mut f_color_stack_high = BoxedClosure::new(|x| theme.color_rgb(x, &theme.blue_coffee_bold));
+    let mut f_color_stack = BoxedClosure::new(|x| theme.color_rgb(x, &theme.blue_smurf));
     if annotate {
-        f_color_annotate = |x| { theme.color_rgb(x, &theme.charcoal_cream) };
-    }
-    else {
-        f_color_annotate = |x| { theme.color_blank(x) };
+        f_color_annotate = BoxedClosure::new(|x| theme.color_rgb(x, &theme.charcoal_cream));
     }
     if monochrome {
-        f_color_stack_high = |x| { theme.color_rgb(x, &theme.white) };
-        f_color_stack = |x| { theme.color_rgb(x, &theme.white) };
-    }
-    else {
-        f_color_stack_high = |x| { theme.color_rgb(x, &theme.blue_coffee_bold) };
-        f_color_stack = |x| { theme.color_rgb(x, &theme.blue_smurf) };
+        f_color_stack_high = BoxedClosure::new(|x| theme.color_rgb(x, &theme.white));
+        f_color_stack = BoxedClosure::new(|x| theme.color_rgb(x, &theme.white));
     }
 
     while !stack.is_empty() {
@@ -274,16 +276,16 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
                 println!(
                     // top element
                     "{}  {}",
-                    f_color_annotate(level_map(level)),
-                    f_color_stack_high(&stack.remove(0)),
+                    (f_color_annotate.f)(level_map(level)),
+                    (f_color_stack_high.f)(&stack.remove(0)),
                 )
             }
             _ => {
                 println!(
                     // all other elements
                     "{}  {}",
-                    f_color_annotate(level_map(level)),
-                    f_color_stack(&stack.remove(0)),
+                    (f_color_annotate.f)(level_map(level)),
+                    (f_color_stack.f)(&stack.remove(0)),
                 )
             }
         }

@@ -258,15 +258,27 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
     // color theme
     let theme: poc::Theme = poc::Theme::new();
 
-    let mut f_color_annotate = BoxedClosure::new(|x| theme.color_blank(x));
-    let mut f_color_stack_high = BoxedClosure::new(|x| theme.color_rgb(x, &theme.blue_coffee_bold));
-    let mut f_color_stack = BoxedClosure::new(|x| theme.color_rgb(x, &theme.blue_smurf));
+    let mut clos_color_annotate = BoxedClosure::new(
+        |x| theme.color_blank(x)
+    );
+    let mut clos_color_stack_high = BoxedClosure::new(
+        |x| theme.color_rgb(x, &theme.blue_coffee_bold)
+    );
+    let mut clos_color_stack = BoxedClosure::new(
+        |x| theme.color_rgb(x, &theme.blue_smurf)
+    );
     if annotate {
-        f_color_annotate = BoxedClosure::new(|x| theme.color_rgb(x, &theme.charcoal_cream));
+        clos_color_annotate = BoxedClosure::new(
+            |x| theme.color_rgb(x, &theme.charcoal_cream)
+        );
     }
     if monochrome {
-        f_color_stack_high = BoxedClosure::new(|x| theme.color_rgb(x, &theme.white));
-        f_color_stack = BoxedClosure::new(|x| theme.color_rgb(x, &theme.white));
+        clos_color_stack_high = BoxedClosure::new(
+            |x| theme.color_rgb(x, &theme.white)
+        );
+        clos_color_stack = BoxedClosure::new(
+            |x| theme.color_rgb(x, &theme.white)
+        );
     }
 
     while !stack.is_empty() {
@@ -276,16 +288,16 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
                 println!(
                     // top element
                     "{}  {}",
-                    (f_color_annotate.f)(level_map(level)),
-                    (f_color_stack_high.f)(&stack.remove(0)),
+                    (clos_color_annotate.f)(level_map(level)),
+                    (clos_color_stack_high.f)(&stack.remove(0)),
                 )
             }
             _ => {
                 println!(
                     // all other elements
                     "{}  {}",
-                    (f_color_annotate.f)(level_map(level)),
-                    (f_color_stack.f)(&stack.remove(0)),
+                    (clos_color_annotate.f)(level_map(level)),
+                    (clos_color_stack.f)(&stack.remove(0)),
                 )
             }
         }

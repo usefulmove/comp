@@ -1,62 +1,169 @@
+#![allow(unused)]
+
 use colored::*;
+use regex::Regex;
 
-pub fn color_rgb(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
-    message.truecolor(r, g, b)
+pub struct Color {
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
+    pub bold: bool,
 }
 
-pub fn color_rgb_bold(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
-    message.truecolor(r, g, b).bold()
+pub struct Theme {
+    pub blue_smurf: Color,
+    pub blue_coffee_bold: Color,
+    pub blue_smurf_bold: Color,
+    pub charcoal_cream: Color,
+    pub green_eggs_bold: Color,
+    pub grey_mouse: Color,
+    pub orange_sherbet: Color,
+    pub red: Color,
+    pub red_bold: Color,
+    pub yellow_canary_bold: Color,
+    pub white: Color,
+    pub white_bold: Color,
 }
 
-#[allow(dead_code)]
-pub fn color_rgb_bg(message: &str, r: u8, g: u8, b: u8) -> colored::ColoredString {
-    message.truecolor(r, g, b)
+impl Theme {
+    pub fn new() -> Self {
+        Self {
+            blue_smurf: Color {
+                r: 0,
+                g: 128,
+                b: 255,
+                bold: false,
+            },
+            blue_coffee_bold: Color {
+                r: 0,
+                g: 192,
+                b: 255,
+                bold: true,
+            },
+            blue_smurf_bold: Color {
+                r: 0,
+                g: 128,
+                b: 255,
+                bold: true,
+            },
+            charcoal_cream: Color {
+                r: 102,
+                g: 102,
+                b: 102,
+                bold: false,
+            },
+            green_eggs_bold: Color {
+                r: 135,
+                g: 255,
+                b: 175,
+                bold: true,
+            },
+            grey_mouse: Color {
+                r: 115,
+                g: 115,
+                b: 115,
+                bold: false,
+            },
+            orange_sherbet: Color {
+                r: 239,
+                g: 157,
+                b: 110,
+                bold: false,
+            },
+            red: Color {
+                r: 241,
+                g: 95,
+                b: 73,
+                bold: false,
+            },
+            red_bold: Color {
+                r: 241,
+                g: 95,
+                b: 73,
+                bold: true,
+            },
+            yellow_canary_bold: Color {
+                r: 255,
+                g: 252,
+                b: 103,
+                bold: true,
+            },
+            white: Color {
+                r: 249,
+                g: 247,
+                b: 236,
+                bold: false,
+            },
+            white_bold: Color {
+                r: 249,
+                g: 247,
+                b: 236,
+                bold: true,
+            },
+        }
+    }
+
+    pub fn color_rgb(&self, message: &str, color: &Color) -> ColoredString {
+        if !color.bold {
+            message.truecolor(color.r, color.g, color.b)
+        }
+        else {
+            message.truecolor(color.r, color.g, color.b).bold()
+        }
+    }
+
+    pub fn color_blank(&self, _message: &str) -> ColoredString {
+        "".truecolor(0, 0, 0)
+    }
+    
 }
 
-pub fn color_red_bold(message: &str) -> ColoredString {
-    message.truecolor(241, 95, 78).bold()
+pub fn highlight(output_string: &str, highlight_term: &str, color: &Color) -> String {
+    /* find the highlight term in the output string and format the output 
+        * string to emphasize the highlight term in the output string
+        */
+
+    let tmp: String = output_string.clone().to_string();
+    let elements: Vec<&str> = tmp.split(&highlight_term).collect::<Vec<&str>>();
+
+    //print!("{:#?}", elements); // debug
+
+    // construct highlighted output
+    let mut o: String = String::new();
+    let theme = Theme::new();
+    for i in 0..elements.len() {
+        if i < (elements.len() - 1) {
+            o.push_str(
+                &format!(
+                    "{}{}",
+                    theme.color_rgb(elements[i], &theme.grey_mouse),
+                    theme.color_rgb(highlight_term, color),
+                )
+            );
+        }
+        else {
+            o.push_str(
+                &format!(
+                    "{}",
+                    theme.color_rgb(elements[i], &theme.grey_mouse),
+                )
+            );
+        }
+    }
+
+    o
 }
 
-pub fn _color_orange_sherbet_bold(message: &str) -> ColoredString {
-    message.truecolor(239, 157, 110).bold()
-}
+pub fn highlight_filename(output_string: &str, color: &Color) -> String {
+    /* highlight everything following the last "/"
+        */
 
-pub fn color_yellow_canary_bold(message: &str) -> ColoredString {
-    message.truecolor(255, 252, 103).bold()
-}
+    let re: Regex = Regex::new(r"/([^/]+)$").unwrap();
 
-pub fn color_green_eggs_bold(message: &str) -> ColoredString {
-    message.truecolor(135, 255, 175).bold()
-}
+    let filename: String = match re.captures(output_string) {
+        Some(n) => n[1].to_string(),
+        None => "".to_string(),
+    };
 
-pub fn color_blue_smurf(message: &str) -> ColoredString {
-    message.truecolor(0, 128, 255)
-}
-
-pub fn color_blue_smurf_bold(message: &str) -> ColoredString {
-    message.truecolor(0, 128, 255).bold()
-}
-
-pub fn color_blue_coffee_bold(message: &str) -> ColoredString {
-    message.truecolor(0, 192, 255).bold()
-}
-
-pub fn color_white_bold(message: &str) -> ColoredString {
-    message.truecolor(249, 247, 236).bold()
-}
-
-pub fn color_white(message: &str) -> ColoredString {
-    message.truecolor(249, 247, 236)
-}
-
-pub fn color_grey_mouse(message: &str) -> ColoredString {
-    message.truecolor(155, 155, 155)
-}
-
-pub fn color_charcoal_cream(message: &str) -> ColoredString {
-    message.truecolor(102, 102, 102)
-}
-
-pub fn color_blank(_message: &str) -> ColoredString {
-    "".truecolor(0, 0, 0)
+    highlight(output_string, &filename, color)
 }

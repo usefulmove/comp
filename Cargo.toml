@@ -10,5 +10,6 @@ colored = "2"
 exit-code = "1.0.0"
 home = "0.5.3"
 rand = "0.8.5"
+regex = "1.6.0"
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.5.9"

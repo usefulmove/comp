@@ -15,6 +15,7 @@ pub struct Interpreter {
     pub fns: Vec<Function>,
     pub cmap: HashMap<String, fn(&mut Interpreter, &str)>,
     pub config: Config,
+    pub theme: poc::Theme,
 }
 
 impl Interpreter {
@@ -29,6 +30,7 @@ impl Interpreter {
             fns: Vec::new(),
             cmap: HashMap::new(),
             config: Config::new(),
+            theme: poc::Theme::new(),
         };
         cint.init();
 
@@ -180,8 +182,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (f)",
-                    poc::color_red_bold("error"),
-                   poc::color_blue_coffee_bold(&element),
+                    self.theme.color_rgb("error", &self.theme.red_bold),
+                    self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
                 std::process::exit(exit_code::USAGE_ERROR);
             }
@@ -197,8 +199,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                   poc::color_red_bold("error"),
-                   poc::color_blue_coffee_bold(&element),
+                   self.theme.color_rgb("error", &self.theme.red_bold),
+                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
                 std::process::exit(exit_code::USAGE_ERROR);
             }
@@ -214,8 +216,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                   poc::color_red_bold("error"),
-                   poc::color_blue_coffee_bold(&element),
+                   self.theme.color_rgb("error", &self.theme.red_bold),
+                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
                 std::process::exit(exit_code::USAGE_ERROR);
             }
@@ -232,8 +234,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
-                   poc::color_red_bold("error"),
-                   poc::color_blue_coffee_bold(&element),
+                   self.theme.color_rgb("error", &self.theme.red_bold),
+                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
                 std::process::exit(exit_code::USAGE_ERROR);
             }
@@ -250,8 +252,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
-                   poc::color_red_bold("error"),
-                   poc::color_blue_coffee_bold(&element),
+                   self.theme.color_rgb("error", &self.theme.red_bold),
+                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
                 std::process::exit(exit_code::USAGE_ERROR);
             }
@@ -268,8 +270,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_b)",
-                   poc::color_red_bold("error"),
-                   poc::color_blue_coffee_bold(&element),
+                   self.theme.color_rgb("error", &self.theme.red_bold),
+                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
                 std::process::exit(exit_code::USAGE_ERROR);
             }
@@ -298,8 +300,8 @@ impl Interpreter {
             eprintln!(
                 "  {}: [{}] operation called without at least {min_depth} \
                 element(s) on stack",
-               poc::color_red_bold("error"),
-               poc::color_blue_coffee_bold(command),
+               self.theme.color_rgb("error", &self.theme.red_bold),
+               self.theme.color_rgb(command, &self.theme.blue_coffee_bold),
             );
             std::process::exit(exit_code::USAGE_ERROR);
         }
@@ -314,8 +316,8 @@ impl Interpreter {
         } else {
             eprintln!(
                 "  {}: [{}] operation called on empty stack",
-               poc::color_yellow_canary_bold("warning"),
-               poc::color_blue_coffee_bold(op),
+               self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
+               self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
             );
             // do not stop execution
         }
@@ -853,8 +855,8 @@ impl Interpreter {
         if she.len() < 5 {
             eprintln!(
                 "  {}: argument too short [{}] is not of sufficient length",
-               poc::color_red_bold("error"),
-               poc::color_blue_coffee_bold(&she),
+               self.theme.color_rgb("error", &self.theme.red_bold),
+               self.theme.color_rgb(&she, &self.theme.blue_coffee_bold),
             );
             std::process::exit(exit_code::USAGE_ERROR);
         }
@@ -913,8 +915,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_uint8();
         let r: u8 = self.pop_stack_uint8();
 
-        self.stack.push(self.format_rgb_shadow(r, g, b));
-        self.stack.push(self.format_rgb_hex(r, g, b));
+        self.stack.push(self.output_rgb_dec(poc::Color{r: r, g: g, b: b, bold: false}));
+        self.stack.push(self.output_rgb_hex(poc::Color{r: r, g: g, b: b, bold: true}));
     }
 
     pub fn c_rgbh(&mut self, op: &str) {
@@ -924,8 +926,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_u8_from_hex();
         let r: u8 = self.pop_stack_u8_from_hex();
 
-        self.stack.push(self.format_rgb_shadow(r, g, b));
-        self.stack.push(self.format_rgb_hex(r, g, b));
+        self.stack.push(self.output_rgb_dec(poc::Color{r: r, g: g, b: b, bold: false}));
+        self.stack.push(self.output_rgb_hex(poc::Color{r: r, g: g, b: b, bold: true}));
     }
 
     // -- control flow ---------------------------------------------------------
@@ -1081,7 +1083,7 @@ impl Interpreter {
         /*
         println!(
             "  reading configuration file [{}]",
-            poc::color_blue_coffee_bold(filename),
+            self.theme.color_rgb(filename, &self.theme.blue_coffee_bold),
         );
         */
 
@@ -1113,8 +1115,8 @@ impl Interpreter {
                     // parse fail
                     eprintln!(
                         "  {}: configuration file [{}] (ignored) is corrupt or is incorrectly constructed",
-                       poc::color_yellow_canary_bold("warning"),
-                       poc::color_blue_smurf_bold("conf.toml"),
+                       self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
+                       self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
                     );
                     Config::new()
                 }
@@ -1124,53 +1126,35 @@ impl Interpreter {
         }
     }
 
-    #[allow(dead_code)]
-    fn format_rgb(&self, r: u8, g: u8, b: u8) -> String {
+    fn output_rgb_dec(&self, color: poc::Color) -> String {
         format!(
             "{} {} {}",
-            poc::color_rgb(
-                &r.to_string(),
-                r, g, b
+            self.theme.color_rgb(
+                &color.r.clone().to_string(),
+                &color,
             ),
-            poc::color_rgb(
-                &g.to_string(),
-                r, g, b
+            self.theme.color_rgb(
+                &color.g.clone().to_string(),
+                &poc::Color {
+                    r: color.r.clone(),
+                    g: color.g.clone(),
+                    b: color.b.clone(),
+                    bold: color.bold.clone(),
+                },
             ),
-            poc::color_rgb(
-                &b.to_string(),
-                r, g, b
+            self.theme.color_rgb(
+                &color.b.clone().to_string(),
+                &color,
             ),
         )
     }
 
-    fn format_rgb_shadow(&self, r: u8, g: u8, b: u8) -> String {
-        let r_s: u8 = ( (r as f64) * 0.7 ) as u8;
-        let g_s: u8 = ( (g as f64) * 0.7 ) as u8;
-        let b_s: u8 = ( (b as f64) * 0.7 ) as u8;
-
-        format!(
-            "{} {} {}",
-            poc::color_rgb(
-                &r.to_string(),
-                r_s, g_s, b_s,
-            ),
-            poc::color_rgb(
-                &g.to_string(),
-                r_s, g_s, b_s,
-            ),
-            poc::color_rgb(
-                &b.to_string(),
-                r_s, g_s, b_s,
-            ),
-        )
-    }
-
-    fn format_rgb_hex(&self, r: u8, g: u8, b: u8) -> String {
+    fn output_rgb_hex(&self, color: poc::Color) -> String {
         format!(
             "{}",
-            poc::color_rgb_bold(
-                &format!("{:02x}{:02x}{:02x}", r, g, b),
-                r, g, b,
+            self.theme.color_rgb(
+                &format!("{:02x}{:02x}{:02x}", color.r, color.g, color.b),
+                &color,
             ),
         )
     }

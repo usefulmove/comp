@@ -2,11 +2,13 @@ use std::env;
 use std::fs;
 use std::path::Path;
 
+use colored::ColoredString;
+
 mod cmdin;
 mod poc;
 mod mona;
 
-const RELEASE_STATE: &str = "l";
+const RELEASE_STATE: &str = "m";
 
 /*
 
@@ -44,6 +46,9 @@ fn main() {
     // enable or disable backtrace on error
     env::set_var("RUST_BACKTRACE", "0");
 
+    // color theme
+    let theme: poc::Theme = poc::Theme::new();
+
     // construct command interpreter
     let mut cinter = cmdin::Interpreter::new();
 
@@ -73,7 +78,10 @@ fn main() {
         "-f" | "--file" => {
             // read operations list input from file
             if args.get(2).is_none() {
-                eprintln!("  {}: no file path provided", poc::color_red_bold("error"),);
+                eprintln!(
+                    "  {}: no file path provided",
+                    theme.color_rgb("error", &theme.red_bold),
+                );
                 std::process::exit(exit_code::NO_INPUT);
             }
 
@@ -85,8 +93,8 @@ fn main() {
             if let Err(ref error) = file_contents {
                 eprintln!(
                     "  {}: could not read [{}]: {error}",
-                    poc::color_red_bold("error"),
-                    poc::color_blue_coffee_bold(&path.display().to_string()),
+                    theme.color_rgb("error", &theme.red_bold),
+                    theme.color_rgb(&path.display().to_string(), &theme.blue_coffee_bold),
                 );
                 std::process::exit(exit_code::OS_FILE_ERROR);
             }
@@ -124,117 +132,139 @@ fn main() {
 } // main
 
 fn show_help() {
+    // color theme
+    let theme: poc::Theme = poc::Theme::new();
+
     println!();
-    println!("{}", poc::color_white_bold("COMP"));
+    println!("{}", theme.color_rgb("COMP", &theme.white_bold));
     println!(
         "    {} {} {} {}",
-        poc::color_grey_mouse("comp"),
-        poc::color_grey_mouse(".."),
-        poc::color_white_bold("command interpreter"),
-        poc::color_grey_mouse(env!("CARGO_PKG_VERSION")),
+        theme.color_rgb("comp", &theme.grey_mouse),
+        theme.color_rgb("..", &theme.grey_mouse),
+        theme.color_rgb("command interpreter", &theme.white_bold),
+        theme.color_rgb(env!("CARGO_PKG_VERSION"), &theme.grey_mouse),
     );
     println!();
-    println!("{}", poc::color_white_bold("USAGE"));
+    println!("{}", theme.color_rgb("USAGE", &theme.white_bold));
     println!(
         "    {} {} {}",
-        poc::color_grey_mouse("comp"),
-        poc::color_white_bold("[OPTIONS]"),
-        poc::color_blue_coffee_bold("<list>"),
+        theme.color_rgb("comp", &theme.grey_mouse),
+        theme.color_rgb("[OPTIONS]", &theme.white_bold),
+        theme.color_rgb("<list>", &theme.blue_coffee_bold),
     );
     println!(
         "    {} {} {}",
-        poc::color_grey_mouse("comp"),
-        poc::color_yellow_canary_bold("-f"),
-        poc::color_blue_coffee_bold("<path>"),
+        theme.color_rgb("comp", &theme.grey_mouse),
+        theme.color_rgb("-f", &theme.yellow_canary_bold),
+        theme.color_rgb("<path>", &theme.blue_coffee_bold),
     );
     println!();
-    println!("{}", poc::color_white_bold("OPTIONS"));
+    println!("{}", theme.color_rgb("OPTIONS", &theme.white_bold));
     println!(
         "        {}      show version",
-        poc::color_yellow_canary_bold("--version"),
+        theme.color_rgb("--version", &theme.yellow_canary_bold),
     );
     println!(
         "    {}{} {}         read from file at the specified path",
-        poc::color_yellow_canary_bold("-f"),
-        poc::color_white_bold(","),
-        poc::color_yellow_canary_bold("--file"),
+        theme.color_rgb("-f", &theme.yellow_canary_bold),
+        theme.color_rgb(",", &theme.white_bold),
+        theme.color_rgb("--file", &theme.yellow_canary_bold),
     );
     println!(
         "        {}         show help information",
-        poc::color_yellow_canary_bold("--help"),
+        theme.color_rgb("--help", &theme.yellow_canary_bold),
     );
     println!();
-    println!("{}", poc::color_white_bold("DESCRIPTION"));
+    println!("{}", theme.color_rgb("DESCRIPTION", &theme.white_bold));
     println!(
         "The comp interpreter takes a {} sequence of (postfix) operations as \
     command line arguments or a {} argument that specifies the path to a file \
     containing a list of operations. Each operation is either a command ({}) \
     or a {}. The available commands are listed below.",
-        poc::color_blue_coffee_bold("<list>"),
-        poc::color_blue_coffee_bold("<path>"),
-        poc::color_green_eggs_bold("symbol"),
-        poc::color_blue_smurf_bold("value"),
+        theme.color_rgb("<list>", &theme.blue_coffee_bold),
+        theme.color_rgb("<path>", &theme.blue_coffee_bold),
+        theme.color_rgb("symbol", &theme.green_eggs_bold),
+        theme.color_rgb("value", &theme.blue_smurf_bold),
     );
     println!();
     println!(
         "    Usage Guide:   {}",
-        poc::color_grey_mouse("https://github.com/usefulmove/comp/blob/main/USAGE.md"),
+        theme.color_rgb("https://github.com/usefulmove/comp/blob/main/USAGE.md", &theme.grey_mouse),
     );
     println!(
         "    Repository:    {}",
-        poc::color_grey_mouse("https://github.com/usefulmove/comp#readme"),
+        theme.color_rgb("https://github.com/usefulmove/comp#readme", &theme.grey_mouse),
     );
     println!();
-    println!("{}", poc::color_white_bold("EXAMPLES"));
+    println!("{}", theme.color_rgb("EXAMPLES", &theme.white_bold));
     println!(
         "    {} {} {}                  {}",
-        poc::color_grey_mouse("comp"),
-        poc::color_blue_smurf_bold("1 2"),
-        poc::color_green_eggs_bold("+"),
-        poc::color_white_bold("add 1 and 2"),
+        theme.color_rgb("comp", &theme.grey_mouse),
+        theme.color_rgb("1 2", &theme.blue_smurf_bold),
+        theme.color_rgb("+", &theme.green_eggs_bold),
+        theme.color_rgb("add 1 and 2", &theme.white_bold),
     );
     println!(
         "    {} {} {}                  {}",
-        poc::color_grey_mouse("comp"),
-        poc::color_blue_smurf_bold("5 2"),
-        poc::color_green_eggs_bold("/"),
-        poc::color_white_bold("divide 5 by 2"),
+        theme.color_rgb("comp", &theme.grey_mouse),
+        theme.color_rgb("5 2", &theme.blue_smurf_bold),
+        theme.color_rgb("/", &theme.green_eggs_bold),
+        theme.color_rgb("divide 5 by 2", &theme.white_bold),
     );
     println!(
         "    {} {} {} {} {}      {}",
-        poc::color_grey_mouse("comp"),
-        poc::color_blue_smurf_bold("3"),
-        poc::color_green_eggs_bold("dup x"),
-        poc::color_blue_smurf_bold("4"),
-        poc::color_green_eggs_bold("dup x +"),
-        poc::color_white_bold("sum of the squares of 3 and 4"),
+        theme.color_rgb("comp", &theme.grey_mouse),
+        theme.color_rgb("3", &theme.blue_smurf_bold),
+        theme.color_rgb("dup x", &theme.green_eggs_bold),
+        theme.color_rgb("4", &theme.blue_smurf_bold),
+        theme.color_rgb("dup x +", &theme.green_eggs_bold),
+        theme.color_rgb("sum of the squares of 3 and 4", &theme.white_bold),
     );
     println!();
-    println!("{}", poc::color_white_bold("COMMANDS"));
-    println!("{}", poc::color_grey_mouse(CMDS));
+    println!("{}", theme.color_rgb("COMMANDS", &theme.white_bold));
+    println!("{}", theme.color_rgb(CMDS, &theme.grey_mouse));
     println!();
 }
 
 fn show_version() {
+    // color theme
+    let theme: poc::Theme = poc::Theme::new();
+
     let version: &str = env!("CARGO_PKG_VERSION");
     println!(
         "  {} {}{}",
-        poc::color_grey_mouse("comp"),
-        poc::color_blue_smurf_bold(version),
-        poc::color_white_bold(RELEASE_STATE),
+        theme.color_rgb("comp", &theme.grey_mouse),
+        theme.color_rgb(version, &theme.blue_smurf_bold),
+        theme.color_rgb(RELEASE_STATE, &theme.white_bold),
     );
 }
 
 fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
-    let mut f_color_annotate: fn(&str) -> colored::ColoredString = poc::color_blank;
-    let mut f_color_stack_high: fn(&str) -> colored::ColoredString = poc::color_blue_coffee_bold;
-    let mut f_color_stack: fn(&str) -> colored::ColoredString = poc::color_blue_smurf;
+    // color theme
+    let theme: poc::Theme = poc::Theme::new();
+
+    //let mut f_color_annotate: fn(&str) -> ColoredString = |x| { theme.color_blank(x) };
+    //let mut f_color_stack_high: fn(&str) -> ColoredString = |x| { theme.color_rgb(x, &theme.blue_coffee_bold) };
+    //let mut f_color_stack: fn(&str) -> ColoredString = |x| { theme.color_rgb(x, &theme.blue_smurf) };
+    //let mut f_color_annotate: Fn(&str) -> ColoredString = |x| { theme.color_blank(x) };
+    //let mut f_color_stack_high: Fn(&str) -> ColoredString = |x| { theme.color_rgb(x, &theme.blue_coffee_bold) };
+    //let mut f_color_stack: Fn(&str) -> ColoredString = |x| { theme.color_rgb(x, &theme.blue_smurf) };
+    let mut f_color_annotate;
+    let mut f_color_stack_high;
+    let mut f_color_stack;
     if annotate {
-        f_color_annotate = poc::color_charcoal_cream;
+        f_color_annotate = |x| { theme.color_rgb(x, &theme.charcoal_cream) };
+    }
+    else {
+        f_color_annotate = |x| { theme.color_blank(x) };
     }
     if monochrome {
-        f_color_stack_high = poc::color_white;
-        f_color_stack = poc::color_white;
+        f_color_stack_high = |x| { theme.color_rgb(x, &theme.white) };
+        f_color_stack = |x| { theme.color_rgb(x, &theme.white) };
+    }
+    else {
+        f_color_stack_high = |x| { theme.color_rgb(x, &theme.blue_coffee_bold) };
+        f_color_stack = |x| { theme.color_rgb(x, &theme.blue_smurf) };
     }
 
     while !stack.is_empty() {

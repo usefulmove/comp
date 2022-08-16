@@ -118,12 +118,12 @@ impl Theme {
     
 }
 
-pub fn highlight(output_string: &str, highlight_term: &str, color: &Color) -> String {
+pub fn highlight(output_str: &str, highlight_term: &str, color: &Color) -> String {
     /* find the highlight term in the output string and format the output 
         * string to emphasize the highlight term in the output string
         */
 
-    let tmp: String = output_string.clone().to_string();
+    let tmp: String = output_str.to_string();
     let elements: Vec<&str> = tmp.split(&highlight_term).collect::<Vec<&str>>();
 
     //print!("{:#?}", elements); // debug
@@ -154,16 +154,16 @@ pub fn highlight(output_string: &str, highlight_term: &str, color: &Color) -> St
     o
 }
 
-pub fn highlight_filename(output_string: &str, color: &Color) -> String {
+pub fn highlight_filename(output_str: &str, color: &Color) -> String {
     /* highlight everything following the last "/"
         */
 
     let re: Regex = Regex::new(r"/([^/]+)$").unwrap();
 
-    let filename: String = match re.captures(output_string) {
+    let filename: String = match re.captures(output_str) {
         Some(n) => n[1].to_string(),
         None => "".to_string(),
     };
 
-    highlight(output_string, &filename, color)
+    highlight(output_str, &filename, color)
 }

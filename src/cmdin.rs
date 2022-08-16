@@ -915,8 +915,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_uint8();
         let r: u8 = self.pop_stack_uint8();
 
-        self.stack.push(self.output_rgb_dec(poc::Color{r: r, g: g, b: b, bold: false}));
-        self.stack.push(self.output_rgb_hex(poc::Color{r: r, g: g, b: b, bold: true}));
+        self.stack.push(self.output_rgb_dec(poc::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_hex(poc::Color{r, g, b, bold: true}));
     }
 
     pub fn c_rgbh(&mut self, op: &str) {
@@ -926,8 +926,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_u8_from_hex();
         let r: u8 = self.pop_stack_u8_from_hex();
 
-        self.stack.push(self.output_rgb_dec(poc::Color{r: r, g: g, b: b, bold: false}));
-        self.stack.push(self.output_rgb_hex(poc::Color{r: r, g: g, b: b, bold: true}));
+        self.stack.push(self.output_rgb_dec(poc::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_hex(poc::Color{r, g, b, bold: true}));
     }
 
     // -- control flow ---------------------------------------------------------
@@ -1130,20 +1130,20 @@ impl Interpreter {
         format!(
             "{} {} {}",
             self.theme.color_rgb(
-                &color.r.clone().to_string(),
+                &color.r.to_string(),
                 &color,
             ),
             self.theme.color_rgb(
-                &color.g.clone().to_string(),
+                &color.g.to_string(),
                 &poc::Color {
-                    r: color.r.clone(),
-                    g: color.g.clone(),
-                    b: color.b.clone(),
-                    bold: color.bold.clone(),
+                    r: color.r,
+                    g: color.g,
+                    b: color.b,
+                    bold: color.bold,
                 },
             ),
             self.theme.color_rgb(
-                &color.b.clone().to_string(),
+                &color.b.to_string(),
                 &color,
             ),
         )

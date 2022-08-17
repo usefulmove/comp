@@ -61,21 +61,7 @@ fn main() {
     }
 
     match args[1].as_str() {
-        "--help" | "help" => {
-            // display command usage information
-            show_help();
-            return;
-        }
-        "--version" | "version" => {
-            // display version information
-            show_version();
-            return;
-        }
-        "mona" => {
-            println!("{}", mona::MONA);
-            return;
-        }
-        "-f" | "--file" => {
+        "--file" | "-f" => {
             // read operations list input from file
             if args.get(2).is_none() {
                 eprintln!(
@@ -109,6 +95,20 @@ fn main() {
             if args.get(3).is_some() {
                 cinter.ops.extend((&args[3..]).to_vec());
             }
+        }
+        "--help" | "help" => {
+            // display command usage information
+            show_help();
+            return;
+        }
+        "mona" => {
+            println!("{}", mona::MONA);
+            return;
+        }
+        "--version" | "version" => {
+            // display version information
+            show_version();
+            return;
         }
         _ => {
             // read operations list input from command line arguments

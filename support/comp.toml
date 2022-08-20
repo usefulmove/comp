@@ -1,3 +1,4 @@
 show_stack_level = true
-conversion_constant = 1.0
+conversion_constant = 1.61803 # golden ratio
 monochrome = false
+tip_percentage = 0.15

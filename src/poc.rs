@@ -14,6 +14,8 @@ pub struct Theme {
     pub blue_smurf: Color,
     pub blue_coffee_bold: Color,
     pub blue_smurf_bold: Color,
+    pub cream: Color,
+    pub cream_bold: Color,
     pub charcoal_cream: Color,
     pub green_eggs_bold: Color,
     pub grey_mouse: Color,
@@ -44,6 +46,18 @@ impl Theme {
                 r: 0,
                 g: 128,
                 b: 255,
+                bold: true,
+            },
+            cream: Color {
+                r: 250,
+                g: 246,
+                b: 228,
+                bold: false,
+            },
+            cream_bold: Color {
+                r: 250,
+                g: 246,
+                b: 228,
                 bold: true,
             },
             charcoal_cream: Color {

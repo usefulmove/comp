@@ -338,10 +338,10 @@ User-defined functions can be defined by indicating the start of a function with
 
 Note that functions are most useful when combined with the `-f` file option. The cube function can be defined and executed in a source file and passed to the comp command using the file option.
 ```
-( cube.cm )
-( note - comments are identified inside parentheses.
-  there must be whitespace surrounding each parenthesis.
-  multiline comments are supported. )
+{ cube.cm }
+{ note - comments are identified inside curly brackets.
+  there must be whitespace surrounding each bracket.
+  multiline comments are supported. }
 
 fn cube
   3 ^
@@ -356,7 +356,7 @@ end
 
 Functions also can be defined in a file and used in operations passed after the file has been processed.
 ```
-( temperature.cm )
+{ temperature.cm }
 
 fn CtoF
   9 x 5 /

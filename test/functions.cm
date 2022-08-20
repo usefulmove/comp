@@ -1,12 +1,12 @@
-< functions manual tests >
+{ functions manual tests }
 
-<   comments test   > < >
-< note -- comments are identified inside curly brackets. 
-  there must be whitespace before and after each bracket. >
+{   comments test   } { }
+{ note -- comments are identified inside curly brackets. 
+  there must be whitespace before and after each bracket. }
 
-  < multiline 
+  { multiline 
     comments
-    are fine. >
+    are fine. }
 
 
 ( sub1
@@ -29,7 +29,7 @@
 sub1 div2 ten5th_round
 
 
-< nested user-defined functions < also nested comments > >
+{ nested user-defined functions { also nested comments } }
 
 ( cube
   dup square x
@@ -44,10 +44,10 @@ sub1 div2 ten5th_round
 100 x
 
 
-< >
+{ }
 
-<
+{
 
 basie
 
->
+}

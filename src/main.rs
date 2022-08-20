@@ -59,11 +59,12 @@ fn main() {
         "--commands" => {
             // display available commands
             let mut cmds: Vec<&str> = interc.get_cmds();
-            cmds.sort();
+            cmds.sort_unstable();
 
             for cmd in cmds {
-                print!("{} ", theme.color_rgb(&cmd, &theme.blue_smurf_bold));
+                print!("{} ", theme.color_rgb(cmd, &theme.blue_smurf_bold));
             }
+            println!();
             return;
         }
         "--file" | "-f" => {
@@ -156,20 +157,20 @@ fn show_help() {
     let theme: poc::Theme = poc::Theme::new();
 
     println!();
-    println!("{}", theme.color_rgb("COMP", &theme.white_bold));
+    println!("{}", theme.color_rgb("COMP", &theme.cream_bold));
     println!(
         "    {} {} {} {}",
         theme.color_rgb("comp", &theme.grey_mouse),
         theme.color_rgb("..", &theme.grey_mouse),
-        theme.color_rgb("command interpreter", &theme.white_bold),
+        theme.color_rgb("command interpreter", &theme.cream_bold),
         theme.color_rgb(env!("CARGO_PKG_VERSION"), &theme.grey_mouse),
     );
     println!();
-    println!("{}", theme.color_rgb("USAGE", &theme.white_bold));
+    println!("{}", theme.color_rgb("USAGE", &theme.cream_bold));
     println!(
         "    {} {} {}",
         theme.color_rgb("comp", &theme.grey_mouse),
-        theme.color_rgb("[OPTIONS]", &theme.white_bold),
+        theme.color_rgb("[OPTIONS]", &theme.cream_bold),
         theme.color_rgb("<list>", &theme.blue_coffee_bold),
     );
     println!(
@@ -179,7 +180,7 @@ fn show_help() {
         theme.color_rgb("<path>", &theme.blue_coffee_bold),
     );
     println!();
-    println!("{}", theme.color_rgb("OPTIONS", &theme.white_bold));
+    println!("{}", theme.color_rgb("OPTIONS", &theme.cream_bold));
     println!(
         "        {}      show version",
         theme.color_rgb("--version", &theme.yellow_canary_bold),
@@ -187,15 +188,19 @@ fn show_help() {
     println!(
         "    {}{} {}         read from file at the specified path",
         theme.color_rgb("-f", &theme.yellow_canary_bold),
-        theme.color_rgb(",", &theme.white_bold),
+        theme.color_rgb(",", &theme.grey_mouse),
         theme.color_rgb("--file", &theme.yellow_canary_bold),
+    );
+    println!(
+        "        {}     display available commands",
+        theme.color_rgb("--commands", &theme.yellow_canary_bold),
     );
     println!(
         "        {}         show help information",
         theme.color_rgb("--help", &theme.yellow_canary_bold),
     );
     println!();
-    println!("{}", theme.color_rgb("DESCRIPTION", &theme.white_bold));
+    println!("{}", theme.color_rgb("DESCRIPTION", &theme.cream_bold));
     println!(
         "The comp interpreter takes a {} sequence of (postfix) operations as \
     command line arguments or a {} argument that specifies the path to a file \
@@ -216,20 +221,20 @@ fn show_help() {
         theme.color_rgb("https://github.com/usefulmove/comp#readme", &theme.grey_mouse),
     );
     println!();
-    println!("{}", theme.color_rgb("EXAMPLES", &theme.white_bold));
+    println!("{}", theme.color_rgb("EXAMPLES", &theme.cream_bold));
     println!(
         "    {} {} {}                  {}",
         theme.color_rgb("comp", &theme.grey_mouse),
         theme.color_rgb("1 2", &theme.blue_smurf_bold),
         theme.color_rgb("+", &theme.green_eggs_bold),
-        theme.color_rgb("add 1 and 2", &theme.white_bold),
+        theme.color_rgb("add 1 and 2", &theme.cream_bold),
     );
     println!(
         "    {} {} {}                  {}",
         theme.color_rgb("comp", &theme.grey_mouse),
         theme.color_rgb("5 2", &theme.blue_smurf_bold),
         theme.color_rgb("/", &theme.green_eggs_bold),
-        theme.color_rgb("divide 5 by 2", &theme.white_bold),
+        theme.color_rgb("divide 5 by 2", &theme.cream_bold),
     );
     println!(
         "    {} {} {} {} {}      {}",
@@ -238,7 +243,7 @@ fn show_help() {
         theme.color_rgb("dup x", &theme.green_eggs_bold),
         theme.color_rgb("4", &theme.blue_smurf_bold),
         theme.color_rgb("dup x +", &theme.green_eggs_bold),
-        theme.color_rgb("sum of the squares of 3 and 4", &theme.white_bold),
+        theme.color_rgb("sum of the squares of 3 and 4", &theme.cream_bold),
     );
     println!();
 }
@@ -252,7 +257,7 @@ fn show_version() {
         "  {} {}{}",
         theme.color_rgb("comp", &theme.grey_mouse),
         theme.color_rgb(version, &theme.blue_smurf_bold),
-        theme.color_rgb(RELEASE_STATE, &theme.white_bold),
+        theme.color_rgb(RELEASE_STATE, &theme.cream_bold),
     );
 }
 

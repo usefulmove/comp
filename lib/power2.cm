@@ -1,6 +1,6 @@
 ( power2 
     sa
-    < 2 ^ a >
+    { 2 ^ a }
     _a 0 ifeq
         1
     else

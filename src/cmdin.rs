@@ -115,7 +115,7 @@ impl Interpreter {
         /* control flow */
         self.compose_native("(", Self::c_function); // function definition
         self.compose_native("ifeq", Self::c_ifeq); // ifequal .. else
-        self.compose_native("<", Self::c_comment); // function comment
+        self.compose_native("{", Self::c_comment); // function comment
         self.compose_native("pln", Self::c_println); // print line
         /* conversion */
         self.compose_native("dec_hex", Self::c_dechex); // decimal to hexadecimal
@@ -135,7 +135,8 @@ impl Interpreter {
         self.compose_native("hex_rgb", Self::c_hexrgb); // hexadecimal string to RGB
         self.compose_native("rgb_hex", Self::c_rgbhex); // RGB to hexadecimal string
         self.compose_native("tip", Self::c_tip); // calculate tip
-        self.compose_native("tip+", Self::c_tip_plus); // calculate better tip
+        self.compose_native("tip15", Self::c_tip); // calculate tip
+        self.compose_native("tip20", Self::c_tip_plus); // calculate better tip
         self.compose_native("a_b", Self::c_conv_const); // apply convert constant
         /* rgb colors */
         self.compose_native("rgb", Self::c_rgb); // show RGB color
@@ -1023,10 +1024,10 @@ impl Interpreter {
         while !self.ops.is_empty() {
             let op = self.ops.remove(0);
             match op.as_str() {
-                "<" => {
+                "{" => {
                     nested += 1;
                 }
-                ">" => {
+                "}" => {
                     if nested == 0 {
                         return;
                     } else {
@@ -1162,7 +1163,7 @@ impl Interpreter {
     pub fn get_cmds(&self) -> Vec<&str> {
         let mut cmds: Vec<&str> = Vec::new();
         for key in self.cmdmap.keys() {
-            cmds.push(&key);
+            cmds.push(key);
         }
         cmds
     }

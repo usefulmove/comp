@@ -1,11 +1,11 @@
-< toss two dice. take highest one. - what's the average over n tosses? >
+{ toss two dice. take highest one. - what's the average over n tosses? }
 
 ( toss_die
     6 rand ++
 )
 
 ( double_high
-    < expects nothing on the stack >
+    { expects nothing on the stack }
     toss_die
     toss_die
     max

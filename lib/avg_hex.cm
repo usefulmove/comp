@@ -1,9 +1,9 @@
 ( avg_hex
-    < save values from stack >
+    { save values from stack }
     hex_dec sb 
     hex_dec sa
 
-    < compute average >
+    { compute average }
     _a _b + 2 /
     round
     dec_hex

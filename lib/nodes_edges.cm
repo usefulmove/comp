@@ -1,13 +1,13 @@
-< calculate the maximum number of edges there are in a graph with n nodes >
+{ calculate the maximum number of edges there are in a graph with n nodes }
 
-<
+{
     % comp 6 nodes_edges {15} 
 
     f(n) = (n-1) + f(n-1)
     f(1) = 0
->
+}
 
-< recursive function >
+{ recursive function }
 
 ( nodes_edges
     dup 1

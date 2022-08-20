@@ -145,20 +145,16 @@ pub fn highlight(output_str: &str, highlight_term: &str, color: &Color) -> Strin
     let theme = Theme::new();
     for i in 0..elements.len() {
         if i < (elements.len() - 1) {
-            o.push_str(
-                &format!(
-                    "{}{}",
-                    theme.color_rgb(elements[i], &theme.grey_mouse),
-                    theme.color_rgb(highlight_term, color),
-                )
+            o = format!(
+                "{}{}",
+                theme.color_rgb(elements[i], &theme.grey_mouse),
+                theme.color_rgb(highlight_term, color),
             );
         }
         else {
-            o.push_str(
-                &format!(
-                    "{}",
-                    theme.color_rgb(elements[i], &theme.grey_mouse),
-                )
+            o = format!(
+                "{}",
+                theme.color_rgb(elements[i], &theme.grey_mouse),
             );
         }
     }

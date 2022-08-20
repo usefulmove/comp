@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
@@ -141,6 +141,8 @@ impl Interpreter {
         /* rgb colors */
         self.compose_native("rgb", Self::c_rgb); // show RGB color
         self.compose_native("rgbh", Self::c_rgbh); // show RGB color (hexadecimal)
+        /* configuration */
+        self.compose_native("save_cfg", Self::c_save_config); // save configuration
     }
 
     pub fn process_node(&mut self, op: &str) {
@@ -909,28 +911,6 @@ impl Interpreter {
         self.stack.push((a * self.config.conversion_constant).to_string());
     }
 
-    pub fn c_rgb(&mut self, op: &str) {
-        Self::check_stack_error(self, 3, op);
-
-        let b: u8 = self.pop_stack_uint8();
-        let g: u8 = self.pop_stack_uint8();
-        let r: u8 = self.pop_stack_uint8();
-
-        self.stack.push(self.output_rgb_dec(poc::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex(poc::Color{r, g, b, bold: true}));
-    }
-
-    pub fn c_rgbh(&mut self, op: &str) {
-        Self::check_stack_error(self, 3, op);
-
-        let b: u8 = self.pop_stack_u8_from_hex();
-        let g: u8 = self.pop_stack_u8_from_hex();
-        let r: u8 = self.pop_stack_u8_from_hex();
-
-        self.stack.push(self.output_rgb_dec(poc::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex(poc::Color{r, g, b, bold: true}));
-    }
-
     // -- control flow ---------------------------------------------------------
 
     pub fn c_function(&mut self, _op: &str) {
@@ -1045,6 +1025,37 @@ impl Interpreter {
         println!("{}", self.pop_stack_string());
     }
 
+    // -- control flow ---------------------------------------------------------
+
+    pub fn c_rgb(&mut self, op: &str) {
+        Self::check_stack_error(self, 3, op);
+
+        let b: u8 = self.pop_stack_uint8();
+        let g: u8 = self.pop_stack_uint8();
+        let r: u8 = self.pop_stack_uint8();
+
+        self.stack.push(self.output_rgb_dec(poc::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_hex(poc::Color{r, g, b, bold: true}));
+    }
+
+    pub fn c_rgbh(&mut self, op: &str) {
+        Self::check_stack_error(self, 3, op);
+
+        let b: u8 = self.pop_stack_u8_from_hex();
+        let g: u8 = self.pop_stack_u8_from_hex();
+        let r: u8 = self.pop_stack_u8_from_hex();
+
+        self.stack.push(self.output_rgb_dec(poc::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_hex(poc::Color{r, g, b, bold: true}));
+    }
+
+    // -- configuration --------------------------------------------------------
+
+    pub fn c_save_config(&mut self, _op: &str) {
+        // save configuration to file
+        self.save_config("comp.toml");
+    }
+
     // support functions -------------------------------------------------------
 
     fn is_user_function(&self, op: &str) -> Option<usize> {
@@ -1091,7 +1102,6 @@ impl Interpreter {
         // read file contents
         let filename: String = filename.to_string();
 
-        //let home_folder: String = home::home_dir().unwrap().to_str().unwrap().to_string();
         let home_folder: String = match home::home_dir() {
             Some(dir) => dir.to_str().unwrap().to_string(),
             _ => "".to_string(),
@@ -1124,6 +1134,39 @@ impl Interpreter {
             };
 
             self.config = cfg;
+        }
+    }
+
+    // save configuration file to home folder
+    fn save_config(&self, filename: &str) {
+        let filename: String = filename.to_string();
+
+        let home_folder: String = match home::home_dir() {
+            Some(dir) => dir.to_str().unwrap().to_string(),
+            _ => "".to_string(),
+        };
+
+        let config_filename: String = format!("{}/{}", home_folder, filename);
+
+        let path: &Path = Path::new(&config_filename);
+
+        let config_data: String = toml::to_string(&self.config).unwrap();
+
+        match fs::write(path, config_data) {
+            Ok(_) => {
+                println!(
+                    "  configuration file [{}] saved",
+                    self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
+                );
+            }
+            Err(e) => {
+                eprintln!(
+                    "  {}: configuration file [{}] could not be saved: {}",
+                    self.theme.color_rgb("error", &self.theme.red_bold),
+                    self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
+                    e,
+                );
+            }
         }
     }
 
@@ -1175,7 +1218,7 @@ pub struct Function {
     fops: Vec<String>,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct Config {
     pub show_stack_level: bool,
     pub conversion_constant: f64,

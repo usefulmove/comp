@@ -140,8 +140,6 @@ pub fn highlight(output_str: &str, highlight_term: &str, color: &Color) -> Strin
     let tmp: String = output_str.to_string();
     let elements: Vec<&str> = tmp.split(&highlight_term).collect::<Vec<&str>>();
 
-    //print!("{:#?}", elements); // debug
-
     // construct highlighted output
     let mut o: String = String::new();
     let theme = Theme::new();

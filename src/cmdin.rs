@@ -115,6 +115,7 @@ impl Interpreter {
         self.compose_native("avg_", Self::c_avg_all); // average all
         /* control flow */
         self.compose_native("(", Self::c_function); // function definition
+        self.compose_native("[", Self::c_lambda); // anonymous function definition
         self.compose_native("ifeq", Self::c_ifeq); // ifequal .. else
         self.compose_native("{", Self::c_comment); // function comment
         self.compose_native("pln", Self::c_println); // print line
@@ -363,20 +364,40 @@ impl Interpreter {
     }
 
     pub fn c_map(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
+        Self::check_stack_error(self, 1, op);
 
-        let lambda: String = self.stack.pop().unwrap(); // anonymous function string
-        //println!("mapping ( {} )", lambda); // debug
         let stack_len: usize = self.stack.len();
-
-        // build anonymous function
-        self.load_anonymous_function(lambda);
 
         // add ops to execute anonymous function on each stack element
         for _ in 0..stack_len {
             self.ops.insert(0, "_".to_string());
             self.ops.insert(0, "roll".to_string());
         }
+    }
+
+    pub fn c_lambda(&mut self, _op: &str) {
+        // clear existing anonymous function definition
+        match self.is_user_function("_") {
+            Some(index) => {
+                self.fns.remove(index);
+            }
+            None => (),
+        }
+
+        // create new anonymous function instance
+        self.fns.push(
+            Function {
+                name: "_".to_string(),
+                fops: Vec::new(),
+            }
+        );
+        let fn_ind: usize = self.fns.len() - 1; // index of new function in function vector
+
+        // build anonymous function operations list
+        while self.ops[0] != "]" {
+            self.fns[fn_ind].fops.push(self.ops.remove(0));
+        }
+        self.ops.remove(0); // remove "|"
     }
 
     // ---- memory usage -------------------------------------------------------
@@ -948,21 +969,6 @@ impl Interpreter {
             self.fns[fn_ind].fops.push(self.ops.remove(0));
         }
         self.ops.remove(0); // remove ")"
-    }
-
-    pub fn load_anonymous_function(&mut self, lambda: String) {
-        self.fns.push(
-            Function {
-                name: "_".to_string(),
-                fops: Vec::new(),
-            }
-        );
-        let fn_ind: usize = self.fns.len() - 1; // index of new function in function vector
-
-        // build anonymous function operations list
-        for op in lambda.split_whitespace() {
-            self.fns[fn_ind].fops.push(op.to_string());
-        }
     }
 
     pub fn c_ifeq(&mut self, op: &str) {

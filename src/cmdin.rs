@@ -1158,6 +1158,15 @@ impl Interpreter {
             ),
         )
     }
+
+    pub fn get_cmds(&self) -> Vec<&str> {
+        let mut cmds: Vec<&str> = Vec::new();
+        for key in self.cmdmap.keys() {
+            cmds.push(&key);
+        }
+        cmds
+    }
+
 }
 
 pub struct Function {

@@ -36,11 +36,6 @@ const RELEASE_STATE: &str = "n";
 
 */
 
-// -- command list -------------------------------------------------------------
-const CMDS: &str = "drop dup swap cls roll rot + ++ +_ - -- x x_ / chs abs round \
-int inv sqrt throot proot ^ exp % mod ! gcd pi e g deg_rad rad_deg sin asin cos \
-acos tan atan log log2 log10 ln logn sa _a sb _b sc _c dec_hex hex_dec dec_bin \
-bin_dec hex_bin bin_hex rgb_hex hex_rgb C_F F_C a_b min min_ max max_ avg avg_ rand";
 
 fn main() {
     // enable or disable backtrace on error
@@ -63,10 +58,12 @@ fn main() {
     match args[1].as_str() {
         "--commands" => {
             // display available commands
-            for cmd in interc.cmdmap.keys() {
+            let mut cmds: Vec<&str> = interc.get_cmds();
+            cmds.sort();
+
+            for cmd in cmds {
                 print!("{} ", theme.color_rgb(&cmd, &theme.blue_smurf_bold));
             }
-            println!();
             return;
         }
         "--file" | "-f" => {
@@ -243,9 +240,6 @@ fn show_help() {
         theme.color_rgb("dup x +", &theme.green_eggs_bold),
         theme.color_rgb("sum of the squares of 3 and 4", &theme.white_bold),
     );
-    println!();
-    println!("{}", theme.color_rgb("COMMANDS", &theme.white_bold));
-    println!("{}", theme.color_rgb(CMDS, &theme.grey_mouse));
     println!();
 }
 

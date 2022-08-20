@@ -103,15 +103,15 @@ impl Theme {
                 bold: true,
             },
             white: Color {
-                r: 249,
-                g: 247,
-                b: 236,
+                r: 255,
+                g: 255,
+                b: 255,
                 bold: false,
             },
             white_bold: Color {
-                r: 249,
-                g: 247,
-                b: 236,
+                r: 255,
+                g: 255,
+                b: 255,
                 bold: true,
             },
         }

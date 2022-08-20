@@ -129,11 +129,11 @@ impl Theme {
     pub fn color_blank(&self, _message: &str) -> ColoredString {
         "".truecolor(0, 0, 0)
     }
-    
+
 }
 
 pub fn highlight(output_str: &str, highlight_term: &str, color: &Color) -> String {
-    /* find the highlight term in the output string and format the output 
+    /* find the highlight term in the output string and format the output
         * string to emphasize the highlight term in the output string
         */
 

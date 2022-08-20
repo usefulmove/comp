@@ -1,10 +1,10 @@
 { functions manual tests }
 
 {   comments test   } { }
-{ note -- comments are identified inside curly brackets. 
+{ note -- comments are identified inside curly brackets.
   there must be whitespace before and after each bracket. }
 
-  { multiline 
+  { multiline
     comments
     are fine. }
 

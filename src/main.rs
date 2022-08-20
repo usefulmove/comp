@@ -8,7 +8,7 @@ mod cmdin;
 mod poc;
 mod mona;
 
-const RELEASE_STATE: &str = "m";
+const RELEASE_STATE: &str = "n";
 
 /*
 
@@ -50,7 +50,7 @@ fn main() {
     let theme: poc::Theme = poc::Theme::new();
 
     // construct command interpreter
-    let mut cinter = cmdin::Interpreter::new();
+    let mut interc = cmdin::Interpreter::new();
 
     // get command arguments
     let mut args: Vec<String> = env::args().collect();
@@ -61,6 +61,14 @@ fn main() {
     }
 
     match args[1].as_str() {
+        "--commands" => {
+            // display available commands
+            for cmd in interc.cmdmap.keys() {
+                print!("{} ", theme.color_rgb(&cmd, &theme.blue_smurf_bold));
+            }
+            println!();
+            return;
+        }
         "--file" | "-f" => {
             // read operations list input from file
             if args.get(2).is_none() {
@@ -89,11 +97,11 @@ fn main() {
 
             // create operations list vector from file contents - split elements
             let operations = file_contents.split_whitespace().map(|o| o.to_string());
-            cinter.ops.extend(operations);
+            interc.ops.extend(operations);
 
             // add additional operations from command line
             if args.get(3).is_some() {
-                cinter.ops.extend((&args[3..]).to_vec());
+                interc.ops.extend((&args[3..]).to_vec());
             }
         }
         "--help" | "help" => {
@@ -112,20 +120,20 @@ fn main() {
         }
         _ => {
             // read operations list input from command line arguments
-            cinter.ops = (&args[1..]).to_vec();
+            interc.ops = (&args[1..]).to_vec();
         }
     };
 
     // load configuration
-    cinter.read_config("comp.toml");
+    interc.read_and_apply_config("comp.toml");
 
     // process operations list
-    cinter.process_ops();
+    interc.process_ops();
 
     output_stack(
-        &mut cinter.stack.clone(),
-        cinter.config.show_stack_level,
-        cinter.config.monochrome,
+        &mut interc.stack.clone(),
+        interc.config.show_stack_level,
+        interc.config.monochrome,
     );
 
     std::process::exit(exit_code::SUCCESS);

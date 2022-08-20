@@ -13,7 +13,7 @@ pub struct Interpreter {
     pub mem_c: f64,
     pub ops: Vec<String>,
     pub fns: Vec<Function>,
-    pub cmap: HashMap<String, fn(&mut Interpreter, &str)>,
+    pub cmdmap: HashMap<String, fn(&mut Interpreter, &str)>,
     pub config: Config,
     pub theme: poc::Theme,
 }
@@ -23,14 +23,14 @@ impl Interpreter {
     pub fn new() -> Self {
         let mut cint = Self {
             stack: Vec::new(),
-            mem_a: 0.0,
+            mem_a: 0.0, // local interpreter memory
             mem_b: 0.0,
             mem_c: 0.0,
-            ops: Vec::new(),
-            fns: Vec::new(),
-            cmap: HashMap::new(),
-            config: Config::new(),
-            theme: poc::Theme::new(),
+            ops: Vec::new(), // operations list
+            fns: Vec::new(), // user-defined functions
+            cmdmap: HashMap::new(), // interpreter command map
+            config: Config::new(), // configuration object
+            theme: poc::Theme::new(), // output format theme
         };
         cint.init();
 
@@ -47,7 +47,7 @@ impl Interpreter {
 
     // add native command to interpreter
     pub fn compose_native(&mut self, name: &str, func: fn(&mut Self, &str)) {
-        self.cmap.insert(name.to_string(), func);
+        self.cmdmap.insert(name.to_string(), func);
     }
 
     fn init(&mut self) {
@@ -143,9 +143,9 @@ impl Interpreter {
     }
 
     pub fn process_node(&mut self, op: &str) {
-        if self.cmap.contains_key(op) {
+        if self.cmdmap.contains_key(op) {
             // native comp command?
-            let f = self.cmap[op];
+            let f = self.cmdmap[op];
             f(self, op);
         } else {
             let result: Option<usize> = self.is_user_function(op); // user-defined function?
@@ -1079,7 +1079,7 @@ impl Interpreter {
     }
 
     // read configuration file from home folder
-    pub fn read_config(&mut self, filename: &str) {
+    pub fn read_and_apply_config(&mut self, filename: &str) {
         /*
         println!(
             "  reading configuration file [{}]",

@@ -45,7 +45,7 @@ fn main() {
     let theme: poc::Theme = poc::Theme::new();
 
     // construct command interpreter
-    let mut interc = cmdin::Interpreter::new();
+    let mut interpreter = cmdin::Interpreter::new();
 
     // get command arguments
     let mut args: Vec<String> = env::args().collect();
@@ -58,7 +58,7 @@ fn main() {
     match args[1].as_str() {
         "--commands" => {
             // display available commands
-            let mut cmds: Vec<&str> = interc.get_cmds();
+            let mut cmds: Vec<&str> = interpreter.get_cmds();
             cmds.sort_unstable();
 
             for cmd in cmds {
@@ -95,11 +95,11 @@ fn main() {
 
             // create operations list vector from file contents - split elements
             let operations = file_contents.split_whitespace().map(|o| o.to_string());
-            interc.ops.extend(operations);
+            interpreter.ops.extend(operations);
 
             // add additional operations from command line
             if args.get(3).is_some() {
-                interc.ops.extend((&args[3..]).to_vec());
+                interpreter.ops.extend((&args[3..]).to_vec());
             }
         }
         "--help" | "help" => {
@@ -118,20 +118,20 @@ fn main() {
         }
         _ => {
             // read operations list input from command line arguments
-            interc.ops = (&args[1..]).to_vec();
+            interpreter.ops = (&args[1..]).to_vec();
         }
     };
 
     // load configuration
-    interc.read_and_apply_config("comp.toml");
+    interpreter.read_and_apply_config("comp.toml");
 
     // process operations list
-    interc.process_ops();
+    interpreter.process_ops();
 
     output_stack(
-        &mut interc.stack.clone(),
-        interc.config.show_stack_level,
-        interc.config.monochrome,
+        &mut interpreter.stack.clone(),
+        interpreter.config.show_stack_level,
+        interpreter.config.monochrome,
     );
 
     std::process::exit(exit_code::SUCCESS);

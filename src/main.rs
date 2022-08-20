@@ -8,7 +8,7 @@ mod cmdin;
 mod poc;
 mod mona;
 
-const RELEASE_STATE: &str = "n";
+const RELEASE_STATE: &str = "o";
 
 /*
 
@@ -56,7 +56,7 @@ fn main() {
     }
 
     match args[1].as_str() {
-        "--commands" => {
+        "--commands" | "--" => {
             // display available commands
             let mut cmds: Vec<&str> = interpreter.get_cmds();
             cmds.sort_unstable();
@@ -94,7 +94,7 @@ fn main() {
             let file_contents: String = file_contents.unwrap();
 
             // create operations list vector from file contents - split elements
-            let operations = file_contents.split_whitespace().map(|o| o.to_string());
+            let operations = file_contents.split_whitespace().map(|x| x.to_string());
             interpreter.ops.extend(operations);
 
             // add additional operations from command line

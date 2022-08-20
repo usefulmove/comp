@@ -59,6 +59,7 @@ impl Interpreter {
         self.compose_native("clr", Self::c_cls); // clear stack
         self.compose_native("roll", Self::c_roll); // roll stack
         self.compose_native("rot", Self::c_rot); // rotate stack (reverse direction from roll)
+        self.compose_native("map", Self::c_map); // map annonymous function to stack
         /* memory usage */
         self.compose_native("sa", Self::c_store_a); // store (pop value off stack and store)
         self.compose_native("_a", Self::c_push_a); // retrieve (push stored value onto the stack)
@@ -146,27 +147,26 @@ impl Interpreter {
     }
 
     pub fn process_node(&mut self, op: &str) {
+        /* native command? */
         if self.cmdmap.contains_key(op) {
-            // native comp command?
             let f = self.cmdmap[op];
-            f(self, op);
-        } else {
-            let result: Option<usize> = self.is_user_function(op); // user-defined function?
+            f(self, op); // execute command function
+            return;
+        }
 
-            match result {
-                Some(index) => {
-                    // user-defined function
-                    // copy user function ops (fops) into main ops
-                    for i in (0..self.fns[index].fops.len()).rev() {
-                        let fop: String = self.fns[index].fops[i].clone();
-                        self.ops.insert(0, fop);
-                    }
+        /* user-defined function? */
+        match self.is_user_function(op) {
+            Some(index) => {
+                // user-defined function - copy user function ops (fops) into main ops
+                for i in (0..self.fns[index].fops.len()).rev() {
+                    let fop: String = self.fns[index].fops[i].clone();
+                    self.ops.insert(0, fop);
                 }
-                None => {
-                    // neither native command nor user-defined function
-                    // push value onto stack
-                    self.stack.push(op.to_string());
-                }
+            }
+            None => {
+                // neither native command nor user-defined function
+                // push value onto stack
+                self.stack.push(op.to_string());
             }
         }
     }
@@ -360,6 +360,23 @@ impl Interpreter {
         let o: String = self.stack.remove(0); // remove first
                                               //
         self.stack.push(o); // add as last
+    }
+
+    pub fn c_map(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let lambda: String = self.stack.pop().unwrap(); // anonymous function string
+        //println!("mapping ( {} )", lambda); // debug
+        let stack_len: usize = self.stack.len();
+
+        // build anonymous function
+        self.load_anonymous_function(lambda);
+
+        // add ops to execute anonymous function on each stack element
+        for _ in 0..stack_len {
+            self.ops.insert(0, "_".to_string());
+            self.ops.insert(0, "roll".to_string());
+        }
     }
 
     // ---- memory usage -------------------------------------------------------
@@ -918,17 +935,34 @@ impl Interpreter {
         let fn_name: String = self.ops.remove(0);
 
         // create new function instance and assign function name
-        self.fns.push(Function {
-            name: fn_name,
-            fops: Vec::new(),
-        });
-        let fpos: usize = self.fns.len() - 1; // added function position in function vector
+        self.fns.push(
+            Function {
+                name: fn_name,
+                fops: Vec::new(),
+            }
+        );
+        let fn_ind: usize = self.fns.len() - 1; // index of new function in function vector
 
         // build function operations list
         while self.ops[0] != ")" {
-            self.fns[fpos].fops.push(self.ops.remove(0));
+            self.fns[fn_ind].fops.push(self.ops.remove(0));
         }
         self.ops.remove(0); // remove ")"
+    }
+
+    pub fn load_anonymous_function(&mut self, lambda: String) {
+        self.fns.push(
+            Function {
+                name: "_".to_string(),
+                fops: Vec::new(),
+            }
+        );
+        let fn_ind: usize = self.fns.len() - 1; // index of new function in function vector
+
+        // build anonymous function operations list
+        for op in lambda.split_whitespace() {
+            self.fns[fn_ind].fops.push(op.to_string());
+        }
     }
 
     pub fn c_ifeq(&mut self, op: &str) {

@@ -137,8 +137,6 @@ impl Interpreter {
         self.compose_native("hex_rgb", Self::c_hexrgb); // hexadecimal string to RGB
         self.compose_native("rgb_hex", Self::c_rgbhex); // RGB to hexadecimal string
         self.compose_native("tip", Self::c_tip); // calculate tip
-        self.compose_native("tip15", Self::c_tip); // calculate tip
-        self.compose_native("tip20", Self::c_tip_plus); // calculate better tip
         self.compose_native("a_b", Self::c_conv_const); // apply convert constant
         /* rgb colors */
         self.compose_native("rgb", Self::c_rgb); // show RGB color
@@ -930,15 +928,7 @@ impl Interpreter {
 
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push((a * 0.15).to_string());
-    }
-
-    pub fn c_tip_plus(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a * 0.20).to_string());
+        self.stack.push((a * self.config.tip_percentage).to_string());
     }
 
     pub fn c_conv_const(&mut self, op: &str) {
@@ -1165,9 +1155,10 @@ impl Interpreter {
                 Err(_error) => {
                     // parse fail
                     eprintln!(
-                        "  {}: configuration file [{}] (ignored) is corrupt or is incorrectly constructed",
-                       self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
-                       self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
+                        "  {}: configuration file [{}] (ignored) has been corrupted or \
+                        is improperly constructed for this version of comp",
+                        self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
+                        self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
                     );
                     Config::new()
                 }
@@ -1263,6 +1254,7 @@ pub struct Config {
     pub show_stack_level: bool,
     pub conversion_constant: f64,
     pub monochrome: bool,
+    pub tip_percentage: f64,
 }
 
 impl Config {
@@ -1272,6 +1264,7 @@ impl Config {
             show_stack_level: true,
             conversion_constant: 1.0,
             monochrome: false,
+            tip_percentage: 0.15,
         }
     }
 }

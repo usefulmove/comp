@@ -8,7 +8,7 @@ mod cmdin;
 mod poc;
 mod mona;
 
-const RELEASE_STATE: &str = "p";
+const RELEASE_STATE: &str = "q";
 
 /*
 

@@ -22,6 +22,7 @@ pub struct Theme {
     pub green_eggs_bold: Color,
     pub grey_mouse: Color,
     pub orange_sherbet: Color,
+    pub orange_sherbet_bold: Color,
     pub red: Color,
     pub red_bold: Color,
     pub yellow_canary_bold: Color,
@@ -91,6 +92,12 @@ impl Theme {
                 g: 157,
                 b: 110,
                 bold: false,
+            },
+            orange_sherbet_bold: Color {
+                r: 239,
+                g: 157,
+                b: 110,
+                bold: true,
             },
             red: Color {
                 r: 241,

@@ -1,10 +1,12 @@
-( power2
-    sa
-    { 2 ^ a }
-    _a 0 ifeq
-        1
-    else
-        _a -- power2
-        2 x
-    fi
+(
+    power2
+        sa
+        { 2 ^ a }
+        _a 0
+        ifeq
+            1
+        else
+            _a -- power2
+            2 x
+        fi
 )

@@ -9,20 +9,24 @@
     are fine. }
 
 
-( sub1
-  1 -
+(
+  sub1
+    1 -
 )
 
-( div2
- 2 /
+(
+  div2
+    2 /
 )
 
-( square_root
-  sqrt
+(
+  square_root
+    sqrt
 )
 
-( ten5th_round
-  1e5 x round
+(
+  ten5th_round
+    1e5 x round
 )
 
 5 square_root
@@ -31,12 +35,14 @@ sub1 div2 ten5th_round
 
 { nested user-defined functions { also nested comments } }
 
-( cube
-  dup square x
+(
+  cube
+    dup square x
 )
 
-( square
-  dup x
+(
+  square
+    dup x
 )
 
 8 cube

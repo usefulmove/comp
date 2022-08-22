@@ -1,9 +1,12 @@
-2 1 ifeq
-    1 1 ifeq
+2 1
+ifeq
+    1 1
+    ifeq
         hi
     fi
 else
-    2 1 ifeq
+    2 1
+    ifeq
         hello
     else
         coffee

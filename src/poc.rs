@@ -134,6 +134,16 @@ impl Theme {
         }
     }
 
+    pub fn color_rgb_bg(&self, message: &str, color: &Color) -> ColoredString {
+        let o: &str = &("  ".to_owned() + message + "  ");
+        if !color.bold {
+            o.black().on_truecolor(color.r, color.g, color.b)
+        }
+        else {
+            o.black().on_truecolor(color.r, color.g, color.b).bold()
+        }
+    }
+
     pub fn color_blank(&self, _message: &str) -> ColoredString {
         "".truecolor(0, 0, 0)
     }

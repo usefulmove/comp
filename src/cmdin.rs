@@ -1065,7 +1065,7 @@ impl Interpreter {
         let r: u8 = self.pop_stack_uint8();
 
         self.stack.push(self.output_rgb_dec(poc::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex(poc::Color{r, g, b, bold: true}));
+        self.stack.push(self.output_rgb_hex_bg(poc::Color{r, g, b, bold: false}));
     }
 
     pub fn c_rgbh(&mut self, op: &str) {
@@ -1076,7 +1076,7 @@ impl Interpreter {
         let r: u8 = self.pop_stack_u8_from_hex();
 
         self.stack.push(self.output_rgb_dec(poc::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex(poc::Color{r, g, b, bold: true}));
+        self.stack.push(self.output_rgb_hex_bg(poc::Color{r, g, b, bold: false}));
     }
 
     // -- configuration --------------------------------------------------------
@@ -1224,10 +1224,20 @@ impl Interpreter {
         )
     }
 
-    fn output_rgb_hex(&self, color: poc::Color) -> String {
+    fn _output_rgb_hex(&self, color: poc::Color) -> String {
         format!(
             "{}",
             self.theme.color_rgb(
+                &format!("{:02x}{:02x}{:02x}", color.r, color.g, color.b),
+                &color,
+            ),
+        )
+    }
+
+    fn output_rgb_hex_bg(&self, color: poc::Color) -> String {
+        format!(
+            "{}",
+            self.theme.color_rgb_bg(
                 &format!("{:02x}{:02x}{:02x}", color.r, color.g, color.b),
                 &color,
             ),

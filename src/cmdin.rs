@@ -23,9 +23,9 @@ impl Interpreter {
     pub fn new() -> Self {
         let mut cint = Self {
             stack: Vec::new(),
-            mem_a: 0.0, // local interpreter memory
-            mem_b: 0.0,
-            mem_c: 0.0,
+            mem_a: 0., // local interpreter memory
+            mem_b: 0.,
+            mem_c: 0.,
             ops: Vec::new(), // operations list
             fns: Vec::new(), // user-defined functions
             cmdmap: HashMap::new(), // interpreter command map
@@ -80,6 +80,7 @@ impl Interpreter {
         self.compose_native("abs", Self::c_abs); // absolute value
         self.compose_native("round", Self::c_round); // round
         self.compose_native("int", Self::c_round);
+        self.compose_native("pos", Self::c_pos);
         self.compose_native("inv", Self::c_inv); // invert (1/x)
         self.compose_native("sqrt", Self::c_sqrt); // square root
         self.compose_native("throot", Self::c_throot); // nth root
@@ -118,7 +119,7 @@ impl Interpreter {
         self.compose_native("[", Self::c_lambda); // anonymous function definition
         self.compose_native("ifeq", Self::c_ifeq); // ifequal .. else
         self.compose_native("{", Self::c_comment); // function comment
-        self.compose_native("pln", Self::c_println); // print line
+        self.compose_native("peek", Self::c_peek); // peek at top of stack
         /* conversion */
         self.compose_native("dec_hex", Self::c_dechex); // decimal to hexadecimal
         self.compose_native("hex_dec", Self::c_hexdec); // hexadecimal to decimal
@@ -171,7 +172,7 @@ impl Interpreter {
     }
 
     // pop from stack helpers --------------------------------------------------
-    pub fn pop_stack_string(&mut self) -> String {
+    pub fn _pop_stack_string(&mut self) -> String {
         self.stack.pop().unwrap()
     }
 
@@ -368,8 +369,8 @@ impl Interpreter {
 
         // add ops to execute anonymous function on each stack element
         for _ in 0..stack_len {
-            self.ops.insert(0, "_".to_string());
             self.ops.insert(0, "roll".to_string());
+            self.ops.insert(0, "_".to_string());
         }
     }
 
@@ -452,7 +453,7 @@ impl Interpreter {
 
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push((a + 1.0).to_string());
+        self.stack.push((a + 1.).to_string());
     }
 
     pub fn c_sub(&mut self, op: &str) {
@@ -469,7 +470,7 @@ impl Interpreter {
 
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push((a - 1.0).to_string());
+        self.stack.push((a - 1.).to_string());
     }
 
     pub fn c_mult(&mut self, op: &str) {
@@ -501,7 +502,7 @@ impl Interpreter {
 
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push((-1.0 * a).to_string());
+        self.stack.push((-1. * a).to_string());
     }
 
     pub fn c_abs(&mut self, op: &str) {
@@ -520,12 +521,24 @@ impl Interpreter {
         self.stack.push((a.round()).to_string());
     }
 
+    pub fn c_pos(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let mut a: f64 = self.pop_stack_float();
+
+        if a < 0. {
+            a = 0.;
+        }
+
+        self.stack.push(a.to_string());
+    }
+
     pub fn c_inv(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push((1.0 / a).to_string());
+        self.stack.push((1. / a).to_string());
     }
 
     pub fn c_sqrt(&mut self, op: &str) {
@@ -542,7 +555,7 @@ impl Interpreter {
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push((a.powf(1.0 / b)).to_string());
+        self.stack.push((a.powf(1. / b)).to_string());
     }
 
     pub fn c_proot(&mut self, op: &str) {
@@ -552,23 +565,23 @@ impl Interpreter {
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
 
-        if (b * b - 4.0 * a * c) < 0.0 {
+        if (b * b - 4. * a * c) < 0. {
             self.stack
-                .push((-1.0 * b / (2.0 * a)).to_string()); // r_1 real
+                .push((-1. * b / (2. * a)).to_string()); // r_1 real
             self.stack
-                .push(((4.0 * a * c - b * b).sqrt() / (2.0 * a)).to_string()); // r_1 imag
+                .push(((4. * a * c - b * b).sqrt() / (2. * a)).to_string()); // r_1 imag
             self.stack
-                .push((-1.0 * b / (2.0 * a)).to_string()); // r_2 real
+                .push((-1. * b / (2. * a)).to_string()); // r_2 real
             self.stack
-                .push((-1.0 * (4.0 * a * c - b * b).sqrt() / (2.0 * a)).to_string());
+                .push((-1. * (4. * a * c - b * b).sqrt() / (2. * a)).to_string());
         // r_2 imag
         } else {
             self.stack
-                .push((-1.0 * b + (b * b - 4.0 * a * c).sqrt() / (2.0 * a)).to_string()); // r_1 real
+                .push((-1. * b + (b * b - 4. * a * c).sqrt() / (2. * a)).to_string()); // r_1 real
             self.stack
                 .push(0.0.to_string()); // r_1 imag
             self.stack
-                .push((-1.0 * b - (b * b - 4.0 * a * c).sqrt() / (2.0 * a)).to_string()); // r_2 real
+                .push((-1. * b - (b * b - 4. * a * c).sqrt() / (2. * a)).to_string()); // r_2 real
             self.stack
                 .push(0.0.to_string()); // r_2 imag
         }
@@ -730,7 +743,7 @@ impl Interpreter {
     pub fn c_max_all(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
 
-        let mut m: f64 = 0.0;
+        let mut m: f64 = 0.;
         while !self.stack.is_empty() {
             m = m.max(self.pop_stack_float());
         }
@@ -764,13 +777,13 @@ impl Interpreter {
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
 
-        self.stack.push(((a + b) / 2.0).to_string());
+        self.stack.push(((a + b) / 2.).to_string());
     }
 
     pub fn c_avg_all(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
 
-        let mut sum: f64 = 0.0;
+        let mut sum: f64 = 0.;
         let len: usize = self.stack.len();
         for _ in 0..len {
             sum += self.pop_stack_float();
@@ -843,7 +856,7 @@ impl Interpreter {
 
         let a = self.pop_stack_float();
 
-        self.stack.push((a * 9.0 / 5.0 + 32.0).to_string());
+        self.stack.push((a * 9. / 5. + 32.).to_string());
     }
 
     pub fn c_fahcel(&mut self, op: &str) {
@@ -851,7 +864,7 @@ impl Interpreter {
 
         let a = self.pop_stack_float();
 
-        self.stack.push(((a - 32.0) * 5.0 / 9.0).to_string());
+        self.stack.push(((a - 32.) * 5. / 9.).to_string());
     }
 
     pub fn c_mikm(&mut self, op: &str) {
@@ -1049,13 +1062,19 @@ impl Interpreter {
         }
     }
 
-    pub fn c_println(&mut self, op: &str) {
+    pub fn c_peek(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        println!("{}", self.pop_stack_string());
+        println!(
+            "  {}",
+            self.theme.color_rgb(
+                &self.stack[self.stack.len() - 1],
+                &self.theme.orange_sherbet_bold,
+            ),
+        );
     }
 
-    // -- control flow ---------------------------------------------------------
+    // -- RGB colors -----------------------------------------------------------
 
     pub fn c_rgb(&mut self, op: &str) {
         Self::check_stack_error(self, 3, op);
@@ -1104,10 +1123,10 @@ impl Interpreter {
     pub fn factorial(o: f64) -> f64 {
         let n = o.floor();
 
-        if n < 2.0 {
-            1.0
+        if n < 2. {
+            1.
         } else {
-            n * Self::factorial(n - 1.0)
+            n * Self::factorial(n - 1.)
         }
     }
 
@@ -1272,7 +1291,7 @@ impl Config {
     fn new() -> Self {
         Self {
             show_stack_level: true,
-            conversion_constant: 1.0,
+            conversion_constant: 1.,
             monochrome: false,
             tip_percentage: 0.15,
         }

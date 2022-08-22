@@ -193,6 +193,28 @@ impl Interpreter {
         }
     }
 
+    pub fn pop_stack_float_pos(&mut self) -> f64 {
+        let element: String = self.stack.pop().unwrap();
+        match self.parse_float(&element) {
+            Ok(mut val) => { // parse success
+                if val < 0. {
+                    val = 0.;
+                }
+                val
+            }
+            Err(_error) => {
+                // parse fail
+                eprintln!(
+                    "  {}: unknown expression [{}] is not a recognized operation \
+                    or valid value (f)",
+                    self.theme.color_rgb("error", &self.theme.red_bold),
+                    self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                );
+                std::process::exit(exit_code::USAGE_ERROR);
+            }
+        }
+    }
+
     pub fn pop_stack_uint(&mut self) -> u64 {
         let element: String = self.stack.pop().unwrap();
         match self.parse_uint(&element) {
@@ -210,9 +232,9 @@ impl Interpreter {
         }
     }
 
-    pub fn pop_stack_uint8(&mut self) -> u8 {
+    pub fn _pop_stack_uint8(&mut self) -> u8 {
         let element: String = self.stack.pop().unwrap();
-        match self.parse_uint8(&element) {
+        match self._parse_uint8(&element) {
             Ok(val) => val, // parse success
             Err(_error) => {
                 // parse fail
@@ -291,7 +313,7 @@ impl Interpreter {
         Ok(value)
     }
 
-    fn parse_uint8(&self, op: &str) -> Result<u8, ParseIntError> {
+    fn _parse_uint8(&self, op: &str) -> Result<u8, ParseIntError> {
         let value: u8 = op.parse::<u8>()?;
         Ok(value)
     }
@@ -1079,9 +1101,15 @@ impl Interpreter {
     pub fn c_rgb(&mut self, op: &str) {
         Self::check_stack_error(self, 3, op);
 
-        let b: u8 = self.pop_stack_uint8();
-        let g: u8 = self.pop_stack_uint8();
-        let r: u8 = self.pop_stack_uint8();
+        //let b: u8 = match (self.pop_stack_float_pos() as u8) {
+        //    Ok(val) => val,
+        //    Err(e) => {
+        //        TODO
+        //    }
+        //}
+        let b: u8 = self.pop_stack_float_pos() as u8;
+        let g: u8 = self.pop_stack_float_pos() as u8;
+        let r: u8 = self.pop_stack_float_pos() as u8;
 
         self.stack.push(self.output_rgb_dec(poc::Color{r, g, b, bold: false}));
         self.stack.push(self.output_rgb_hex_bg(poc::Color{r, g, b, bold: false}));

@@ -125,22 +125,23 @@ impl Theme {
         }
     }
 
-    pub fn color_rgb(&self, message: &str, color: &Color) -> ColoredString {
+    pub fn color_rgb(&self, content: &str, color: &Color) -> ColoredString {
         if !color.bold {
-            message.truecolor(color.r, color.g, color.b)
+            content.truecolor(color.r, color.g, color.b)
         }
         else {
-            message.truecolor(color.r, color.g, color.b).bold()
+            content.truecolor(color.r, color.g, color.b).bold()
         }
     }
 
-    pub fn color_rgb_bg(&self, message: &str, color: &Color) -> ColoredString {
-        let o: &str = &("  ".to_owned() + message + "  ");
+    pub fn color_rgb_bg(&self, content: &str, color: &Color) -> ColoredString {
+        let output: &str = &format!(" {} ", content); // pad output
+
         if !color.bold {
-            o.black().on_truecolor(color.r, color.g, color.b)
+            output.truecolor(0, 0, 0).on_truecolor(color.r, color.g, color.b)
         }
         else {
-            o.black().on_truecolor(color.r, color.g, color.b).bold()
+            output.truecolor(0, 0, 0).on_truecolor(color.r, color.g, color.b).bold()
         }
     }
 

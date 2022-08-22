@@ -145,14 +145,14 @@ pub fn highlight(output_str: &str, highlight_term: &str, color: &Color) -> Strin
     let theme = Theme::new();
     for i in 0..elements.len() {
         if i < (elements.len() - 1) {
-            o = format!(
+            o += &format!(
                 "{}{}",
                 theme.color_rgb(elements[i], &theme.grey_mouse),
                 theme.color_rgb(highlight_term, color),
             );
         }
         else {
-            o = format!(
+            o += &format!(
                 "{}",
                 theme.color_rgb(elements[i], &theme.grey_mouse),
             );
@@ -163,8 +163,7 @@ pub fn highlight(output_str: &str, highlight_term: &str, color: &Color) -> Strin
 }
 
 pub fn highlight_filename(output_str: &str, color: &Color) -> String {
-    /* highlight everything following the last "/"
-        */
+    /* highlight everything following the last "/" */
 
     let re: Regex = Regex::new(r"/([^/]+)$").unwrap();
 

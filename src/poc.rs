@@ -2,6 +2,7 @@
 
 use colored::*;
 use regex::Regex;
+use std::fmt::Write as _;
 
 pub struct Color {
     pub r: u8,
@@ -11,8 +12,8 @@ pub struct Color {
 }
 
 pub struct Theme {
-    pub blue_smurf: Color,
     pub blue_coffee_bold: Color,
+    pub blue_smurf: Color,
     pub blue_smurf_bold: Color,
     pub cream: Color,
     pub cream_bold: Color,
@@ -31,17 +32,17 @@ pub struct Theme {
 impl Theme {
     pub fn new() -> Self {
         Self {
-            blue_smurf: Color {
-                r: 0,
-                g: 128,
-                b: 255,
-                bold: false,
-            },
             blue_coffee_bold: Color {
                 r: 0,
                 g: 192,
                 b: 255,
                 bold: true,
+            },
+            blue_smurf: Color {
+                r: 0,
+                g: 128,
+                b: 255,
+                bold: false,
             },
             blue_smurf_bold: Color {
                 r: 0,
@@ -152,14 +153,16 @@ pub fn highlight(output_str: &str, highlight_term: &str, color: &Color) -> Strin
     let theme = Theme::new();
     for i in 0..elements.len() {
         if i < (elements.len() - 1) {
-            o += &format!(
+            let _ = write!(
+                o,
                 "{}{}",
                 theme.color_rgb(elements[i], &theme.grey_mouse),
                 theme.color_rgb(highlight_term, color),
             );
         }
         else {
-            o += &format!(
+            let _ = write!(
+                o,
                 "{}",
                 theme.color_rgb(elements[i], &theme.grey_mouse),
             );

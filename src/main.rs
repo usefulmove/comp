@@ -192,7 +192,9 @@ fn show_help() {
         theme.color_rgb("--file", &theme.yellow_canary_bold),
     );
     println!(
-        "        {}     display available commands",
+        "    {}{} {}     display available commands",
+        theme.color_rgb("--", &theme.yellow_canary_bold),
+        theme.color_rgb(",", &theme.grey_mouse),
         theme.color_rgb("--commands", &theme.yellow_canary_bold),
     );
     println!(

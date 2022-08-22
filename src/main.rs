@@ -327,5 +327,5 @@ fn level_map(level: u32) -> &'static str {
 }
 
 #[cfg(test)]
-#[path = "../test/test.rs"]
+#[path = "../tests/unit_test.rs"]
 mod comp_tests;

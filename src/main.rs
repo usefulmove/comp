@@ -62,7 +62,7 @@ fn main() {
             cmds.sort_unstable();
 
             for cmd in cmds {
-                print!("{} ", theme.color_rgb(cmd, &theme.blue_smurf_bold));
+                print!("{} ", theme.color_rgb(cmd, &theme.blue_smurf));
             }
             println!();
             return;

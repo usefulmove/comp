@@ -17,6 +17,7 @@ pub struct Theme {
     pub cream: Color,
     pub cream_bold: Color,
     pub charcoal_cream: Color,
+    pub green_eggs: Color,
     pub green_eggs_bold: Color,
     pub grey_mouse: Color,
     pub orange_sherbet: Color,
@@ -64,6 +65,12 @@ impl Theme {
                 r: 102,
                 g: 102,
                 b: 102,
+                bold: false,
+            },
+            green_eggs: Color {
+                r: 135,
+                g: 255,
+                b: 175,
                 bold: false,
             },
             green_eggs_bold: Color {

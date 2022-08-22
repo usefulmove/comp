@@ -772,7 +772,7 @@ impl Interpreter {
 
         let mut sum: f64 = 0.0;
         let len: usize = self.stack.len();
-        for _i in 0..len {
+        for _ in 0..len {
             sum += self.pop_stack_float();
         }
 
@@ -1228,7 +1228,7 @@ impl Interpreter {
         format!(
             "{}",
             self.theme.color_rgb(
-                &format!("{:02x}{:02x}{:02x}", color.r, color.g, color.b),
+                &format!("#{:02x}{:02x}{:02x}", color.r, color.g, color.b),
                 &color,
             ),
         )
@@ -1238,7 +1238,7 @@ impl Interpreter {
         format!(
             "{}",
             self.theme.color_rgb_bg(
-                &format!("{:02x}{:02x}{:02x}", color.r, color.g, color.b),
+                &format!("#{:02x}{:02x}{:02x}", color.r, color.g, color.b),
                 &color,
             ),
         )

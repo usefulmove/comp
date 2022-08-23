@@ -1,5 +1,7 @@
 #![allow(unused)]
 
+const POC_VERSION: &str = "0.2.0";
+
 use colored::*;
 use regex::Regex;
 use std::fmt::Write as _;

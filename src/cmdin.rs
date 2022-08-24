@@ -144,6 +144,7 @@ impl Interpreter {
         self.compose_native("rgbh", Self::c_rgbh); // show RGB color (hexadecimal)
         /* configuration */
         self.compose_native("save_cfg", Self::c_save_config); // save configuration
+        self.compose_native("show_cfg", Self::c_print_config); // show current configuration
     }
 
     pub fn process_node(&mut self, op: &str) {
@@ -1133,6 +1134,14 @@ impl Interpreter {
         self.save_config("comp.toml");
     }
 
+    pub fn c_print_config(&mut self, _op: &str) {
+        // print current configuration
+        println!(
+            "{:#?}",
+            self.config,
+        )
+    }
+
     // support functions -------------------------------------------------------
 
     fn is_user_function(&self, op: &str) -> Option<usize> {
@@ -1306,6 +1315,7 @@ pub struct Function {
     fops: Vec<String>,
 }
 
+#[derive(Debug)]
 #[derive(Serialize, Deserialize)]
 pub struct Config {
     pub show_stack_level: bool,

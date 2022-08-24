@@ -6,6 +6,7 @@
 - [conversion](#commands-conversion)
 - [file usage](#commands-file-usage)
 - [control flow](#commands-control-flow)
+- [configuration]
 
 
 ## Commands (stack manipulation)
@@ -397,4 +398,12 @@ Functions also can be defined in a file and used in operations passed after the 
 ```
 % comp -f temperature.cm 0 ctof
   32
+```
+
+## Commands (configuration)
+
+### save configuration
+Save comp.toml configuration file in the home directory. This file can be used to configure some aspects of the behavior of the application like indicating the top of the stack and displaying monochrome output.
+```
+% comp save_cfg
 ```

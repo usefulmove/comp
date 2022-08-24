@@ -1,5 +1,13 @@
 # Usage Guide
 
+- [stack manipulation](#commands-stack-manipulation)
+- [memory usage](#commands-memory-usage)
+- [maths](#commands-maths)
+- [conversion](#commands-conversion)
+- [file usage](#commands-file-usage)
+- [control flow](#commands-control-flow)
+
+
 ## Commands (stack manipulation)
 
 ### push onto stack

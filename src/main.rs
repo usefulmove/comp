@@ -157,7 +157,10 @@ fn show_help() {
     let theme: poc::Theme = poc::Theme::new();
 
     println!();
-    println!("{}", theme.color_rgb("COMP", &theme.cream_bold));
+    println!(
+        "{}",
+        theme.color_rgb("COMP", &theme.cream_bold)
+    );
     println!(
         "    {} {} {} {}",
         theme.color_rgb("comp", &theme.grey_mouse),
@@ -166,7 +169,10 @@ fn show_help() {
         theme.color_rgb(env!("CARGO_PKG_VERSION"), &theme.grey_mouse),
     );
     println!();
-    println!("{}", theme.color_rgb("USAGE", &theme.cream_bold));
+    println!(
+        "{}",
+        theme.color_rgb("USAGE", &theme.cream_bold)
+    );
     println!(
         "    {} {} {}",
         theme.color_rgb("comp", &theme.grey_mouse),
@@ -180,7 +186,10 @@ fn show_help() {
         theme.color_rgb("<path>", &theme.blue_coffee_bold),
     );
     println!();
-    println!("{}", theme.color_rgb("OPTIONS", &theme.cream_bold));
+    println!(
+        "{}",
+        theme.color_rgb("OPTIONS", &theme.cream_bold)
+    );
     println!(
         "        {}      show version",
         theme.color_rgb("--version", &theme.orange_sherbet_bold),
@@ -202,7 +211,10 @@ fn show_help() {
         theme.color_rgb("--help", &theme.orange_sherbet_bold),
     );
     println!();
-    println!("{}", theme.color_rgb("DESCRIPTION", &theme.cream_bold));
+    println!(
+        "{}",
+        theme.color_rgb("DESCRIPTION", &theme.cream_bold)
+    );
     println!(
         "The comp interpreter takes a {} sequence of (postfix) operations as \
     command line arguments or a {} argument that specifies the path to a file \
@@ -223,7 +235,10 @@ fn show_help() {
         theme.color_rgb("https://github.com/usefulmove/comp#readme", &theme.grey_mouse),
     );
     println!();
-    println!("{}", theme.color_rgb("EXAMPLES", &theme.cream_bold));
+    println!(
+        "{}",
+        theme.color_rgb("EXAMPLES", &theme.cream_bold)
+    );
     println!(
         "    {} {} {}                  {}",
         theme.color_rgb("comp", &theme.grey_mouse),

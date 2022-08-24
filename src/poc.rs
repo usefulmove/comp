@@ -1,6 +1,6 @@
 #![allow(unused)]
 
-const POC_VERSION: &str = "0.2.0";
+const POC_VERSION: &str = "0.2.1";
 
 use colored::*;
 use regex::Regex;
@@ -137,8 +137,7 @@ impl Theme {
     pub fn color_rgb(&self, content: &str, color: &Color) -> ColoredString {
         if !color.bold {
             content.truecolor(color.r, color.g, color.b)
-        }
-        else {
+        } else {
             content.truecolor(color.r, color.g, color.b).bold()
         }
     }
@@ -147,10 +146,14 @@ impl Theme {
         let output: &str = &format!(" {} ", content); // pad output
 
         if !color.bold {
-            output.truecolor(0, 0, 0).on_truecolor(color.r, color.g, color.b)
-        }
-        else {
-            output.truecolor(0, 0, 0).on_truecolor(color.r, color.g, color.b).bold()
+            output
+                .truecolor(0, 0, 0)
+                .on_truecolor(color.r, color.g, color.b)
+        } else {
+            output
+                .truecolor(0, 0, 0)
+                .on_truecolor(color.r, color.g, color.b)
+                .bold()
         }
     }
 
@@ -162,8 +165,8 @@ impl Theme {
 
 pub fn highlight(output_str: &str, highlight_term: &str, color: &Color) -> String {
     /* find the highlight term in the output string and format the output
-        * string to emphasize the highlight term in the output string
-        */
+     * string to emphasize the highlight term in the output string
+     */
 
     let tmp: String = output_str.to_string();
     let elements: Vec<&str> = tmp.split(&highlight_term).collect::<Vec<&str>>();
@@ -176,15 +179,23 @@ pub fn highlight(output_str: &str, highlight_term: &str, color: &Color) -> Strin
             let _ = write!(
                 o,
                 "{}{}",
-                theme.color_rgb(elements[i], &theme.grey_mouse),
-                theme.color_rgb(highlight_term, color),
+                theme.color_rgb(
+                    elements[i],
+                    &theme.grey_mouse
+                ),
+                theme.color_rgb(
+                    highlight_term,
+                    color
+                ),
             );
-        }
-        else {
+        } else {
             let _ = write!(
                 o,
                 "{}",
-                theme.color_rgb(elements[i], &theme.grey_mouse),
+                theme.color_rgb(
+                    elements[i],
+                    &theme.grey_mouse,
+                ),
             );
         }
     }

@@ -6,7 +6,7 @@
 - [conversion](#commands-conversion)
 - [file usage](#commands-file-usage)
 - [control flow](#commands-control-flow)
-- [configuration]
+- [configuration](#commands-configuration)
 
 
 ## Commands (stack manipulation)
@@ -68,6 +68,17 @@ rotate stack elements such that the first element becomes the last (reverse dire
   3
   4
   1
+```
+
+### map
+map an anonymous function to each of the stack elements
+```
+% comp 1 2 3 4 5 [ 3 ^ ]
+  1
+  8
+  27
+  64
+  125
 ```
 
 
@@ -278,20 +289,50 @@ For this operation, the coefficients `a b c` of the quadratic equation `ax^2 + b
   1
 ```
 
-### max
+### max, max_
+return the maximum of the last two elements on the stack
 ```
 % comp 1 2 3 4 max
+  1
+  2
+  4
+```
+return the maximum of all elements on the stack
+```
+% comp 1 2 3 4 max_
   4
 ```
 
-### min
+### min, min_
+return the minimum of the last two elements on the stack
 ```
 % comp 1 2 3 4 min
   1
+  2
+  3
+```
+return the minimum of all elements on the stack
+```
+% comp 1 2 3 4 min_
+  1
+```
+
+### avg, avg_
+return the average of the last two elements on the stack
+```
+% comp 1 2 3 4 min
+  1
+  2
+  3.5
+```
+return the average of all elements on the stack
+```
+% comp 1 2 3 4 min_
+  2.5
 ```
 
 ### rand
-Reads positive integer (n) from stack and returns a random integer in the range 0 to n-1.
+read positive integer (n) from stack and returns a random integer in the range 0 to n-1
 ```
 % comp 6 rand
   3
@@ -334,6 +375,16 @@ Reads positive integer (n) from stack and returns a random integer in the range 
 ```
 % comp 0 C_F
   32
+```
+
+### length conversion (miles, kilometers) (feet, meters)
+```
+% comp 1 mi_km
+  1.609344
+```
+```
+% comp 1 m_ft
+  3.281
 ```
 
 

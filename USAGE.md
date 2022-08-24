@@ -1,6 +1,5 @@
 # Usage Guide
 
-
 ## Commands (stack manipulation)
 
 ### push onto stack
@@ -75,30 +74,12 @@ The values `a b c` can be stored using the store command (e.g, `sa`) into memory
 ```
 
 
-## Commands (math operations)
+## Commands (maths)
 
 ### add
 ```
 % comp 3 4 +
   7
-```
-
-### subtract
-```
-% comp 3 4 -
-  -1
-```
-
-### multiply
-```
-% comp 3 4 x
-  12
-```
-
-### divide
-```
-% comp 3 4 /
-  0.75
 ```
 
 ### add all
@@ -107,10 +88,40 @@ The values `a b c` can be stored using the store command (e.g, `sa`) into memory
   10
 ```
 
+### add one
+```
+% comp 1 ++
+  2
+```
+
+### subtract
+```
+% comp 3 4 -
+  -1
+```
+
+### subtract one
+```
+% comp 1 --
+  0
+```
+
+### multiply
+```
+% comp 3 4 x
+  12
+```
+
 ### multiply all
 ```
 % comp 1 2 3 4 x_
   24
+```
+
+### divide
+```
+% comp 3 4 /
+  0.75
 ```
 
 ### change sign
@@ -307,8 +318,13 @@ Reads positive integer (n) from stack and returns a random integer in the range 
 
 ### temperature conversion (Fahrenheit, Celsius)
 ```
-% comp 212 f_c
+% comp 212 F_C
   100
+```
+
+```
+% comp 0 C_F
+  32
 ```
 
 
@@ -326,13 +342,15 @@ The file flag allows the use of commands defined within a source file.
 ## Commands (control flow)
 
 ### functions
-User-defined functions can be defined by indicating the start of a function with the `fn` keyword followed by the function name then a list of operations and terminated with the `end` keyword. The user function is executed by calling the function name as shown in the examples below.
+User-defined functions can be defined by indicating the start of a function with an open parenthesis `(` symbol followed by the function name then a list of operations and terminated with the close parenthesis `)` symbol. The user function is executed by calling the function name as shown in the examples below.
+
+( Note that on many systems, at the command prompt the parentheses must be escaped as shown the examples below. This is not necessary for functions defined within files. )
 ```
-% comp fn square dup x end 16 square
+% comp \( square dup x \) 16 square
   256
 ```
 ```
-% comp fn double 2 x end 250 double
+% comp \( double 2 x \) 250 double
   500
 ```
 
@@ -343,9 +361,9 @@ Note that functions are most useful when combined with the `-f` file option. The
   there must be whitespace surrounding each bracket.
   multiline comments are supported. }
 
-fn cube
+( cube
   3 ^
-end
+)
 
 8 cube
 ```
@@ -358,17 +376,17 @@ Functions also can be defined in a file and used in operations passed after the 
 ```
 { temperature.cm }
 
-fn CtoF
+( ctof
   9 x 5 /
   32 +
-end
+)
 
-fn FtoC
+( ftoc
   32 -
   5 x 9 /
-end
+)
 ```
 ```
-% comp -f temperature.cm 0 CtoF
+% comp -f temperature.cm 0 ctof
   32
 ```

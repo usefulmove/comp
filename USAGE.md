@@ -82,7 +82,7 @@ map an anonymous function to each of the stack elements
 ```
 
 ### range
-push an integer number range onto the stack
+push a number range onto the stack by specifying the range start, end, and step size
 ```
 % comp 0 10 2 ..
   0

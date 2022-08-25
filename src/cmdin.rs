@@ -234,23 +234,6 @@ impl Interpreter {
         }
     }
 
-    pub fn pop_stack_i16(&mut self) -> i16 {
-        let element: String = self.stack.pop().unwrap();
-        match self.parse_i16(&element) {
-            Ok(val) => val, // parse success
-            Err(_error) => {
-                // parse fail
-                eprintln!(
-                    "  {}: unknown expression [{}] is not a recognized operation \
-                    or valid value (u)",
-                   self.theme.color_rgb("error", &self.theme.red_bold),
-                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
-                );
-                std::process::exit(exit_code::USAGE_ERROR);
-            }
-        }
-    }
-
     pub fn pop_stack_uint(&mut self) -> u64 {
         let element: String = self.stack.pop().unwrap();
         match self.parse_uint(&element) {
@@ -349,11 +332,6 @@ impl Interpreter {
         Ok(value)
     }
 
-    fn parse_i16(&self, op: &str) -> Result<i16, ParseIntError> {
-        let value: i16 = op.parse::<i16>()?;
-        Ok(value)
-    }
-
     fn parse_uint(&self, op: &str) -> Result<u64, ParseIntError> {
         let value: u64 = op.parse::<u64>()?;
         Ok(value)
@@ -445,17 +423,20 @@ impl Interpreter {
     pub fn c_range(&mut self, op: &str) {
         Self::check_stack_error(self, 3, op);
 
-        let step: i16  = self.pop_stack_i16();
-        let end: i16 = self.pop_stack_i16();
-        let start: i16 = self.pop_stack_i16();
+        let step: f64  = self.pop_stack_float();
+        let end: f64 = self.pop_stack_float();
+        let start: f64 = self.pop_stack_float();
 
+        let mut value: f64 = start;
         if end >= start {
-            for i in (start..=end).step_by(step.unsigned_abs() as usize) {
-                self.stack.push(i.to_string());
+            while value <= end {
+                self.stack.push(value.to_string());
+                value += step.abs();
             }
         } else {
-            for i in (end..=start).step_by(step.unsigned_abs() as usize).rev() {
-                self.stack.push(i.to_string());
+            while value >= end {
+                self.stack.push(value.to_string());
+                value -= step.abs();
             }
         }
 

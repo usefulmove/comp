@@ -60,6 +60,7 @@ impl Interpreter {
         self.compose_native("roll", Self::c_roll); // roll stack
         self.compose_native("rot", Self::c_rot); // rotate stack (reverse direction from roll)
         self.compose_native("map", Self::c_map); // map annonymous function to stack
+        self.compose_native("..", Self::c_range); // add range of numbers to stack
         /* memory usage */
         self.compose_native("sa", Self::c_store_a); // store (pop value off stack and store)
         self.compose_native("_a", Self::c_push_a); // retrieve (push stored value onto the stack)
@@ -216,6 +217,40 @@ impl Interpreter {
         }
     }
 
+    pub fn _pop_stack_int(&mut self) -> i64 {
+        let element: String = self.stack.pop().unwrap();
+        match self._parse_int(&element) {
+            Ok(val) => val, // parse success
+            Err(_error) => {
+                // parse fail
+                eprintln!(
+                    "  {}: unknown expression [{}] is not a recognized operation \
+                    or valid value (u)",
+                   self.theme.color_rgb("error", &self.theme.red_bold),
+                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                );
+                std::process::exit(exit_code::USAGE_ERROR);
+            }
+        }
+    }
+
+    pub fn pop_stack_i16(&mut self) -> i16 {
+        let element: String = self.stack.pop().unwrap();
+        match self.parse_i16(&element) {
+            Ok(val) => val, // parse success
+            Err(_error) => {
+                // parse fail
+                eprintln!(
+                    "  {}: unknown expression [{}] is not a recognized operation \
+                    or valid value (u)",
+                   self.theme.color_rgb("error", &self.theme.red_bold),
+                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                );
+                std::process::exit(exit_code::USAGE_ERROR);
+            }
+        }
+    }
+
     pub fn pop_stack_uint(&mut self) -> u64 {
         let element: String = self.stack.pop().unwrap();
         match self.parse_uint(&element) {
@@ -309,6 +344,16 @@ impl Interpreter {
         Ok(value)
     }
 
+    fn _parse_int(&self, op: &str) -> Result<i64, ParseIntError> {
+        let value: i64 = op.parse::<i64>()?;
+        Ok(value)
+    }
+
+    fn parse_i16(&self, op: &str) -> Result<i16, ParseIntError> {
+        let value: i16 = op.parse::<i16>()?;
+        Ok(value)
+    }
+
     fn parse_uint(&self, op: &str) -> Result<u64, ParseIntError> {
         let value: u64 = op.parse::<u64>()?;
         Ok(value)
@@ -395,6 +440,25 @@ impl Interpreter {
             self.ops.insert(0, "roll".to_string());
             self.ops.insert(0, "_".to_string());
         }
+    }
+
+    pub fn c_range(&mut self, op: &str) {
+        Self::check_stack_error(self, 3, op);
+
+        let step: i16  = self.pop_stack_i16();
+        let end: i16 = self.pop_stack_i16();
+        let start: i16 = self.pop_stack_i16();
+
+        if end >= start {
+            for i in (start..=end).step_by(step.unsigned_abs() as usize) {
+                self.stack.push(i.to_string());
+            }
+        } else {
+            for i in (end..=start).step_by(step.unsigned_abs() as usize).rev() {
+                self.stack.push(i.to_string());
+            }
+        }
+
     }
 
     pub fn c_lambda(&mut self, _op: &str) {

@@ -81,6 +81,28 @@ map an anonymous function to each of the stack elements
   125
 ```
 
+### range
+push an integer number range onto the stack
+```
+% comp 0 10 2 ..
+  0
+  2
+  4
+  6
+  8
+  10
+```
+```
+% comp 20 -10 5 ..
+  20
+  15
+  10
+  5
+  0
+  -5
+  -10
+```
+
 
 ---
 ## Commands (memory usage)

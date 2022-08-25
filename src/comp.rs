@@ -4,7 +4,7 @@ use std::fs;
 use std::path::Path;
 use std::num::{ParseFloatError, ParseIntError};
 
-use crate::poc;
+use crate::qoc;
 
 pub struct Interpreter {
     pub stack: Vec<String>,
@@ -15,7 +15,7 @@ pub struct Interpreter {
     pub fns: Vec<Function>,
     pub cmdmap: HashMap<String, fn(&mut Interpreter, &str)>,
     pub config: Config,
-    pub theme: poc::Theme,
+    pub theme: qoc::Theme,
 }
 
 impl Interpreter {
@@ -30,7 +30,7 @@ impl Interpreter {
             fns: Vec::new(), // user-defined functions
             cmdmap: HashMap::new(), // interpreter command map
             config: Config::new(), // configuration object
-            theme: poc::Theme::new(), // output format theme
+            theme: qoc::Theme::new(), // output format theme
         };
         cint.init();
 
@@ -1157,8 +1157,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_float_pos() as u8;
         let r: u8 = self.pop_stack_float_pos() as u8;
 
-        self.stack.push(self.output_rgb_dec(poc::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex_bg(poc::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_dec(qoc::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_hex_bg(qoc::Color{r, g, b, bold: false}));
     }
 
     pub fn c_rgbh(&mut self, op: &str) {
@@ -1168,8 +1168,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_u8_from_hex();
         let r: u8 = self.pop_stack_u8_from_hex();
 
-        self.stack.push(self.output_rgb_dec(poc::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex_bg(poc::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_dec(qoc::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_hex_bg(qoc::Color{r, g, b, bold: false}));
     }
 
     // -- configuration --------------------------------------------------------
@@ -1302,7 +1302,7 @@ impl Interpreter {
         }
     }
 
-    fn output_rgb_dec(&self, color: poc::Color) -> String {
+    fn output_rgb_dec(&self, color: qoc::Color) -> String {
         format!(
             "{} {} {}",
             self.theme.color_rgb(
@@ -1311,7 +1311,7 @@ impl Interpreter {
             ),
             self.theme.color_rgb(
                 &color.g.to_string(),
-                &poc::Color {
+                &qoc::Color {
                     r: color.r,
                     g: color.g,
                     b: color.b,
@@ -1325,7 +1325,7 @@ impl Interpreter {
         )
     }
 
-    fn _output_rgb_hex(&self, color: poc::Color) -> String {
+    fn _output_rgb_hex(&self, color: qoc::Color) -> String {
         format!(
             "{}",
             self.theme.color_rgb(
@@ -1335,7 +1335,7 @@ impl Interpreter {
         )
     }
 
-    fn output_rgb_hex_bg(&self, color: poc::Color) -> String {
+    fn output_rgb_hex_bg(&self, color: qoc::Color) -> String {
         format!(
             "{}",
             self.theme.color_rgb_bg(

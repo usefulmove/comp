@@ -5,9 +5,9 @@ use colored::ColoredString;
 
 mod comp;
 mod mona;
-mod poc;
+mod qoc;
 
-const RELEASE_STATE: &str = "b";
+const RELEASE_STATE: &str = "c";
 
 /*
 
@@ -41,7 +41,7 @@ fn main() {
     env::set_var("RUST_BACKTRACE", "0");
 
     // color theme
-    let theme: poc::Theme = poc::Theme::new();
+    let theme: qoc::Theme = qoc::Theme::new();
 
     // construct command interpreter
     let mut interpreter = comp::Interpreter::new();
@@ -153,7 +153,7 @@ impl<'a> BoxedClosure<'a> {
 
 fn show_help() {
     // color theme
-    let theme: poc::Theme = poc::Theme::new();
+    let theme: qoc::Theme = qoc::Theme::new();
 
     println!();
     println!(
@@ -266,7 +266,7 @@ fn show_help() {
 
 fn show_version() {
     // color theme
-    let theme: poc::Theme = poc::Theme::new();
+    let theme: qoc::Theme = qoc::Theme::new();
 
     let version: &str = env!("CARGO_PKG_VERSION");
     println!(
@@ -279,7 +279,7 @@ fn show_version() {
 
 fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
     // color theme
-    let theme: poc::Theme = poc::Theme::new();
+    let theme: qoc::Theme = qoc::Theme::new();
 
     let mut clos_color_stack_top = BoxedClosure::new(
         |x| theme.color_rgb(x, &theme.blue_coffee_bold)

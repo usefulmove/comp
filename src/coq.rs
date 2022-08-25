@@ -1,6 +1,6 @@
 #![allow(unused)]
 
-const POC_VERSION: &str = "0.2.1";
+const VERSION: &str = "0.2.2";
 
 use colored::*;
 use regex::Regex;

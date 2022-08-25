@@ -163,7 +163,7 @@ fn show_help() {
     println!(
         "    {} {} {} {}",
         theme.color_rgb("comp", &theme.grey_mouse),
-        theme.color_rgb("..", &theme.grey_mouse),
+        theme.color_rgb("..", &theme.charcoal_cream),
         theme.color_rgb("command interpreter", &theme.cream_bold),
         theme.color_rgb(env!("CARGO_PKG_VERSION"), &theme.grey_mouse),
     );

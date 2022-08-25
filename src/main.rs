@@ -1,12 +1,11 @@
 use std::env;
 use std::fs;
 use std::path::Path;
-
 use colored::ColoredString;
 
-mod cmdin;
-mod poc;
+mod comp;
 mod mona;
+mod poc;
 
 const RELEASE_STATE: &str = "b";
 
@@ -45,7 +44,7 @@ fn main() {
     let theme: poc::Theme = poc::Theme::new();
 
     // construct command interpreter
-    let mut interpreter = cmdin::Interpreter::new();
+    let mut interpreter = comp::Interpreter::new();
 
     // get command arguments
     let mut args: Vec<String> = env::args().collect();
@@ -344,8 +343,8 @@ fn level_map(level: u32) -> &'static str {
 }
 
 #[cfg(test)]
-mod comp_tests {
-    use crate::cmdin::Interpreter;
+mod unit_test {
+    use crate::comp::Interpreter;
 
     #[test]
     fn test_core() {

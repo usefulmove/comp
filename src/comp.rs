@@ -79,6 +79,8 @@ impl Interpreter {
         self.compose_native("abs", Self::c_abs); // absolute value
         self.compose_native("round", Self::c_round); // round
         self.compose_native("int", Self::c_round);
+        self.compose_native("floor", Self::c_floor); // floor
+        self.compose_native("ceil", Self::c_ceiling); // ceiling
         self.compose_native("pos", Self::c_pos);
         self.compose_native("inv", Self::c_inv); // invert (1/x)
         self.compose_native("sqrt", Self::c_sqrt); // square root
@@ -362,8 +364,8 @@ impl Interpreter {
         } else {
             eprintln!(
                 "  {}: [{}] operation called on empty stack",
-               self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
-               self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+                self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
+                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
             );
             // do not stop execution
         }
@@ -584,6 +586,22 @@ impl Interpreter {
         let a: f64 = self.pop_stack_float();
 
         self.stack.push((a.round()).to_string());
+    }
+
+    pub fn c_floor(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: f64 = self.pop_stack_float();
+
+        self.stack.push(a.floor().to_string());
+    }
+
+    pub fn c_ceiling(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: f64 = self.pop_stack_float();
+
+        self.stack.push(a.ceil().to_string());
     }
 
     pub fn c_pos(&mut self, op: &str) {

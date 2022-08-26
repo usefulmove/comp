@@ -188,7 +188,7 @@ impl Interpreter {
                     self.theme.color_rgb("error", &self.theme.red_bold),
                     self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
-                std::process::exit(exit_code::USAGE_ERROR);
+                std::process::exit(exitcode::USAGE);
             }
         }
     }
@@ -210,7 +210,7 @@ impl Interpreter {
                     self.theme.color_rgb("error", &self.theme.red_bold),
                     self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
-                std::process::exit(exit_code::USAGE_ERROR);
+                std::process::exit(exitcode::USAGE);
             }
         }
     }
@@ -227,7 +227,7 @@ impl Interpreter {
                    self.theme.color_rgb("error", &self.theme.red_bold),
                    self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
-                std::process::exit(exit_code::USAGE_ERROR);
+                std::process::exit(exitcode::USAGE);
             }
         }
     }
@@ -244,7 +244,7 @@ impl Interpreter {
                    self.theme.color_rgb("error", &self.theme.red_bold),
                    self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
-                std::process::exit(exit_code::USAGE_ERROR);
+                std::process::exit(exitcode::USAGE);
             }
         }
     }
@@ -261,7 +261,7 @@ impl Interpreter {
                    self.theme.color_rgb("error", &self.theme.red_bold),
                    self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
-                std::process::exit(exit_code::USAGE_ERROR);
+                std::process::exit(exitcode::USAGE);
             }
         }
     }
@@ -279,7 +279,7 @@ impl Interpreter {
                    self.theme.color_rgb("error", &self.theme.red_bold),
                    self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
-                std::process::exit(exit_code::USAGE_ERROR);
+                std::process::exit(exitcode::USAGE);
             }
         }
     }
@@ -297,7 +297,7 @@ impl Interpreter {
                    self.theme.color_rgb("error", &self.theme.red_bold),
                    self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
-                std::process::exit(exit_code::USAGE_ERROR);
+                std::process::exit(exitcode::USAGE);
             }
         }
     }
@@ -315,7 +315,7 @@ impl Interpreter {
                    self.theme.color_rgb("error", &self.theme.red_bold),
                    self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
                 );
-                std::process::exit(exit_code::USAGE_ERROR);
+                std::process::exit(exitcode::USAGE);
             }
         }
     }
@@ -349,7 +349,7 @@ impl Interpreter {
                self.theme.color_rgb("error", &self.theme.red_bold),
                self.theme.color_rgb(command, &self.theme.blue_coffee_bold),
             );
-            std::process::exit(exit_code::USAGE_ERROR);
+            std::process::exit(exitcode::USAGE);
         }
     }
 
@@ -975,7 +975,7 @@ impl Interpreter {
                self.theme.color_rgb("error", &self.theme.red_bold),
                self.theme.color_rgb(&she, &self.theme.blue_coffee_bold),
             );
-            std::process::exit(exit_code::USAGE_ERROR);
+            std::process::exit(exitcode::USAGE);
         }
 
         let rsh: String = she[..2].to_string();

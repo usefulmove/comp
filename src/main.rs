@@ -72,7 +72,7 @@ fn main() {
                     "  {}: no file path provided",
                     theme.color_rgb("error", &theme.red_bold),
                 );
-                std::process::exit(exit_code::NO_INPUT);
+                std::process::exit(exitcode::NOINPUT);
             }
 
             // read file contents
@@ -86,7 +86,7 @@ fn main() {
                     theme.color_rgb("error", &theme.red_bold),
                     theme.color_rgb(&path.display().to_string(), &theme.blue_coffee_bold),
                 );
-                std::process::exit(exit_code::OS_FILE_ERROR);
+                std::process::exit(exitcode::OSFILE);
             }
 
             let file_contents: String = file_contents.unwrap();
@@ -132,7 +132,7 @@ fn main() {
         interpreter.config.monochrome,
     );
 
-    std::process::exit(exit_code::SUCCESS);
+    std::process::exit(exitcode::OK);
 } // main
 
 struct BoxedClosure<'a> {

@@ -1205,16 +1205,15 @@ impl Interpreter {
 
         match n {
             n if n < 2. => 1.,
-            _   => n * Self::factorial(n - 1.),
+            _           => n * Self::factorial(n - 1.),
         }
     }
 
     // greatest common divisor
     pub fn gcd(a: u64, b: u64) -> u64 {
-        if b != 0 {
-            Self::gcd(b, a % b)
-        } else {
-            a
+        match b {
+            b if b != 0 => Self::gcd(b, a % b),
+            _           => a,
         }
     }
 

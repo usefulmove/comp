@@ -413,8 +413,8 @@ impl Interpreter {
 
         // add ops to execute anonymous function on each stack element
         for _ in 0..stack_len {
-            self.ops.insert(0, "roll".to_string());
-            self.ops.insert(0, "_".to_string());
+            self.ops.insert(0, String::from("roll"));
+            self.ops.insert(0, String::from("_"));
         }
     }
 
@@ -452,7 +452,7 @@ impl Interpreter {
         // create new anonymous function instance
         self.fns.push(
             Function {
-                name: "_".to_string(),
+                name: String::from("_"),
                 fops: Vec::new(),
             }
         );
@@ -1233,7 +1233,7 @@ impl Interpreter {
 
         let home_folder: String = match home::home_dir() {
             Some(dir) => dir.to_str().unwrap().to_string(),
-            _ => "".to_string(),
+            _ => String::from(""),
         };
 
         let config_filename: String = format!("{}/{}", home_folder, filename);
@@ -1273,7 +1273,7 @@ impl Interpreter {
 
         let home_folder: String = match home::home_dir() {
             Some(dir) => dir.to_str().unwrap().to_string(),
-            _ => "".to_string(),
+            _ => String::from(""),
         };
 
         let config_filename: String = format!("{}/{}", home_folder, filename);

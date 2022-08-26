@@ -50,7 +50,7 @@ fn main() {
 
     // if no arguments are passed, behave as if help flag was passed
     if args.len() <= 1 {
-        args.push("help".to_string());
+        args.push(String::from("help"));
     }
 
     match args[1].as_str() {

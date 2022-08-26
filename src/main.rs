@@ -341,6 +341,7 @@ fn level_map(level: u32) -> &'static str {
     ret
 }
 
+
 #[cfg(test)]
 mod unit_test {
     use crate::comp::Interpreter;
@@ -583,6 +584,9 @@ mod unit_test {
 
         assert!(test_interc.pop_stack_float() == 4.);
     }
+
+
+    /* unit tests ----------------------------------------------------------- */
 
     #[test]
     fn test_conv() {

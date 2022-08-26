@@ -171,7 +171,7 @@ impl Interpreter {
         }
     }
 
-    // pop from stack helpers --------------------------------------------------
+    /* pop from stack helper functions */
     pub fn _pop_stack_string(&mut self) -> String {
         self.stack.pop().unwrap()
     }
@@ -339,7 +339,6 @@ impl Interpreter {
         let value: u8 = op.parse::<u8>()?;
         Ok(value)
     }
-    // -------------------------------------------------------------------------
 
     // confirm stack depth
     fn check_stack_error(&self, min_depth: usize, command: &str) {
@@ -354,8 +353,8 @@ impl Interpreter {
         }
     }
 
-    // command functions -------------------------------------------------------
-    // ---- stack manipulation -------------------------------------------------
+    /* command functions ---------------------------------------------------- */
+    /* ---- stack manipulation ---------------------------------------------- */
 
     pub fn c_drop(&mut self, op: &str) {
         if !self.stack.is_empty() {
@@ -465,7 +464,7 @@ impl Interpreter {
         self.ops.remove(0); // remove "|"
     }
 
-    // ---- memory usage -------------------------------------------------------
+    /* ---- memory usage ---------------------------------------------------- */
 
     pub fn c_store_a(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
@@ -497,7 +496,7 @@ impl Interpreter {
         self.stack.push(self.mem_c.to_string());
     }
 
-    // ---- math operations ----------------------------------------------------
+    /* ---- math operations ------------------------------------------------- */
 
     pub fn c_add(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
@@ -867,7 +866,7 @@ impl Interpreter {
         self.stack.push(num.to_string());
     }
 
-    // -- conversions ----------------------------------------------------------
+    /* ---- conversions ----------------------------------------------------- */
 
     pub fn c_dechex(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
@@ -1018,7 +1017,7 @@ impl Interpreter {
         self.stack.push((a * self.config.conversion_constant).to_string());
     }
 
-    // -- control flow ---------------------------------------------------------
+    /* ---- control flow ---------------------------------------------------- */
 
     pub fn c_function(&mut self, _op: &str) {
         // get function name
@@ -1140,7 +1139,7 @@ impl Interpreter {
         );
     }
 
-    // -- RGB colors -----------------------------------------------------------
+    /* ---- RGB colors ------------------------------------------------------ */
 
     pub fn c_rgb(&mut self, op: &str) {
         Self::check_stack_error(self, 3, op);
@@ -1170,7 +1169,7 @@ impl Interpreter {
         self.stack.push(self.output_rgb_hex_bg(coq::Color{r, g, b, bold: false}));
     }
 
-    // -- configuration --------------------------------------------------------
+    /* ---- configuration --------------------------------------------------- */
 
     pub fn c_save_config(&mut self, _op: &str) {
         // save configuration to file

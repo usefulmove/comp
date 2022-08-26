@@ -1,11 +1,10 @@
+use colored::ColoredString;
 use std::env;
 use std::fs;
 use std::path::Path;
-use colored::ColoredString;
 
 mod comp;
 mod mona;
-mod coq;
 
 const RELEASE_STATE: &str = "c";
 

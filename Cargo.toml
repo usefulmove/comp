@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 colored = "2"
+coq = { path = "../coq" }
 exit-code = "1.0.0"
 home = "0.5.3"
 rand = "0.8.5"

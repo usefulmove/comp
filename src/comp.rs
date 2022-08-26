@@ -4,8 +4,6 @@ use std::fs;
 use std::path::Path;
 use std::num::{ParseFloatError, ParseIntError};
 
-use crate::coq;
-
 pub struct Interpreter {
     pub stack: Vec<String>,
     pub mem_a: f64,

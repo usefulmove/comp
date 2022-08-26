@@ -44,12 +44,21 @@ name = "comp"
 version = "0.23.0"
 dependencies = [
  "colored",
+ "coq",
  "exit-code",
  "home",
  "rand",
  "regex",
  "serde",
  "toml",
+]
+
+[[package]]
+name = "coq"
+version = "0.3.0"
+dependencies = [
+ "colored",
+ "regex",
 ]
 
 [[package]]

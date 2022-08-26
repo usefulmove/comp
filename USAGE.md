@@ -184,6 +184,18 @@ The values `a b c` can be stored using the store command (e.g, `sa`) into memory
   10
 ```
 
+### floor
+```
+% comp 10.2 floor
+  10
+```
+
+### ceiling
+```
+% comp 10.2 ceil
+  11
+```
+
 ### invert (1/x)
 ```
 % comp 3 inv

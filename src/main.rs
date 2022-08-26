@@ -342,6 +342,8 @@ fn level_map(level: u32) -> &'static str {
 }
 
 
+/* --- unit tests --- */
+
 #[cfg(test)]
 mod unit_test {
     use crate::comp::Interpreter;
@@ -624,6 +626,22 @@ mod unit_test {
         test_interc.c_avg_all("");
 
         assert!(test_interc.pop_stack_float() == 2.5);
+    }
+
+    #[test]
+    fn test_misc() {
+        let mut test_interc = Interpreter::new();
+
+        test_interc.stack.push(10.1.to_string());
+        test_interc.c_round("");
+        test_interc.stack.push(10.1.to_string());
+        test_interc.c_floor("");
+        test_interc.stack.push(10.1.to_string());
+        test_interc.c_ceiling("");
+
+        assert!(test_interc.pop_stack_uint() == 11);
+        assert!(test_interc.pop_stack_uint() == 10);
+        assert!(test_interc.pop_stack_uint() == 10);
     }
 
 }

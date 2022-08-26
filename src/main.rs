@@ -6,7 +6,7 @@ use std::path::Path;
 mod comp;
 mod mona;
 
-const RELEASE_STATE: &str = "c";
+const RELEASE_STATE: &str = "d";
 
 /*
 

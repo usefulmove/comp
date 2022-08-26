@@ -1203,10 +1203,9 @@ impl Interpreter {
     pub fn factorial(o: f64) -> f64 {
         let n = o.floor();
 
-        if n < 2. {
-            1.
-        } else {
-            n * Self::factorial(n - 1.)
+        match n {
+            n if n < 2. => 1.,
+            _   => n * Self::factorial(n - 1.),
         }
     }
 

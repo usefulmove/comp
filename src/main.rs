@@ -350,56 +350,56 @@ mod unit_test {
 
     #[test]
     fn test_core() {
-        let mut test_interc = Interpreter::new();
+        let mut intp = Interpreter::new();
 
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.stack.push(3.to_string());
-        test_interc.stack.push(4.to_string());
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.stack.push(3.to_string());
+        intp.stack.push(4.to_string());
 
-        test_interc.c_add_one("");
-        test_interc.c_add_one("");
-        test_interc.c_add_one("");
-        test_interc.c_sub_one("");
-        test_interc.c_sub_one("");
-        test_interc.c_sub_one("");
+        intp.c_add_one("");
+        intp.c_add_one("");
+        intp.c_add_one("");
+        intp.c_sub_one("");
+        intp.c_sub_one("");
+        intp.c_sub_one("");
 
-        test_interc.c_rot("");
-        test_interc.c_rot("");
-        test_interc.c_roll("");
-        test_interc.c_roll("");
+        intp.c_rot("");
+        intp.c_rot("");
+        intp.c_roll("");
+        intp.c_roll("");
 
-        test_interc.c_degrad("");
-        test_interc.c_cos("");
-        test_interc.c_acos("");
-        test_interc.c_sin("");
-        test_interc.c_asin("");
-        test_interc.c_tan("");
-        test_interc.c_atan("");
-        test_interc.c_raddeg("");
-        test_interc.c_round("");
-        test_interc.c_roll("");
-        test_interc.c_roll("");
-        test_interc.c_roll("");
-        test_interc.c_roll("");
-        test_interc.c_dup("");
-        test_interc.c_drop("");
-        test_interc.c_swap("");
-        test_interc.c_swap("");
-        test_interc.c_add("");
-        test_interc.c_sub("");
-        test_interc.c_div("");
+        intp.c_degrad("");
+        intp.c_cos("");
+        intp.c_acos("");
+        intp.c_sin("");
+        intp.c_asin("");
+        intp.c_tan("");
+        intp.c_atan("");
+        intp.c_raddeg("");
+        intp.c_round("");
+        intp.c_roll("");
+        intp.c_roll("");
+        intp.c_roll("");
+        intp.c_roll("");
+        intp.c_dup("");
+        intp.c_drop("");
+        intp.c_swap("");
+        intp.c_swap("");
+        intp.c_add("");
+        intp.c_sub("");
+        intp.c_div("");
 
-        test_interc.stack.push(10.to_string());
-        test_interc.c_log2("");
-        test_interc.stack.push(10.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.c_logn("");
-        test_interc.c_sub("");
-        test_interc.c_round("");
-        test_interc.c_add("");
+        intp.stack.push(10.to_string());
+        intp.c_log2("");
+        intp.stack.push(10.to_string());
+        intp.stack.push(2.to_string());
+        intp.c_logn("");
+        intp.c_sub("");
+        intp.c_round("");
+        intp.c_add("");
 
-        assert!(test_interc.pop_stack_float() == -0.2);
+        assert!(intp.pop_stack_float() == -0.2);
     }
 
     #[test]
@@ -410,181 +410,181 @@ mod unit_test {
 
     #[test]
     fn test_roots() {
-        let mut test_interc = Interpreter::new();
+        let mut intp = Interpreter::new();
 
-        test_interc.stack.push(2.to_string());
-        test_interc.c_dup("");
-        test_interc.c_sqrt("");
-        test_interc.c_swap("");
-        test_interc.stack.push(32.to_string());
-        test_interc.c_exp("");
-        test_interc.stack.push((32. * 2.).to_string());
-        test_interc.c_throot("");
+        intp.stack.push(2.to_string());
+        intp.c_dup("");
+        intp.c_sqrt("");
+        intp.c_swap("");
+        intp.stack.push(32.to_string());
+        intp.c_exp("");
+        intp.stack.push((32. * 2.).to_string());
+        intp.c_throot("");
 
-        assert!(test_interc.pop_stack_float() == test_interc.pop_stack_float());
+        assert!(intp.pop_stack_float() == intp.pop_stack_float());
 
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push((-2.).to_string());
-        test_interc.c_chs("");
-        test_interc.c_chs("");
-        test_interc.c_pi("");
-        test_interc.c_mult("");
-        test_interc.c_pi("");
-        test_interc.stack.push(2.to_string());
-        test_interc.c_exp("");
-        test_interc.stack.push(1.to_string());
-        test_interc.c_add("");
-        test_interc.c_proot("");
-        test_interc.c_add_all("");
-        test_interc.stack.push(2.to_string());
-        test_interc.c_div("");
-        test_interc.c_pi("");
+        intp.stack.push(1.to_string());
+        intp.stack.push((-2.).to_string());
+        intp.c_chs("");
+        intp.c_chs("");
+        intp.c_pi("");
+        intp.c_mult("");
+        intp.c_pi("");
+        intp.stack.push(2.to_string());
+        intp.c_exp("");
+        intp.stack.push(1.to_string());
+        intp.c_add("");
+        intp.c_proot("");
+        intp.c_add_all("");
+        intp.stack.push(2.to_string());
+        intp.c_div("");
+        intp.c_pi("");
 
-        assert!(test_interc.pop_stack_float() == test_interc.pop_stack_float());
+        assert!(intp.pop_stack_float() == intp.pop_stack_float());
     }
 
     #[test]
     #[should_panic]
     fn test_cls() {
-        let mut test_interc = Interpreter::new();
+        let mut intp = Interpreter::new();
 
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.stack.push(3.to_string());
-        test_interc.stack.push(4.to_string());
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.stack.push(3.to_string());
-        test_interc.stack.push(4.to_string());
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.stack.push(3.to_string());
-        test_interc.stack.push(4.to_string());
-        test_interc.c_cls("");
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.stack.push(3.to_string());
+        intp.stack.push(4.to_string());
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.stack.push(3.to_string());
+        intp.stack.push(4.to_string());
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.stack.push(3.to_string());
+        intp.stack.push(4.to_string());
+        intp.c_cls("");
 
-        assert!(test_interc.pop_stack_float() == 0.);
+        assert!(intp.pop_stack_float() == 0.);
     }
 
     #[test]
     fn test_mem() {
-        let mut test_interc = Interpreter::new();
+        let mut intp = Interpreter::new();
 
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.stack.push(3.to_string());
-        test_interc.stack.push(4.to_string());
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.stack.push(3.to_string());
-        test_interc.stack.push(4.to_string());
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.stack.push(3.to_string());
-        test_interc.stack.push(4.to_string());
-        test_interc.c_chs("");
-        test_interc.c_abs("");
-        test_interc.c_inv("");
-        test_interc.c_inv("");
-        test_interc.c_pi("");
-        test_interc.c_euler("");
-        test_interc.stack.push(0.to_string());
-        test_interc.c_store_b(""); // 0
-        test_interc.c_store_a(""); // e
-        test_interc.c_store_c(""); // pi
-        test_interc.c_cls("");
-        test_interc.c_push_b(""); // 0
-        test_interc.c_push_c(""); // pi
-        test_interc.c_add("");
-        test_interc.c_push_a(""); // e
-        test_interc.c_add("");
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.stack.push(3.to_string());
+        intp.stack.push(4.to_string());
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.stack.push(3.to_string());
+        intp.stack.push(4.to_string());
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.stack.push(3.to_string());
+        intp.stack.push(4.to_string());
+        intp.c_chs("");
+        intp.c_abs("");
+        intp.c_inv("");
+        intp.c_inv("");
+        intp.c_pi("");
+        intp.c_euler("");
+        intp.stack.push(0.to_string());
+        intp.c_store_b(""); // 0
+        intp.c_store_a(""); // e
+        intp.c_store_c(""); // pi
+        intp.c_cls("");
+        intp.c_push_b(""); // 0
+        intp.c_push_c(""); // pi
+        intp.c_add("");
+        intp.c_push_a(""); // e
+        intp.c_add("");
 
-        assert!(test_interc.pop_stack_float() == std::f64::consts::PI + std::f64::consts::E);
+        assert!(intp.pop_stack_float() == std::f64::consts::PI + std::f64::consts::E);
     }
 
     #[test]
     fn test_cmp() {
-        let mut test_interc = Interpreter::new();
+        let mut intp = Interpreter::new();
 
-        test_interc.stack.push(10.to_string());
-        test_interc.c_log10("");
-        test_interc.c_euler("");
-        test_interc.c_ln("");
-        test_interc.stack.push(105.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.c_mod("");
-        test_interc.stack.push(3049.to_string());
-        test_interc.stack.push(1009.to_string());
-        test_interc.c_gcd("");
-        test_interc.c_mult_all("");
+        intp.stack.push(10.to_string());
+        intp.c_log10("");
+        intp.c_euler("");
+        intp.c_ln("");
+        intp.stack.push(105.to_string());
+        intp.stack.push(2.to_string());
+        intp.c_mod("");
+        intp.stack.push(3049.to_string());
+        intp.stack.push(1009.to_string());
+        intp.c_gcd("");
+        intp.c_mult_all("");
 
-        assert!(test_interc.pop_stack_float() == 1.);
+        assert!(intp.pop_stack_float() == 1.);
 
-        test_interc.stack.push(20.to_string());
-        test_interc.c_fact("");
+        intp.stack.push(20.to_string());
+        intp.c_fact("");
 
-        assert!(test_interc.pop_stack_float() == 2432902008176640000.);
+        assert!(intp.pop_stack_float() == 2432902008176640000.);
     }
 
     #[test]
     fn test_rand() {
-        let mut test_interc = Interpreter::new();
+        let mut intp = Interpreter::new();
 
-        test_interc.stack.push(2.to_string());
-        test_interc.c_rand("");
-        test_interc.stack.push(2.to_string());
-        test_interc.c_rand("");
-        test_interc.stack.push(2.to_string());
-        test_interc.c_rand("");
-        test_interc.stack.push(2.to_string());
-        test_interc.c_rand("");
-        test_interc.stack.push(2.to_string());
-        test_interc.c_rand("");
-        test_interc.stack.push(2.to_string());
-        test_interc.c_rand("");
-        test_interc.stack.push(2.to_string());
-        test_interc.c_rand("");
-        test_interc.stack.push(2.to_string());
-        test_interc.c_rand("");
-        test_interc.stack.push(2.to_string());
-        test_interc.c_rand("");
-        test_interc.stack.push(2.to_string());
-        test_interc.c_rand("");
-        test_interc.c_max("");
+        intp.stack.push(2.to_string());
+        intp.c_rand("");
+        intp.stack.push(2.to_string());
+        intp.c_rand("");
+        intp.stack.push(2.to_string());
+        intp.c_rand("");
+        intp.stack.push(2.to_string());
+        intp.c_rand("");
+        intp.stack.push(2.to_string());
+        intp.c_rand("");
+        intp.stack.push(2.to_string());
+        intp.c_rand("");
+        intp.stack.push(2.to_string());
+        intp.c_rand("");
+        intp.stack.push(2.to_string());
+        intp.c_rand("");
+        intp.stack.push(2.to_string());
+        intp.c_rand("");
+        intp.stack.push(2.to_string());
+        intp.c_rand("");
+        intp.c_max("");
 
-        assert!(test_interc.pop_stack_float() <= 1.);
+        assert!(intp.pop_stack_float() <= 1.);
     }
 
     #[test]
     fn test_minmax() {
-        let mut test_interc = Interpreter::new();
+        let mut intp = Interpreter::new();
 
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.c_min("");
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.c_min("");
 
-        assert!(test_interc.pop_stack_float() == 1.);
+        assert!(intp.pop_stack_float() == 1.);
 
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.c_max("");
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.c_max("");
 
-        assert!(test_interc.pop_stack_float() == 2.);
+        assert!(intp.pop_stack_float() == 2.);
 
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.stack.push(3.to_string());
-        test_interc.stack.push(4.to_string());
-        test_interc.c_min_all("");
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.stack.push(3.to_string());
+        intp.stack.push(4.to_string());
+        intp.c_min_all("");
 
-        assert!(test_interc.pop_stack_float() == 1.);
+        assert!(intp.pop_stack_float() == 1.);
 
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.stack.push(3.to_string());
-        test_interc.stack.push(4.to_string());
-        test_interc.c_max_all("");
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.stack.push(3.to_string());
+        intp.stack.push(4.to_string());
+        intp.c_max_all("");
 
-        assert!(test_interc.pop_stack_float() == 4.);
+        assert!(intp.pop_stack_float() == 4.);
     }
 
 
@@ -592,56 +592,56 @@ mod unit_test {
 
     #[test]
     fn test_conv() {
-        let mut test_interc = Interpreter::new();
+        let mut intp = Interpreter::new();
 
-        test_interc.stack.push(100.to_string());
-        test_interc.c_celfah("");
-        test_interc.c_fahcel("");
-        test_interc.c_dechex("");
-        test_interc.c_hexbin("");
-        test_interc.c_binhex("");
-        test_interc.c_hexdec("");
-        test_interc.c_decbin("");
-        test_interc.c_bindec("");
-        test_interc.c_ftm("");
-        test_interc.c_mft("");
+        intp.stack.push(100.to_string());
+        intp.c_celfah("");
+        intp.c_fahcel("");
+        intp.c_dechex("");
+        intp.c_hexbin("");
+        intp.c_binhex("");
+        intp.c_hexdec("");
+        intp.c_decbin("");
+        intp.c_bindec("");
+        intp.c_ftm("");
+        intp.c_mft("");
 
-        assert!(test_interc.pop_stack_float() == 100.);
+        assert!(intp.pop_stack_float() == 100.);
     }
 
     #[test]
     fn test_avg() {
-        let mut test_interc = Interpreter::new();
+        let mut intp = Interpreter::new();
 
-        test_interc.stack.push((-2).to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.c_avg("");
+        intp.stack.push((-2).to_string());
+        intp.stack.push(2.to_string());
+        intp.c_avg("");
 
-        assert!(test_interc.pop_stack_float() == 0.);
+        assert!(intp.pop_stack_float() == 0.);
 
-        test_interc.stack.push(1.to_string());
-        test_interc.stack.push(2.to_string());
-        test_interc.stack.push(3.to_string());
-        test_interc.stack.push(4.to_string());
-        test_interc.c_avg_all("");
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.stack.push(3.to_string());
+        intp.stack.push(4.to_string());
+        intp.c_avg_all("");
 
-        assert!(test_interc.pop_stack_float() == 2.5);
+        assert!(intp.pop_stack_float() == 2.5);
     }
 
     #[test]
     fn test_misc() {
-        let mut test_interc = Interpreter::new();
+        let mut intp = Interpreter::new();
 
-        test_interc.stack.push(10.1.to_string());
-        test_interc.c_round("");
-        test_interc.stack.push(10.1.to_string());
-        test_interc.c_floor("");
-        test_interc.stack.push(10.1.to_string());
-        test_interc.c_ceiling("");
+        intp.stack.push(10.1.to_string());
+        intp.c_round("");
+        intp.stack.push(10.1.to_string());
+        intp.c_floor("");
+        intp.stack.push(10.1.to_string());
+        intp.c_ceiling("");
 
-        assert!(test_interc.pop_stack_uint() == 11);
-        assert!(test_interc.pop_stack_uint() == 10);
-        assert!(test_interc.pop_stack_uint() == 10);
+        assert!(intp.pop_stack_uint() == 11);
+        assert!(intp.pop_stack_uint() == 10);
+        assert!(intp.pop_stack_uint() == 10);
     }
 
 } // unit_test

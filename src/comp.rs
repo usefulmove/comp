@@ -6,6 +6,7 @@ use std::num::{ParseFloatError, ParseIntError};
 
 pub struct Interpreter {
     pub stack: Vec<String>,
+    pub mem: HashMap<String, String>,
     pub mem_a: f64,
     pub mem_b: f64,
     pub mem_c: f64,
@@ -21,6 +22,7 @@ impl Interpreter {
     pub fn new() -> Self {
         let mut cint = Self {
             stack: Vec::new(),
+            mem: HashMap::new(), // local interpreter memory
             mem_a: 0., // local interpreter memory
             mem_b: 0.,
             mem_c: 0.,
@@ -60,6 +62,8 @@ impl Interpreter {
         self.compose_native("map", Self::c_map); // map annonymous function to stack
         self.compose_native("..", Self::c_range); // add range of numbers to stack
         /* memory usage */
+        self.compose_native("store", Self::c_store); // store (pop value off stack and store in specified memory)
+        self.compose_native("mem", Self::c_store);
         self.compose_native("sa", Self::c_store_a); // store (pop value off stack and store)
         self.compose_native("_a", Self::c_push_a); // retrieve (push stored value onto the stack)
         self.compose_native("sb", Self::c_store_b); // store
@@ -169,6 +173,16 @@ impl Interpreter {
             None => (),
         }
 
+        /* user memory */
+        match self.is_user_memory(op) {
+            Some(value) => {
+                // user-defined memory - push value onto stack
+                self.ops.insert(0, value.clone());
+                return;
+            }
+            None => (),
+        }
+
         /* neither native command nor user-defined function */
 
         // push value onto stack
@@ -176,7 +190,7 @@ impl Interpreter {
     }
 
     /* pop from stack helper functions */
-    pub fn _pop_stack_string(&mut self) -> String {
+    pub fn pop_stack_string(&mut self) -> String {
         self.stack.pop().unwrap()
     }
 
@@ -469,6 +483,15 @@ impl Interpreter {
     }
 
     /* ---- memory usage ---------------------------------------------------- */
+
+    pub fn c_store(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let key = self.pop_stack_string();
+        let val = self.pop_stack_string();
+
+        self.mem.insert(key, val);
+    }
 
     pub fn c_store_a(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
@@ -1214,6 +1237,14 @@ impl Interpreter {
                     return Some(i);
                 }
             }
+        }
+        None
+    }
+
+    fn is_user_memory(&self, op: &str) -> Option<String> {
+        // is operator a user defined memory item?
+        if self.mem.contains_key(op) {
+            return Some(self.mem[op].clone());
         }
         None
     }

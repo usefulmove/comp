@@ -62,8 +62,7 @@ impl Interpreter {
         self.compose_native("map", Self::c_map); // map annonymous function to stack
         self.compose_native("..", Self::c_range); // add range of numbers to stack
         /* memory usage */
-        self.compose_native("store", Self::c_store); // store (pop value off stack and store in specified memory)
-        self.compose_native("mem", Self::c_store);
+        self.compose_native("store", Self::c_store); // store (pop value off stack and store in generic memory)
         self.compose_native("sa", Self::c_store_a); // store (pop value off stack and store)
         self.compose_native("_a", Self::c_push_a); // retrieve (push stored value onto the stack)
         self.compose_native("sb", Self::c_store_b); // store

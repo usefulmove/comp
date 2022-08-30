@@ -164,13 +164,15 @@ impl Interpreter {
                     let fop: String = self.fns[index].fops[i].clone();
                     self.ops.insert(0, fop);
                 }
+                return;
             }
-            None => {
-                // neither native command nor user-defined function
-                // push value onto stack
-                self.stack.push(op.to_string());
-            }
+            None => (),
         }
+
+        /* neither native command nor user-defined function */
+
+        // push value onto stack
+        self.stack.push(op.to_string());
     }
 
     /* pop from stack helper functions */

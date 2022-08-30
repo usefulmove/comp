@@ -118,7 +118,7 @@ Values can be stored in the locations `a b c` using the store command (e.g, `sa`
 ### store and retrieve (general)
 Additional values can be stored using more generic text variables that are not associated with either built-in commands or user-defined functions using the `store` command as shown below.
 ```
-% comp 1 2 3 save_here store 4 5 6 cls save_here
+% comp 1 2 3 saved_here store 4 5 6 cls saved_here
   3
 ```
 

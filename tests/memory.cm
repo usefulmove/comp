@@ -1,0 +1,11 @@
+618
+memloc
+store
+1 100 1 ..
+cls
+512 dup
+memloc2
+store
+memloc3
+store
+memloc2

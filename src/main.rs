@@ -2,6 +2,7 @@ use colored::ColoredString;
 use std::env;
 use std::fs;
 use std::path::Path;
+use std::process::exit;
 
 mod comp;
 mod mona;
@@ -72,7 +73,7 @@ fn main() {
                     "  {}: no file path provided",
                     theme.color_rgb("error", &theme.red_bold),
                 );
-                std::process::exit(exitcode::NOINPUT);
+                exit(exitcode::NOINPUT);
             }
 
             // read file contents
@@ -86,7 +87,7 @@ fn main() {
                     theme.color_rgb("error", &theme.red_bold),
                     theme.color_rgb(&path.display().to_string(), &theme.blue_coffee_bold),
                 );
-                std::process::exit(exitcode::OSFILE);
+                exit(exitcode::OSFILE);
             }
 
             let file_contents: String = file_contents.unwrap();
@@ -132,7 +133,7 @@ fn main() {
         interpreter.config.monochrome,
     );
 
-    std::process::exit(exitcode::OK);
+    exit(exitcode::OK);
 } // main
 
 struct BoxedClosure<'a> {

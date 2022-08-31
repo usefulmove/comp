@@ -60,6 +60,7 @@ impl Interpreter {
         self.compose_native("roll", Self::c_roll); // roll stack
         self.compose_native("rot", Self::c_rot); // rotate stack (reverse direction from roll)
         self.compose_native("map", Self::c_map); // map annonymous function to stack
+        self.compose_native("fold", Self::c_fold); // fold stack using annonymous function
         self.compose_native("..", Self::c_range); // add range of numbers to stack
         /* memory usage */
         self.compose_native("store", Self::c_store); // store (pop value off stack and store in generic memory)
@@ -119,8 +120,8 @@ impl Interpreter {
         self.compose_native("avg", Self::c_avg); // average
         self.compose_native("avg_", Self::c_avg_all); // average all
         /* control flow */
-        self.compose_native("(", Self::c_function); // function definition
-        self.compose_native("[", Self::c_lambda); // anonymous function definition
+        self.compose_native("(", Self::c_load_function); // function definition
+        self.compose_native("[", Self::c_load_lambda); // anonymous function definition
         self.compose_native("ifeq", Self::c_ifeq); // ifequal .. else
         self.compose_native("{", Self::c_comment); // function comment
         self.compose_native("peek", Self::c_peek); // peek at top of stack
@@ -182,7 +183,7 @@ impl Interpreter {
             None => (),
         }
 
-        /* neither native command nor user-defined function */
+        /* neither native command nor user-defined function nor user-defined memory */
 
         // push value onto stack
         self.stack.push(op.to_string());
@@ -429,8 +430,19 @@ impl Interpreter {
 
         // add ops to execute anonymous function on each stack element
         for _ in 0..stack_len {
-            self.ops.insert(0, String::from("roll"));
-            self.ops.insert(0, String::from("_"));
+            self.ops.insert(0, String::from("roll")); // roll stack
+            self.ops.insert(0, String::from("_")); // execute anonymous function
+        }
+    }
+
+    pub fn c_fold(&mut self, op: &str) {
+        Self::check_stack_error(self, 3, op);
+
+        let stack_len: usize = self.stack.len();
+
+        for _ in 0..(stack_len - 1) {
+            self.ops.insert(0, String::from("_")); // roll stack
+            self.ops.insert(0, String::from("rot")); // rotate stack
         }
     }
 
@@ -456,7 +468,7 @@ impl Interpreter {
 
     }
 
-    pub fn c_lambda(&mut self, _op: &str) {
+    pub fn c_load_lambda(&mut self, _op: &str) {
         // clear existing anonymous function definition
         match self.is_user_function("_") {
             Some(index) => {
@@ -1061,7 +1073,7 @@ impl Interpreter {
 
     /* ---- control flow ---------------------------------------------------- */
 
-    pub fn c_function(&mut self, _op: &str) {
+    pub fn c_load_function(&mut self, _op: &str) {
         // get function name
         let fn_name: String = self.ops.remove(0);
 
@@ -1186,12 +1198,6 @@ impl Interpreter {
     pub fn c_rgb(&mut self, op: &str) {
         Self::check_stack_error(self, 3, op);
 
-        //let b: u8 = match (self.pop_stack_float_pos() as u8) {
-        //    Ok(val) => val,
-        //    Err(e) => {
-        //        TODO
-        //    }
-        //}
         let b: u8 = self.pop_stack_float_pos() as u8;
         let g: u8 = self.pop_stack_float_pos() as u8;
         let r: u8 = self.pop_stack_float_pos() as u8;

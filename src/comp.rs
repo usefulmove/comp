@@ -77,6 +77,7 @@ impl Interpreter {
     }
 
     fn init(&mut self) {
+
         /* stack manipulation */
         self.compose_native("drop", Self::c_drop); // drop
         self.compose_native("dup", Self::c_dup); // duplicate
@@ -85,9 +86,8 @@ impl Interpreter {
         self.compose_native("clr", Self::c_cls); // clear stack
         self.compose_native("roll", Self::c_roll); // roll stack
         self.compose_native("rot", Self::c_rot); // rotate stack (reverse direction from roll)
-        self.compose_native("map", Self::c_map); // map annonymous function to stack
-        self.compose_native("fold", Self::c_fold); // fold stack using annonymous function
         self.compose_native("..", Self::c_range); // add range of numbers to stack
+
         /* memory usage */
         self.compose_native("store", Self::c_store); // store (pop value off stack and store in generic memory)
         self.compose_native("sa", Self::c_store_a); // store (pop value off stack and store)
@@ -96,6 +96,7 @@ impl Interpreter {
         self.compose_native("_b", Self::c_push_b); // retrieve
         self.compose_native("sc", Self::c_store_c); // store
         self.compose_native("_c", Self::c_push_c); // retrieve
+
         /* math operations */
         self.compose_native("+", Self::c_add); // add
         self.compose_native("+_", Self::c_sum); // sum (add all stack elements)
@@ -147,12 +148,14 @@ impl Interpreter {
         self.compose_native("max_", Self::c_max_all); // maximum all
         self.compose_native("avg", Self::c_avg); // average
         self.compose_native("avg_", Self::c_avg_all); // average all
+
         /* control flow */
         self.compose_native("(", Self::c_load_function); // function definition
         self.compose_native("[", Self::c_load_lambda); // anonymous function definition
         self.compose_native("ifeq", Self::c_ifeq); // ifequal .. else
         self.compose_native("{", Self::c_comment); // function comment
         self.compose_native("peek", Self::c_peek); // peek at top of stack
+
         /* conversion */
         self.compose_native("dec_hex", Self::c_dechex); // decimal to hexadecimal
         self.compose_native("hex_dec", Self::c_hexdec); // hexadecimal to decimal
@@ -172,12 +175,19 @@ impl Interpreter {
         self.compose_native("rgb_hex", Self::c_rgbhex); // RGB to hexadecimal string
         self.compose_native("tip", Self::c_tip); // calculate tip
         self.compose_native("a_b", Self::c_conv_const); // apply convert constant
-        /* rgb colors */
+
+        /* RGB colors */
         self.compose_native("rgb", Self::c_rgb); // show RGB color
         self.compose_native("rgbh", Self::c_rgbh); // show RGB color (hexadecimal)
+
+        /* higher-order functions */
+        self.compose_native("map", Self::c_map); // map annonymous function to stack
+        self.compose_native("fold", Self::c_fold); // fold stack using annonymous function
+
         /* configuration */
         self.compose_native("save_cfg", Self::c_save_config); // save configuration
         self.compose_native("show_cfg", Self::c_print_config); // show current configuration
+
     }
 
     pub fn process_node(&mut self, op: &str) {

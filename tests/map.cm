@@ -9,3 +9,7 @@ square_all
 [ 1 - ] map
 
 [ dup x ] map
+
+{ evaluate }
+
+sum 24573 -

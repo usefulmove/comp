@@ -28,4 +28,6 @@ rot rot roll roll
      10 log2 10 2 logn -
      +
 
- { return }
+ { evaluate }
+
+sum round 1252 -

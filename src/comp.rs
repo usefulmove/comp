@@ -5,6 +5,31 @@ use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 use std::process::exit;
 
+pub struct Function {
+    name: String,
+    fops: Vec<String>,
+}
+
+#[derive(Debug)]
+#[derive(Serialize, Deserialize)]
+pub struct Config {
+    pub show_stack_level: bool,
+    pub conversion_constant: f64,
+    pub monochrome: bool,
+    pub tip_percentage: f64,
+}
+
+impl Config {
+    // constructor
+    fn new() -> Self {
+        Self {
+            show_stack_level: true,
+            conversion_constant: 1.,
+            monochrome: false,
+            tip_percentage: 0.15,
+        }
+    }
+}
 pub struct Interpreter {
     pub stack: Vec<String>,
     pub mem: HashMap<String, String>,
@@ -1407,30 +1432,4 @@ impl Interpreter {
         cmds
     }
 
-}
-
-pub struct Function {
-    name: String,
-    fops: Vec<String>,
-}
-
-#[derive(Debug)]
-#[derive(Serialize, Deserialize)]
-pub struct Config {
-    pub show_stack_level: bool,
-    pub conversion_constant: f64,
-    pub monochrome: bool,
-    pub tip_percentage: f64,
-}
-
-impl Config {
-    // constructor
-    fn new() -> Self {
-        Self {
-            show_stack_level: true,
-            conversion_constant: 1.,
-            monochrome: false,
-            tip_percentage: 0.15,
-        }
-    }
 }

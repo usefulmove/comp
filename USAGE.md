@@ -9,6 +9,7 @@
 - [configuration](#commands-configuration)
 
 
+---
 ## Commands (stack manipulation)
 
 ### push onto stack
@@ -132,6 +133,7 @@ Additional values can be stored using more generic text variables that are not a
 ```
 
 
+---
 ## Commands (maths)
 
 ### add
@@ -501,6 +503,8 @@ Functions also can be defined in a file and used in operations passed after the 
   32
 ```
 
+
+---
 ## Commands (configuration)
 
 ### save configuration

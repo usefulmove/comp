@@ -1,0 +1,8 @@
+( fold tests )
+
+(
+  count
+    0 [ drop 1 + ] fold
+)
+
+1 618 1 .. count

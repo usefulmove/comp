@@ -178,7 +178,7 @@ impl Interpreter {
         match self.is_user_memory(op) {
             Some(value) => {
                 // user-defined memory - push value onto stack
-                self.ops.insert(0, value.clone());
+                self.ops.insert(0, value);
                 return;
             }
             None => (),

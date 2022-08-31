@@ -1,4 +1,4 @@
-( fold tests )
+{ fold tests }
 
 (
   count

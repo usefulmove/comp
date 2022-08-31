@@ -436,7 +436,7 @@ mod unit_test {
         intp.stack.push(1.to_string());
         intp.c_add("");
         intp.c_proot("");
-        intp.c_add_all("");
+        intp.c_sum("");
         intp.stack.push(2.to_string());
         intp.c_div("");
         intp.c_pi("");
@@ -516,7 +516,7 @@ mod unit_test {
         intp.stack.push(3049.to_string());
         intp.stack.push(1009.to_string());
         intp.c_gcd("");
-        intp.c_mult_all("");
+        intp.c_product("");
 
         assert!(intp.pop_stack_float() == 1.);
 

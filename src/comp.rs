@@ -73,12 +73,14 @@ impl Interpreter {
         self.compose_native("_c", Self::c_push_c); // retrieve
         /* math operations */
         self.compose_native("+", Self::c_add); // add
-        self.compose_native("+_", Self::c_add_all); // add all
+        self.compose_native("+_", Self::c_sum); // sum (add all stack elements)
+        self.compose_native("sum", Self::c_sum);
         self.compose_native("++", Self::c_add_one); // add one
         self.compose_native("-", Self::c_sub); // subtract
         self.compose_native("--", Self::c_sub_one); // subtract one
         self.compose_native("x", Self::c_mult); // multiply
-        self.compose_native("x_", Self::c_mult_all); // multiply all
+        self.compose_native("x_", Self::c_product); // product (multiply all stack elements)
+        self.compose_native("prod", Self::c_product);
         self.compose_native("/", Self::c_div); // divide
         self.compose_native("chs", Self::c_chs); // change sign
         self.compose_native("abs", Self::c_abs); // absolute value
@@ -546,7 +548,7 @@ impl Interpreter {
         self.stack.push((a + b).to_string());
     }
 
-    pub fn c_add_all(&mut self, op: &str) {
+    pub fn c_sum(&mut self, op: &str) {
         while self.stack.len() > 1 {
             self.c_add(op);
         }
@@ -586,7 +588,7 @@ impl Interpreter {
         self.stack.push((a * b).to_string());
     }
 
-    pub fn c_mult_all(&mut self, op: &str) {
+    pub fn c_product(&mut self, op: &str) {
         while self.stack.len() > 1 {
             self.c_mult(op);
         }

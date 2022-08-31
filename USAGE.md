@@ -81,6 +81,15 @@ map an anonymous function to each of the stack elements
   125
 ```
 
+### fold (reduce)
+use an anonymous function to collapse the values on the stack into a single value
+```
+{ calculate the sum of the squares of the numbers from 1 to 5. 0 is the initial value of the sum. }
+
+% comp 10 11 12 13 14 15 0 [ + ] fold
+  75
+```
+
 ### range
 push a number range onto the stack by specifying the range start, end, and step size
 ```

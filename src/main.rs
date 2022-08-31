@@ -20,7 +20,7 @@ const RELEASE_STATE: &str = "";
     reverse polish notation s-expressions (sexp).
 
       operations list structure
-        (object : command or value)
+        ( object : command or value )
         "5"
         "sqrt"
         "1

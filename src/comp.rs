@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
-use std::fs;
+use std::{fmt, fs};
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 use std::process::exit;
@@ -10,7 +10,6 @@ pub struct Function {
     fops: Vec<String>,
 }
 
-#[derive(Debug)]
 #[derive(Serialize, Deserialize)]
 pub struct Config {
     pub show_stack_level: bool,
@@ -30,6 +29,37 @@ impl Config {
         }
     }
 }
+
+impl fmt::Display for Config {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let theme = coq::Theme::new();
+        let output_color = &theme.blue_smurf;
+        write!(
+            f,
+            "show_stack_level: {}\n\
+            conversion_const: {}\n\
+            monochrome: {}\n\
+            tip_percentage: {}",
+            theme.color_rgb(
+                &self.show_stack_level.to_string(),
+                output_color,
+            ),
+            theme.color_rgb(
+                &self.conversion_constant.to_string(),
+                output_color,
+            ),
+            theme.color_rgb(
+                &self.monochrome.to_string(),
+                output_color,
+            ),
+            theme.color_rgb(
+                &self.tip_percentage.to_string(),
+                output_color,
+            ),
+        )
+    }
+}
+
 pub struct Interpreter {
     pub stack: Vec<String>,
     pub mem: HashMap<String, String>,
@@ -1265,7 +1295,7 @@ impl Interpreter {
     pub fn c_print_config(&mut self, _op: &str) {
         // print current configuration
         println!(
-            "{:#?}",
+            "{}",
             self.config,
         )
     }

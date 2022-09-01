@@ -280,25 +280,25 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
     // color theme
     let theme: coq::Theme = coq::Theme::new();
 
-    let mut clos_color_stack_top = BoxedClosure::new(
+    let mut color_stack_top_closure = BoxedClosure::new(
         |x| theme.color_rgb(x, &theme.blue_coffee_bold)
     );
-    let mut clos_color_stack = BoxedClosure::new(
+    let mut color_stack_closure = BoxedClosure::new(
         |x| theme.color_rgb(x, &theme.blue_smurf)
     );
-    let mut clos_color_annotate = BoxedClosure::new(
+    let mut color_annotate_closure = BoxedClosure::new(
         |x| theme.color_blank(x)
     );
     if annotate {
-        clos_color_annotate = BoxedClosure::new(
+        color_annotate_closure = BoxedClosure::new(
             |x| theme.color_rgb(x, &theme.charcoal_cream)
         );
     }
     if monochrome {
-        clos_color_stack_top = BoxedClosure::new(
+        color_stack_top_closure = BoxedClosure::new(
             |x| theme.color_rgb(x, &theme.white_bold)
         );
-        clos_color_stack = BoxedClosure::new(
+        color_stack_closure = BoxedClosure::new(
             |x| theme.color_rgb(x, &theme.white)
         );
     }
@@ -310,16 +310,16 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
                 println!(
                     // top element
                     "{}  {}",
-                    (clos_color_annotate.f)(level_map(level)),
-                    (clos_color_stack_top.f)(&stack.remove(0)),
+                    (color_annotate_closure.f)(level_map(level)),
+                    (color_stack_top_closure.f)(&stack.remove(0)),
                 )
             }
             _ => {
                 println!(
                     // all other elements
                     "{}  {}",
-                    (clos_color_annotate.f)(level_map(level)),
-                    (clos_color_stack.f)(&stack.remove(0)),
+                    (color_annotate_closure.f)(level_map(level)),
+                    (color_stack_closure.f)(&stack.remove(0)),
                 )
             }
         }

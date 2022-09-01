@@ -7,7 +7,7 @@ use std::process::exit;
 mod comp;
 mod mona;
 
-const RELEASE_STATE: &str = "b";
+const RELEASE_STATE: &str = "a";
 
 /*
 
@@ -141,12 +141,11 @@ struct BoxedClosure<'a> {
 }
 
 impl<'a> BoxedClosure<'a> {
-    fn new<F>(f: F) -> Self
-    where
-        F: Fn(&str) -> ColoredString + 'a,
+    fn new<F>(closure: F) -> Self
+    where F: Fn(&str) -> ColoredString + 'a,
     {
         BoxedClosure {
-            f: Box::new(f),
+            f: Box::new(closure),
         }
     }
 }

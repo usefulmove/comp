@@ -1256,7 +1256,7 @@ impl Interpreter {
             "  {}",
             self.theme.color_rgb(
                 &self.stack[self.stack.len() - 1],
-                &self.theme.orange_sherbet_bold,
+                &self.theme.white,
             ),
         );
     }

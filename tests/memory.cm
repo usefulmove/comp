@@ -1,3 +1,5 @@
+memory.cm peek drop
+
 618
 memloc
 store
@@ -12,4 +14,8 @@ memloc2
 
 { evaluate }
 
-512 -
+512 ifeq
+  pass
+else
+  fail
+fi

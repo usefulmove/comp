@@ -6,6 +6,7 @@
 - [conversion](#commands-conversion)
 - [file usage](#commands-file-usage)
 - [control flow](#commands-control-flow)
+- [higher-order functions](#commands-higher-order-functions)
 - [configuration](#commands-configuration)
 
 
@@ -71,26 +72,6 @@ rotate stack elements such that the first element becomes the last (reverse dire
   1
 ```
 
-### map
-map an anonymous function to each of the stack elements
-```
-% comp 1 2 3 4 5 [ 3 ^ ]
-  1
-  8
-  27
-  64
-  125
-```
-
-### fold (reduce)
-use an anonymous function to collapse the values on the stack into a single value
-```
-{ calculate the sum of the squares of the numbers from 1 to 5. 0 is the initial value of the sum. }
-
-% comp 10 11 12 13 14 15 0 [ + ] fold
-  75
-```
-
 ### range
 push a number range onto the stack by specifying the range start, end, and step size
 ```
@@ -142,7 +123,11 @@ Additional values can be stored using more generic text variables that are not a
   7
 ```
 
-### add all
+### sum (add all)
+```
+% comp 1 2 3 4 sum
+  10
+```
 ```
 % comp 1 2 3 4 +_
   10
@@ -172,7 +157,11 @@ Additional values can be stored using more generic text variables that are not a
   12
 ```
 
-### multiply all
+### product (multiply all)
+```
+% comp 1 2 3 4 prod
+  24
+```
 ```
 % comp 1 2 3 4 x_
   24
@@ -501,6 +490,30 @@ Functions also can be defined in a file and used in operations passed after the 
 ```
 % comp -f temperature.cm 0 ctof
   32
+```
+
+
+---
+## Commands (higher-order functions)
+
+### map
+map an anonymous function to each of the stack elements
+```
+% comp 1 2 3 4 5 [ 3 ^ ]
+  1
+  8
+  27
+  64
+  125
+```
+
+### fold (reduce)
+use an anonymous function to collapse the values on the stack into a single value
+```
+{ calculate the sum of the squares of the numbers from 1 to 5. 0 is the initial value of the sum. }
+
+% comp 10 11 12 13 14 15 0 [ + ] fold
+  75
 ```
 
 

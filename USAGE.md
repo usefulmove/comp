@@ -529,8 +529,8 @@ Save comp.toml configuration file in the home directory. This file can be used t
 ### show configuration
 ```
 % comp show_cfg
-show_stack_level: true
-conversion_constant: 1.61803
-monochrome: false
-tip_percentage: 0.15
+show_stack_level = true
+conversion_constant = 1.61803
+monochrome = false
+tip_percentage = 0.15
 ```

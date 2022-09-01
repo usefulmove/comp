@@ -36,10 +36,10 @@ impl fmt::Display for Config {
         let output_color = &theme.blue_smurf;
         write!(
             f,
-            "show_stack_level: {}\n\
-            conversion_const: {}\n\
-            monochrome: {}\n\
-            tip_percentage: {}",
+            "show_stack_level = {}\n\
+            conversion_const = {}\n\
+            monochrome = {}\n\
+            tip_percentage = {}",
             theme.color_rgb(
                 &self.show_stack_level.to_string(),
                 output_color,

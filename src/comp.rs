@@ -12,10 +12,10 @@ pub struct Function {
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
-    pub show_stack_level: bool,
-    pub conversion_constant: f64,
-    pub monochrome: bool,
-    pub tip_percentage: f64,
+    pub show_stack_level: bool,   // annotate stack level
+    pub conversion_constant: f64, // configurable constant for a_b conversion
+    pub monochrome: bool,         // set output to monochrome
+    pub tip_percentage: f64,      // tip conversion constant
 }
 
 impl Config {
@@ -1256,7 +1256,7 @@ impl Interpreter {
             "  {}",
             self.theme.color_rgb(
                 &self.stack[self.stack.len() - 1],
-                &self.theme.orange_sherbet_bold,
+                &self.theme.white,
             ),
         );
     }

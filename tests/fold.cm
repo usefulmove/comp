@@ -1,5 +1,7 @@
 { fold tests }
 
+fold.cm peek drop
+
 (
   count
     0 [ drop 1 + ] fold
@@ -9,4 +11,8 @@
 
 { evaluate }
 
-618 -
+618 ifeq
+  pass
+else
+  fail
+fi

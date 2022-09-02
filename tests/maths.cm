@@ -1,3 +1,4 @@
+maths.cm peek drop
 
   { manual maths tests }
 
@@ -30,4 +31,9 @@ rot rot roll roll
 
  { evaluate }
 
-sum round 1252 -
+sum round
+1252 ifeq
+  pass
+else
+  fail
+fi

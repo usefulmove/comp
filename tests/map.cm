@@ -1,3 +1,5 @@
+map.cm peek drop
+
 (
     square_all
         [ dup x ] map
@@ -12,4 +14,9 @@ square_all
 
 { evaluate }
 
-sum 24573 -
+sum
+24573 ifeq
+  pass
+else
+  fail
+fi

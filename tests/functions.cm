@@ -1,5 +1,7 @@
 { functions manual tests }
 
+functions.cm peek drop
+
 {   comments test   } { }
 { note -- comments are identified inside curly brackets.
   there must be whitespace before and after each bracket. }
@@ -61,4 +63,9 @@ basie
 
 { evaluate }
 
-sum 113003 -
+sum
+113003 ifeq
+  pass
+else
+  fail
+fi

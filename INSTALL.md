@@ -27,7 +27,7 @@ sudo ln -s -r ./target/release/comp /usr/local/bin
 You can check that the installation was successful by running the `comp version` command.
 ```
 comp version
-0.23.0
+0.23.5
 ```
 
 

@@ -492,6 +492,19 @@ Functions also can be defined in a file and used in operations passed after the 
   32
 ```
 
+A version of a recursive factorial function that takes an integer argument is below.
+```
+( factorial
+    dup 1
+    ifeq
+      drop
+      1
+    else
+      dup -- factorial x
+    fi
+)
+```
+
 
 ---
 ## Commands (higher-order functions)
@@ -516,6 +529,12 @@ use an anonymous function to collapse the values on the stack into a single valu
   75
 ```
 
+As another example, `fold` be used with the `..` range operator to calculate the sum of the reciprocals of powers of 2 as shown below.
+<img src="https://raw.githubusercontent.com/usefulmove/comp/main/assets/series-of-reciprocals-of-powers-of-2.jpg" align="left"/>
+```
+% comp 0 100 1 .. 0 [ 2 swap ^ inv + ] fold
+  2
+```
 
 ---
 ## Commands (configuration)

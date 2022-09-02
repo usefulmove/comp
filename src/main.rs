@@ -585,6 +585,14 @@ mod unit_test {
         intp.c_max_all("");
 
         assert!(intp.pop_stack_float() == 4.);
+
+        intp.stack.push((-1).to_string());
+        intp.stack.push((-5).to_string());
+        intp.stack.push((-10).to_string());
+        intp.c_minmax("");
+
+        assert!(intp.pop_stack_float() == -1.);
+        assert!(intp.pop_stack_float() == -10.);
     }
 
 

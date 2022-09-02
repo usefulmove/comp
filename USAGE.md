@@ -530,7 +530,8 @@ use an anonymous function to collapse the values on the stack into a single valu
 ```
 
 As another example, `fold` be used with the `..` range operator to calculate the sum of the reciprocals of powers of 2 as shown below.
-<img src="https://raw.githubusercontent.com/usefulmove/comp/main/assets/series-of-reciprocals-of-powers-of-2.jpg" align="left"/>
+<img src="https://raw.githubusercontent.com/usefulmove/comp/main/assets/series-of-reciprocals-of-powers-of-2.jpg" align="center"/>
+<br>
 ```
 % comp 0 100 1 .. 0 [ 2 swap ^ inv + ] fold
   2

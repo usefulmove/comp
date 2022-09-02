@@ -4,7 +4,7 @@ fold.cm peek drop
 
 (
   count
-    0 [ drop 1 + ] fold
+    [ drop 1 + ] 0 fold
 )
 
 1 618 1 .. count

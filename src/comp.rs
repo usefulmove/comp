@@ -173,12 +173,15 @@ impl Interpreter {
         self.compose_native("ln", Self::c_ln); // natural logarithm
         self.compose_native("rand", Self::c_rand); // random number
         self.compose_native("max", Self::c_max); // maximum
-        self.compose_native("max_", Self::c_max_all); // maximum all
+        self.compose_native("max_all", Self::c_max_all); // maximum (all)
+        self.compose_native("max_", Self::c_max_all);
         self.compose_native("min", Self::c_min); // minimum
-        self.compose_native("min_", Self::c_min_all); // minimum
+        self.compose_native("min_all", Self::c_min_all); // minimum (all)
+        self.compose_native("min_", Self::c_min_all);
         self.compose_native("minmax", Self::c_minmax); // minmax
         self.compose_native("avg", Self::c_avg); // average
-        self.compose_native("avg_", Self::c_avg_all); // average all
+        self.compose_native("avg_all", Self::c_avg_all); // average (all)
+        self.compose_native("avg_", Self::c_avg_all); //
 
         /* control flow */
         self.compose_native("(", Self::c_load_function); // function definition

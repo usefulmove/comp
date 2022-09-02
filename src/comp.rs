@@ -172,10 +172,11 @@ impl Interpreter {
         self.compose_native("logn", Self::c_logn); // logarithm (base n)
         self.compose_native("ln", Self::c_ln); // natural logarithm
         self.compose_native("rand", Self::c_rand); // random number
-        self.compose_native("min", Self::c_min); // minimum
-        self.compose_native("min_", Self::c_min_all); // minimum
         self.compose_native("max", Self::c_max); // maximum
         self.compose_native("max_", Self::c_max_all); // maximum all
+        self.compose_native("min", Self::c_min); // minimum
+        self.compose_native("min_", Self::c_min_all); // minimum
+        self.compose_native("minmax", Self::c_minmax); // minmax
         self.compose_native("avg", Self::c_avg); // average
         self.compose_native("avg_", Self::c_avg_all); // average all
 
@@ -929,7 +930,7 @@ impl Interpreter {
     pub fn c_max_all(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
 
-        let mut m: f64 = 0.;
+        let mut m: f64 = f64::MIN;
         while !self.stack.is_empty() {
             m = m.max(self.pop_stack_float());
         }
@@ -955,6 +956,22 @@ impl Interpreter {
         }
 
         self.stack.push(m.to_string());
+    }
+
+    pub fn c_minmax(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let mut max: f64 = f64::MIN;
+        let mut min: f64 = f64::MAX;
+        while !self.stack.is_empty() {
+            let a: f64 = self.pop_stack_float();
+
+            if a > max { max = a; }
+            if a < min { min = a; }
+        }
+
+        self.stack.push((min).to_string());
+        self.stack.push((max).to_string());
     }
 
     pub fn c_avg(&mut self, op: &str) {

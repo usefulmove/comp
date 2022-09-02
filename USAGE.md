@@ -523,17 +523,24 @@ map an anonymous function to each of the stack elements
 ### fold (reduce)
 use an anonymous function to collapse the values on the stack into a single value
 ```
-{ calculate the sum of the squares of the numbers from 1 to 5. 0 is the initial value of the sum. }
+{ Compute the sum of the squares of the numbers from 1 to 5. (The 0 passed
+  into the fold command is the initial value of the accumulator.) }
 
-% comp 10 11 12 13 14 15 0 [ + ] fold
+% comp 10 11 12 13 14 15 [ + ] 0 fold
   75
+```
+```
+{ Compute the product of the squares of the values from 1 to 5. }
+
+% comp 1 2 3 4 5 [ dup x x ] 1 fold
+  14400
 ```
 
 As another example, `fold` be used with the `..` range operator to calculate the sum of the reciprocals of powers of 2 as shown below.
 <img src="https://raw.githubusercontent.com/usefulmove/comp/main/assets/series-of-reciprocals-of-powers-of-2.jpg" align="center"/>
 <br>
 ```
-% comp 0 100 1 .. 0 [ 2 swap ^ inv + ] fold
+% comp 0 100 1 .. [ 2 swap ^ inv + ] 0 fold
   2
 ```
 

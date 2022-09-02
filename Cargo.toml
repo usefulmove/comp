@@ -1,6 +1,6 @@
 [package]
 name = "comp"
-version = "0.23.7"
+version = "0.23.8"
 edition = "2021"
 
 [dependencies]

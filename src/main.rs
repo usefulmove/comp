@@ -57,11 +57,11 @@ fn main() {
     match args[1].as_str() {
         "--commands" | "--" => {
             // display available commands
-            let mut cmds: Vec<&str> = interpreter.get_cmds();
+            let mut cmds: Vec<String> = interpreter.get_cmds();
             cmds.sort_unstable();
 
             for cmd in cmds {
-                print!("{} ", theme.color_rgb(cmd, &theme.blue_smurf));
+                print!("{} ", theme.color_rgb(&cmd, &theme.blue_smurf));
             }
             println!();
             return;

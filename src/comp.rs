@@ -232,10 +232,9 @@ impl Interpreter {
         match self.is_user_function(op) {
             Some(index) => {
                 // user-defined function - copy user function ops (fops) into main ops
-                for i in (0..self.fns[index].fops.len()).rev() {
-                    let fop: String = self.fns[index].fops[i].clone();
-                    self.ops.insert(0, fop);
-                }
+                self.fns[index].fops.iter().rev().for_each(
+                    |fop| self.ops.insert(0, fop.clone())
+                );
                 return;
             }
             None => (),
@@ -1167,7 +1166,7 @@ impl Interpreter {
         let b = self.pop_stack_float();
         let a = self.pop_stack_float();
 
-        let mut ifops: Vec<String> = Vec::new();
+        let mut if_ops: Vec<String> = Vec::new();
 
         let mut depth: usize = 0;
 
@@ -1180,7 +1179,7 @@ impl Interpreter {
                     "fi" => depth -= 1,   // decrease depth
                     _ => (),
                 }
-                ifops.push(self.ops.remove(0));
+                if_ops.push(self.ops.remove(0));
             }
             self.remove_ops_fi();
         } else {
@@ -1200,16 +1199,16 @@ impl Interpreter {
                 self.ops.remove(0); // remove "else"
                 while self.ops[0] != "fi" {
                     // store list of operations after 'else'
-                    ifops.push(self.ops.remove(0));
+                    if_ops.push(self.ops.remove(0));
                 }
             }
             self.ops.remove(0); // remove "fi"
         }
 
         // add if ops to front of operations list
-        for o in ifops.iter().rev() {
-            self.ops.insert(0, o.to_string());
-        }
+        if_ops.iter().rev().for_each(
+            | op | self.ops.insert(0, op.to_string())
+        );
     }
 
     fn remove_ops_fi(&mut self) {
@@ -1464,12 +1463,8 @@ impl Interpreter {
         )
     }
 
-    pub fn get_cmds(&self) -> Vec<&str> {
-        let mut cmds: Vec<&str> = Vec::new();
-        for key in self.cmdmap.keys() {
-            cmds.push(key);
-        }
-        cmds
+    pub fn get_cmds(&self) -> Vec<String> {
+        self.cmdmap.keys().cloned().collect()
     }
 
 }

@@ -209,6 +209,7 @@ impl Interpreter {
         self.compose_native("rgb_hex", Self::c_rgbhex); // RGB to hexadecimal string
         self.compose_native("tip", Self::c_tip); // calculate tip
         self.compose_native("a_b", Self::c_conv_const); // apply convert constant
+        self.compose_native("b_a", Self::c_conv_const_inv); // apply convert constant (inverse)
 
         /* RGB colors */
         self.compose_native("rgb", Self::c_rgb); // show RGB color
@@ -1156,6 +1157,14 @@ impl Interpreter {
         let a: f64 = self.pop_stack_float();
 
         self.stack.push((a * self.config.conversion_constant).to_string());
+    }
+
+    pub fn c_conv_const_inv(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: f64 = self.pop_stack_float();
+
+        self.stack.push((a / self.config.conversion_constant).to_string());
     }
 
     /* ---- control flow ---------------------------------------------------- */

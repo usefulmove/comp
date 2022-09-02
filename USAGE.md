@@ -162,10 +162,6 @@ Additional values can be stored using more generic text variables that are not a
 % comp 1 2 3 4 prod
   24
 ```
-```
-% comp 1 2 3 4 x_
-  24
-```
 
 ### divide
 ```

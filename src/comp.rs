@@ -1191,7 +1191,7 @@ impl Interpreter {
         let mut depth: usize = 0;
 
         if a == b {
-            // execute _if_ condition
+            // execute if condition
             // store list of operations until 'else' or 'fi'
             while (depth > 0) || ((self.ops[0] != "fi") && (self.ops[0] != "else")) {
                 match self.ops[0].as_str() {

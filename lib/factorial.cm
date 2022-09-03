@@ -1,10 +1,9 @@
-(
-    factorial
-        dup 1
-        ifeq
-            drop
-            1
-        else
-            dup -- factorial x
-        fi
+( factorial
+    dup 1
+    ifeq
+        drop
+        1
+    else
+        dup -- factorial x
+    fi
 )

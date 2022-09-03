@@ -9,16 +9,15 @@
 
 { recursive function }
 
-(
-    nodes_edges
-        dup 1
-        ifeq
-            drop
-            0
-        else
-            --
-            dup
-            nodes_edges
-            +
-        fi
+( nodes_edges
+    dup 1
+    ifeq
+        drop
+        0
+    else
+        --
+        dup
+        nodes_edges
+        +
+    fi
 )

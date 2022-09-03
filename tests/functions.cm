@@ -11,23 +11,19 @@ functions.cm peek drop
     are fine. }
 
 
-(
-  sub1
+( sub1
     1 -
 )
 
-(
-  div2
+( div2
     2 /
 )
 
-(
-  square_root
+( square_root
     sqrt
 )
 
-(
-  ten5th_round
+( ten5th_round
     1e5 x round
 )
 
@@ -37,13 +33,11 @@ sub1 div2 ten5th_round
 
 { nested user-defined functions { also nested comments } }
 
-(
-  cube
+( cube
     dup square x
 )
 
-(
-  square
+( square
     dup x
 )
 

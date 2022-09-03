@@ -491,13 +491,13 @@ Functions also can be defined in a file and used in operations passed after the 
 A version of a recursive factorial function that takes an integer argument is below.
 ```
 ( factorial
-    dup 1
-    ifeq
-      drop
-      1
-    else
-      dup -- factorial x
-    fi
+  dup 1
+  ifeq
+    drop
+    1
+  else
+    dup -- factorial x
+  fi
 )
 ```
 

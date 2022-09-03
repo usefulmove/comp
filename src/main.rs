@@ -93,7 +93,9 @@ fn main() {
             let file_contents: String = file_contents.unwrap();
 
             // create operations list vector from file contents - split elements
-            let operations = file_contents.split_whitespace().map(|x| x.to_string());
+            let operations = file_contents
+                .split_whitespace()
+                .map(|x| x.to_string());
             interpreter.ops.extend(operations);
 
             // add additional operations from command line

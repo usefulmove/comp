@@ -5,7 +5,7 @@
 - [maths](#commands-maths)
 - [conversion](#commands-conversion)
 - [file usage](#commands-file-usage)
-- [control flow](#commands-control-flow)
+- [user-defined functions](#commands-user-defined-functions)
 - [higher-order functions](#commands-higher-order-functions)
 - [configuration](#commands-configuration)
 
@@ -436,9 +436,9 @@ The file flag allows the use of commands defined within a source file.
 
 
 ---
-## Commands (control flow)
+## Commands (user-defined functions)
 
-### functions
+### function definition
 User-defined functions can be defined by indicating the start of a function with an open parenthesis `(` symbol followed by the function name then a list of operations and terminated with the close parenthesis `)` symbol. The user function is executed by calling the function name as shown in the examples below.
 
 ( Note that on many systems, at the command prompt the parentheses must be escaped as shown the examples below. This is not necessary for functions defined within files. )

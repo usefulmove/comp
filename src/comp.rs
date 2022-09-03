@@ -1333,11 +1333,11 @@ impl Interpreter {
     fn is_user_function(&self, op: &str) -> Option<usize> {
         // is operator a user defined function?
         if !self.fns.is_empty() {
-            for i in 0..self.fns.len() {
-                if self.fns[i].name == op {
-                    return Some(i);
-                }
-            }
+           for (i, f) in self.fns.iter().enumerate() {
+               if f.name == op {
+                   return Some(i);
+               }
+           }
         }
         None
     }

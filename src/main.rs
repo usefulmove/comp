@@ -420,7 +420,7 @@ mod unit_test {
         intp.stack.push(32.to_string());
         intp.c_exp("");
         intp.stack.push((32. * 2.).to_string());
-        intp.c_throot("");
+        intp.c_nroot("");
 
         assert!(intp.pop_stack_float() == intp.pop_stack_float());
 

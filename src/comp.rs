@@ -152,7 +152,7 @@ impl Interpreter {
         self.compose_native("pos", Self::c_pos);
         self.compose_native("inv", Self::c_inv); // invert (1/x)
         self.compose_native("sqrt", Self::c_sqrt); // square root
-        self.compose_native("throot", Self::c_throot); // nth root
+        self.compose_native("nroot", Self::c_nroot); // nth root
         self.compose_native("proot", Self::c_proot); // find principal roots
         self.compose_native("^", Self::c_exp); // exponentiation
         self.compose_native("exp", Self::c_exp);
@@ -854,7 +854,7 @@ impl Interpreter {
         self.stack.push((a.sqrt()).to_string());
     }
 
-    pub fn c_throot(&mut self, op: &str) {
+    pub fn c_nroot(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
 
         let b: f64 = self.pop_stack_float();

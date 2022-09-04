@@ -235,7 +235,7 @@ Additional values can be stored using more generic text variables that are not a
 
 ### nth root
 ```
-% comp 9 2 throot
+% comp 9 2 nroot
   3
 ```
 

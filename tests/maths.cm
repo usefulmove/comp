@@ -20,7 +20,7 @@ swap drop
  -55 abs deg_rad rad_deg
 dup + 10 - 10 / e swap ^
 e 10 exp - 50 + 10 gcd 3
-mod e ln - 27.0 3 throot
+mod e ln - 27.0 3 nroot
 - swap sa - round _a roll
 roll roll roll
 

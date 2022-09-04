@@ -40,7 +40,7 @@ fn main() {
     env::set_var("RUST_BACKTRACE", "0");
 
     // color theme
-    let theme: coq::Theme = coq::Theme::new();
+    let theme = coq::Theme::new();
 
     // construct command interpreter
     let mut interpreter = comp::Interpreter::new();
@@ -153,7 +153,7 @@ impl<'a> BoxedClosure<'a> {
 
 fn show_help() {
     // color theme
-    let theme: coq::Theme = coq::Theme::new();
+    let theme = coq::Theme::new();
 
     println!();
     println!(
@@ -266,7 +266,7 @@ fn show_help() {
 
 fn show_version() {
     // color theme
-    let theme: coq::Theme = coq::Theme::new();
+    let theme = coq::Theme::new();
 
     let version: &str = env!("CARGO_PKG_VERSION");
     println!(
@@ -279,7 +279,7 @@ fn show_version() {
 
 fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
     // color theme
-    let theme: coq::Theme = coq::Theme::new();
+    let theme = coq::Theme::new();
 
     let mut color_stack_top_closure = BoxedClosure::new(
         |x| theme.color_rgb(x, &theme.blue_coffee_bold)

@@ -109,7 +109,10 @@ impl Interpreter {
     fn init(&mut self) {
 
         /* stack manipulation */
-        self.compose_native("drop", Self::c_drop); // drop
+        self.compose_native("drop", Self::c_drop); // drop element on top of stack
+        self.compose_native("dropn", Self::c_dropn); // drop n elements
+        self.compose_native("take", Self::c_take); // take element on top of stack
+        self.compose_native("taken", Self::c_taken); // take n elements
         self.compose_native("dup", Self::c_dup); // duplicate
         self.compose_native("swap", Self::c_swap); // swap x and y
         self.compose_native("cls", Self::c_cls); // clear stack
@@ -460,6 +463,76 @@ impl Interpreter {
             );
             // do not stop execution
         }
+    }
+
+    pub fn c_dropn(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let mut drop_count: i64 = self.pop_stack_int();
+
+        if drop_count < 1 {
+            eprintln!(
+                "  {}: [{}] operation called with bad argument [{}]",
+                self.theme.color_rgb("error", &self.theme.red_bold),
+                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+                self.theme.color_rgb(&drop_count.to_string(), &self.theme.blue_coffee_bold),
+            );
+            exit(exitcode::USAGE);
+        }
+
+        while drop_count > 0 {
+            drop_count -= 1;
+
+            if !self.stack.is_empty() {
+                self.stack.pop();
+            } else {
+                eprintln!(
+                    "  {}: [{}] operation called on empty stack",
+                    self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
+                    self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+                );
+                // do not stop execution
+            }
+        }
+    }
+
+    pub fn c_take(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let keep: String = self.pop_stack_string();
+        self.stack = Vec::new();
+        self.stack.push(keep);
+    }
+
+    pub fn c_taken(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let take_count: usize = self.pop_stack_int() as usize;
+        let len: usize = self.stack.len();
+
+        if take_count < 1 {
+            eprintln!(
+                "  {}: [{}] operation called with bad argument [{}]",
+                self.theme.color_rgb("error", &self.theme.red_bold),
+                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+                self.theme.color_rgb(&take_count.to_string(), &self.theme.blue_coffee_bold),
+            );
+            exit(exitcode::USAGE);
+        }
+
+        if take_count > len {
+            eprintln!(
+                "  {}: [{}] operation called with argument [{}] \
+                greater than stack depth [{}]",
+                self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
+                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+                self.theme.color_rgb(&take_count.to_string(), &self.theme.blue_coffee_bold),
+                self.theme.color_rgb(&len.to_string(), &self.theme.blue_coffee_bold),
+            );
+            return;
+        }
+
+        self.stack = self.stack[(len-take_count)..len].to_vec();
     }
 
     pub fn c_dup(&mut self, op: &str) {

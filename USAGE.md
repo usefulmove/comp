@@ -72,6 +72,29 @@ rotate stack elements such that the first element becomes the last (reverse dire
   1
 ```
 
+### iota
+push an integer range (starting at 1) onto the stack
+```
+% comp 8 io
+  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+```
+push an integer range (starting at 0) onto the stack
+```
+% comp 3 i0
+  0
+  1
+  2
+  3
+```
+
+
 ### range
 push a number range onto the stack by specifying the range start, end, and step size
 ```

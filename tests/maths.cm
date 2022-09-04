@@ -31,6 +31,7 @@ rot rot roll roll
 
 ( on stack : 1252 )
 
+
  { evaluate }
 
 sum round

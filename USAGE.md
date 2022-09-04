@@ -94,7 +94,6 @@ push an integer range (starting at 0) onto the stack
   3
 ```
 
-
 ### range
 push a number range onto the stack by specifying the range start, end, and step size
 ```

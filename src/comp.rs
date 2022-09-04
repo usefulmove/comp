@@ -116,7 +116,9 @@ impl Interpreter {
         self.compose_native("clr", Self::c_cls); // clear stack
         self.compose_native("roll", Self::c_roll); // roll stack
         self.compose_native("rot", Self::c_rot); // rotate stack (reverse direction from roll)
-        self.compose_native("..", Self::c_range); // add range of numbers to stack
+        self.compose_native("..", Self::c_range); // add range of numbers to stack (generic)
+        self.compose_native("i", Self::c_iota); // add range of integers to stack (limited - base 1)
+        self.compose_native("i0", Self::c_iota_zero); // add range of integers to stack (limited - base 0)
 
         /* memory usage */
         self.compose_native("store", Self::c_store); // store (pop value off stack and store in generic memory)
@@ -305,7 +307,7 @@ impl Interpreter {
         }
     }
 
-    pub fn _pop_stack_int(&mut self) -> i64 {
+    pub fn pop_stack_int(&mut self) -> i64 {
         let element: String = self.stack.pop().unwrap();
         match self._parse_int(&element) {
             Ok(val) => val, // parse success
@@ -538,6 +540,26 @@ impl Interpreter {
             }
         }
 
+    }
+
+    pub fn c_iota(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: i64 = self.pop_stack_int();
+
+        for i in 1..=a as i64 {
+            self.stack.push(i.to_string());
+        }
+    }
+
+    pub fn c_iota_zero(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: i64 = self.pop_stack_int();
+
+        for i in 0..=a as i64 {
+            self.stack.push(i.to_string());
+        }
     }
 
     pub fn c_load_lambda(&mut self, _op: &str) {

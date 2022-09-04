@@ -173,6 +173,7 @@ impl Interpreter {
         self.compose_native("log10", Self::c_log10);
         self.compose_native("logn", Self::c_logn); // logarithm (base n)
         self.compose_native("ln", Self::c_ln); // natural logarithm
+        self.compose_native("loge", Self::c_ln);
         self.compose_native("rand", Self::c_rand); // random number
         self.compose_native("max", Self::c_max); // maximum
         self.compose_native("max_all", Self::c_max_all); // maximum (all)

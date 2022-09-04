@@ -2,7 +2,7 @@ maths.cm peek drop
 
   { manual maths tests }
 
-       5 4 3 2 1 cls
+       100 i0 cls
        10 ! 2 %
        5 +_ sqrt 2 ^ sqrt
    1 - 2 /
@@ -28,6 +28,8 @@ rot rot roll roll
 
      10 log2 10 2 logn -
      +
+
+( on stack : 1252 )
 
  { evaluate }
 

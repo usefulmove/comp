@@ -11,6 +11,8 @@ square_all
 
 [ dup x ] map
 
+( on stack : 24573 )
+
 { evaluate }
 
 sum

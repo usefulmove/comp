@@ -6,7 +6,9 @@ fold.cm peek drop
     [ drop 1 + ] 0 fold
 )
 
-1 618 1 .. count
+3 1854 3 .. count
+
+( on stack : 618 )
 
 { evaluate }
 

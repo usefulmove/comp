@@ -117,7 +117,7 @@ impl Interpreter {
         self.compose_native("roll", Self::c_roll); // roll stack
         self.compose_native("rot", Self::c_rot); // rotate stack (reverse direction from roll)
         self.compose_native("..", Self::c_range); // add range of numbers to stack (generic)
-        self.compose_native("i", Self::c_iota); // add range of integers to stack (limited - base 1)
+        self.compose_native("io", Self::c_iota); // add range of integers to stack (limited - base 1)
         self.compose_native("i0", Self::c_iota_zero); // add range of integers to stack (limited - base 0)
 
         /* memory usage */
@@ -547,6 +547,15 @@ impl Interpreter {
 
         let a: i64 = self.pop_stack_int();
 
+        if a < 1 {
+            eprintln!(
+                "  {}: [{}] operation called with invalid argument - argument cannot be less than 1",
+                self.theme.color_rgb("error", &self.theme.red_bold),
+                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+            );
+            exit(exitcode::USAGE);
+        }
+
         for i in 1..=a as i64 {
             self.stack.push(i.to_string());
         }
@@ -556,6 +565,15 @@ impl Interpreter {
         Self::check_stack_error(self, 1, op);
 
         let a: i64 = self.pop_stack_int();
+
+        if a < 0 {
+            eprintln!(
+                "  {}: [{}] operation called with invalid argument - argument cannot be negative",
+                self.theme.color_rgb("error", &self.theme.red_bold),
+                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+            );
+            exit(exitcode::USAGE);
+        }
 
         for i in 0..=a as i64 {
             self.stack.push(i.to_string());

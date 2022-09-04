@@ -3,7 +3,7 @@ memory.cm peek drop
 618
 memloc
 store
-1 100 1 ..
+100 io
 cls
 512 dup
 memloc2
@@ -11,6 +11,8 @@ store
 memloc3
 store
 memloc2
+
+( on stack : 512 )
 
 { evaluate }
 

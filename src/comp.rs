@@ -173,12 +173,15 @@ impl Interpreter {
         self.compose_native("ln", Self::c_ln); // natural logarithm
         self.compose_native("rand", Self::c_rand); // random number
         self.compose_native("max", Self::c_max); // maximum
-        self.compose_native("max_", Self::c_max_all); // maximum all
+        self.compose_native("max_all", Self::c_max_all); // maximum (all)
+        self.compose_native("max_", Self::c_max_all);
         self.compose_native("min", Self::c_min); // minimum
-        self.compose_native("min_", Self::c_min_all); // minimum
+        self.compose_native("min_all", Self::c_min_all); // minimum (all)
+        self.compose_native("min_", Self::c_min_all);
         self.compose_native("minmax", Self::c_minmax); // minmax
         self.compose_native("avg", Self::c_avg); // average
-        self.compose_native("avg_", Self::c_avg_all); // average all
+        self.compose_native("avg_all", Self::c_avg_all); // average (all)
+        self.compose_native("avg_", Self::c_avg_all); //
 
         /* control flow */
         self.compose_native("(", Self::c_load_function); // function definition
@@ -206,6 +209,7 @@ impl Interpreter {
         self.compose_native("rgb_hex", Self::c_rgbhex); // RGB to hexadecimal string
         self.compose_native("tip", Self::c_tip); // calculate tip
         self.compose_native("a_b", Self::c_conv_const); // apply convert constant
+        self.compose_native("b_a", Self::c_conv_const_inv); // apply convert constant (inverse)
 
         /* RGB colors */
         self.compose_native("rgb", Self::c_rgb); // show RGB color
@@ -1155,6 +1159,14 @@ impl Interpreter {
         self.stack.push((a * self.config.conversion_constant).to_string());
     }
 
+    pub fn c_conv_const_inv(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: f64 = self.pop_stack_float();
+
+        self.stack.push((a / self.config.conversion_constant).to_string());
+    }
+
     /* ---- control flow ---------------------------------------------------- */
 
     pub fn c_load_function(&mut self, _op: &str) {
@@ -1188,7 +1200,7 @@ impl Interpreter {
         let mut depth: usize = 0;
 
         if a == b {
-            // execute _if_ condition
+            // execute if condition
             // store list of operations until 'else' or 'fi'
             while (depth > 0) || ((self.ops[0] != "fi") && (self.ops[0] != "else")) {
                 match self.ops[0].as_str() {
@@ -1321,11 +1333,11 @@ impl Interpreter {
     fn is_user_function(&self, op: &str) -> Option<usize> {
         // is operator a user defined function?
         if !self.fns.is_empty() {
-            for i in 0..self.fns.len() {
-                if self.fns[i].name == op {
-                    return Some(i);
-                }
-            }
+           for (i, f) in self.fns.iter().enumerate() {
+               if f.name == op {
+                   return Some(i);
+               }
+           }
         }
         None
     }

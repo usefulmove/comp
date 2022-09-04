@@ -1,8 +1,7 @@
 map.cm peek drop
 
-(
-    square_all
-        [ dup x ] map
+( square_all
+    [ dup x ] map
 )
 
 1 10 1 ..

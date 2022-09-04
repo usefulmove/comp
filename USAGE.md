@@ -5,7 +5,7 @@
 - [maths](#commands-maths)
 - [conversion](#commands-conversion)
 - [file usage](#commands-file-usage)
-- [control flow](#commands-control-flow)
+- [user-defined functions](#commands-user-defined-functions)
 - [higher-order functions](#commands-higher-order-functions)
 - [configuration](#commands-configuration)
 
@@ -160,10 +160,6 @@ Additional values can be stored using more generic text variables that are not a
 ### product (multiply all)
 ```
 % comp 1 2 3 4 prod
-  24
-```
-```
-% comp 1 2 3 4 x_
   24
 ```
 
@@ -330,7 +326,7 @@ For this operation, the coefficients `a b c` of the quadratic equation `ax^2 + b
   1
 ```
 
-### max, max_
+### max, max_all
 return the maximum of the last two elements on the stack
 ```
 % comp 1 2 3 4 max
@@ -340,11 +336,11 @@ return the maximum of the last two elements on the stack
 ```
 return the maximum of all elements on the stack
 ```
-% comp 1 2 3 4 max_
+% comp 1 2 3 4 max_all
   4
 ```
 
-### min, min_
+### min, min_all
 return the minimum of the last two elements on the stack
 ```
 % comp 1 2 3 4 min
@@ -354,21 +350,21 @@ return the minimum of the last two elements on the stack
 ```
 return the minimum of all elements on the stack
 ```
-% comp 1 2 3 4 min_
+% comp 1 2 3 4 min_all
   1
 ```
 
-### avg, avg_
+### avg, avg_all
 return the average of the last two elements on the stack
 ```
-% comp 1 2 3 4 min
+% comp 1 2 3 4 avg
   1
   2
   3.5
 ```
 return the average of all elements on the stack
 ```
-% comp 1 2 3 4 min_
+% comp 1 2 3 4 avg_all
   2.5
 ```
 
@@ -440,9 +436,9 @@ The file flag allows the use of commands defined within a source file.
 
 
 ---
-## Commands (control flow)
+## Commands (user-defined functions)
 
-### functions
+### function definition
 User-defined functions can be defined by indicating the start of a function with an open parenthesis `(` symbol followed by the function name then a list of operations and terminated with the close parenthesis `)` symbol. The user function is executed by calling the function name as shown in the examples below.
 
 ( Note that on many systems, at the command prompt the parentheses must be escaped as shown the examples below. This is not necessary for functions defined within files. )
@@ -495,13 +491,13 @@ Functions also can be defined in a file and used in operations passed after the 
 A version of a recursive factorial function that takes an integer argument is below.
 ```
 ( factorial
-    dup 1
-    ifeq
-      drop
-      1
-    else
-      dup -- factorial x
-    fi
+  dup 1
+  ifeq
+    drop
+    1
+  else
+    dup -- factorial x
+  fi
 )
 ```
 

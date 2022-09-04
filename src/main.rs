@@ -1,13 +1,12 @@
 use colored::ColoredString;
-use std::env;
-use std::fs;
+use std::{env, fs};
 use std::path::Path;
 use std::process::exit;
 
 mod comp;
 mod mona;
 
-const RELEASE_STATE: &str = "a";
+const RELEASE_STATE: &str = "c";
 
 /*
 
@@ -93,7 +92,9 @@ fn main() {
             let file_contents: String = file_contents.unwrap();
 
             // create operations list vector from file contents - split elements
-            let operations = file_contents.split_whitespace().map(|x| x.to_string());
+            let operations = file_contents
+                .split_whitespace()
+                .map(|x| x.to_string());
             interpreter.ops.extend(operations);
 
             // add additional operations from command line

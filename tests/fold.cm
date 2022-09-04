@@ -2,8 +2,7 @@
 
 fold.cm peek drop
 
-(
-  count
+( count
     [ drop 1 + ] 0 fold
 )
 

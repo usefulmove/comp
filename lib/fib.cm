@@ -1,26 +1,23 @@
-(
-    fib
-        round abs
-        dup 0
+( fib
+    round abs
+    dup 0
+    ifeq
+        drop
+        0
+    else
+        dup 1
         ifeq
             drop
-            0
+            1
         else
-            dup 1
+            dup 2
             ifeq
                 drop
                 1
             else
-                dup 2
-                ifeq
-                    drop
-                    1
-                else
-                    -- dup -- fib
-                    swap fib +
-                fi
+                -- dup -- fib
+                swap fib +
             fi
         fi
+    fi
 )
-
-

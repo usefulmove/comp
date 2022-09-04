@@ -6,13 +6,46 @@ fold.cm peek drop
     [ drop 1 + ] 0 fold
 )
 
-3 1854 3 .. count
+3 60 3 .. count
 
-( on stack : 618 )
+( on stack : 20 )
+
+( calculate the sum of the first 10 Fibonacci numbers )
+
+2 /
+
+( fib
+    round abs
+    dup 0
+    ifeq
+        drop
+        0
+    else
+        dup 1
+        ifeq
+            drop
+            1
+        else
+            dup 2
+            ifeq
+                drop
+                1
+            else
+                -- dup -- fib
+                swap fib +
+            fi
+        fi
+    fi
+)
+
+io
+[ fib x ] 1 fold
+
+( on stack : 122522400 )
 
 { evaluate }
 
-618 ifeq
+122522400 ifeq
   pass
 else
   fail

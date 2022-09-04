@@ -1,6 +1,5 @@
 use colored::ColoredString;
-use std::env;
-use std::fs;
+use std::{env, fs};
 use std::path::Path;
 use std::process::exit;
 

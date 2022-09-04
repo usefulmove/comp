@@ -13,17 +13,37 @@
 ---
 ## Commands (stack manipulation)
 
-### push onto stack
+### push items onto stack
 ```
 % comp 3 4
   3
   4
 ```
 
-### drop
+### drop / dropn
+drop element from the top of the stack
 ```
 % comp 3 4 drop
   3
+```
+drop n elements from the top of the stack
+```
+% comp 1 2 3 4 2 dropn
+  1
+  2
+```
+
+### take / taken
+take the element from the top of the stack
+```
+% comp 3 4 take
+  4
+```
+take n elements from the top of the stack
+```
+% comp 1 2 3 4 2 taken
+  3
+  4
 ```
 
 ### duplicate

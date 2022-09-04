@@ -508,13 +508,20 @@ A version of a recursive factorial function that takes an integer argument is be
 ### map
 map an anonymous function to each of the stack elements
 ```
-% comp 1 2 3 4 5 [ 3 ^ ]
+% comp 1 2 3 4 5 [ 3 ^ ] map
   1
   8
   27
   64
   125
+  216
+  343
+  512
+  729
+  1000
 ```
+
+**Note: Commands that manipulate the entire stack (such as `sum`, `prod`, `cls`) cannot be used in anonymous functions passed to higher-order functions.
 
 ### fold (reduce)
 use an anonymous function to collapse the values on the stack into a single value

@@ -181,7 +181,7 @@ fn show_help() {
     println!(
         "    {} {} {}",
         theme.color_rgb("comp", &theme.grey_mouse),
-        theme.color_rgb("-f", &theme.orange_sherbet_bold),
+        theme.color_rgb("-f", &theme.yellow_canary),
         theme.color_rgb("<path>", &theme.blue_coffee_bold),
     );
     println!();
@@ -191,23 +191,23 @@ fn show_help() {
     );
     println!(
         "        {}      show version",
-        theme.color_rgb("--version", &theme.orange_sherbet_bold),
+        theme.color_rgb("--version", &theme.yellow_canary),
     );
     println!(
         "    {}{} {}         read from file at the specified path",
-        theme.color_rgb("-f", &theme.orange_sherbet_bold),
+        theme.color_rgb("-f", &theme.yellow_canary),
         theme.color_rgb(",", &theme.grey_mouse),
-        theme.color_rgb("--file", &theme.orange_sherbet_bold),
+        theme.color_rgb("--file", &theme.yellow_canary),
     );
     println!(
         "    {}{} {}     display available commands",
-        theme.color_rgb("--", &theme.orange_sherbet_bold),
+        theme.color_rgb("--", &theme.yellow_canary),
         theme.color_rgb(",", &theme.grey_mouse),
-        theme.color_rgb("--commands", &theme.orange_sherbet_bold),
+        theme.color_rgb("--commands", &theme.yellow_canary),
     );
     println!(
         "        {}         show help information",
-        theme.color_rgb("--help", &theme.orange_sherbet_bold),
+        theme.color_rgb("--help", &theme.yellow_canary),
     );
     println!();
     println!(

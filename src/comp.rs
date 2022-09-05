@@ -16,6 +16,7 @@ pub struct Config {
     pub conversion_constant: f64, // configurable constant for a_b conversion
     pub monochrome: bool,         // set output to monochrome
     pub tip_percentage: f64,      // tip conversion constant
+    pub show_warnings: bool,      // show warnings
 }
 
 impl Config {
@@ -26,6 +27,7 @@ impl Config {
             conversion_constant: 1.,
             monochrome: false,
             tip_percentage: 0.15,
+            show_warnings: true,
         }
     }
 }
@@ -456,14 +458,14 @@ impl Interpreter {
     pub fn c_drop(&mut self, op: &str) {
         if !self.stack.is_empty() {
             self.stack.pop();
-        } else {
+        } else if self.config.show_warnings {
             eprintln!(
                 "  {}: [{}] operation called on empty stack",
                 self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
                 self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
             );
-            // do not stop execution
         }
+        // do not stop execution
     }
 
     pub fn c_dropn(&mut self, op: &str) {
@@ -486,14 +488,14 @@ impl Interpreter {
 
             if !self.stack.is_empty() {
                 self.stack.pop();
-            } else {
+            } else if self.config.show_warnings {
                 eprintln!(
                     "  {}: [{}] operation called on empty stack",
                     self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
                     self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
                 );
-                // do not stop execution
             }
+            // do not stop execution
         }
     }
 
@@ -522,14 +524,16 @@ impl Interpreter {
         }
 
         if take_count > len {
-            eprintln!(
-                "  {}: [{}] operation called with argument [{}] \
-                greater than stack depth [{}]",
-                self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
-                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
-                self.theme.color_rgb(&take_count.to_string(), &self.theme.blue_coffee_bold),
-                self.theme.color_rgb(&len.to_string(), &self.theme.blue_coffee_bold),
-            );
+            if self.config.show_warnings {
+                eprintln!(
+                    "  {}: [{}] operation called with argument [{}] \
+                    greater than stack depth [{}]",
+                    self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
+                    self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+                    self.theme.color_rgb(&take_count.to_string(), &self.theme.blue_coffee_bold),
+                    self.theme.color_rgb(&len.to_string(), &self.theme.blue_coffee_bold),
+                );
+            }
             return;
         }
 
@@ -1531,12 +1535,14 @@ impl Interpreter {
                 Ok(c) => c,
                 Err(_error) => {
                     // parse fail
-                    eprintln!(
-                        "  {}: configuration file [{}] (ignored) has been corrupted or \
-                        is improperly constructed for this version of comp",
-                        self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
-                        self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
-                    );
+                    if self.config.show_warnings {
+                        eprintln!(
+                            "  {}: configuration file [{}] (ignored) has been corrupted or \
+                            is improperly constructed for this version of comp",
+                            self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
+                            self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
+                        );
+                    }
                     Config::new()
                 }
             };

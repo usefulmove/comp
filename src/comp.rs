@@ -250,25 +250,19 @@ impl Interpreter {
         }
 
         /* user-defined function? */
-        match self.is_user_function(op) {
-            Some(index) => {
-                // user-defined function - copy user function ops (fops) into main ops
-                self.fns[index].fops.iter().rev().for_each(
-                    |fop| self.ops.insert(0, fop.clone())
-                );
-                return;
+        if let Some(index) = self.is_user_function(op) {
+            // user-defined function - copy user function ops (fops) into main ops
+            for fop in self.fns[index].fops.iter().rev() {
+                self.ops.insert(0, fop.clone());
             }
-            None => (),
+            return;
         }
 
         /* user memory */
-        match self.is_user_memory(op) {
-            Some(value) => {
-                // user-defined memory - push value onto stack
-                self.ops.insert(0, value);
-                return;
-            }
-            None => (),
+        if let Some(value) = self.is_user_memory(op) {
+            // user-defined memory - push value onto stack
+            self.ops.insert(0, value);
+            return;
         }
 
         /* neither native command nor user-defined function nor user-defined memory */
@@ -1374,10 +1368,9 @@ impl Interpreter {
             self.ops.remove(0); // remove "fi"
         }
 
-        // add if ops to front of operations list
-        if_ops.iter().rev().for_each(
-            | op | self.ops.insert(0, op.to_string())
-        );
+        for op in if_ops.iter().rev() {
+            self.ops.insert(0, op.to_string());
+        }
     }
 
     fn remove_ops_fi(&mut self) {

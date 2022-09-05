@@ -38,10 +38,13 @@ impl fmt::Display for Config {
         let output_color = &theme.blue_smurf;
         write!(
             f,
-            "show_stack_level = {}\n\
+            "\n\
+            show_stack_level = {}\n\
             conversion_const = {}\n\
             monochrome = {}\n\
-            tip_percentage = {}",
+            tip_percentage = {}\n\
+            show_warnings = {}\n\
+            ",
             theme.color_rgb(
                 &self.show_stack_level.to_string(),
                 output_color,
@@ -56,6 +59,10 @@ impl fmt::Display for Config {
             ),
             theme.color_rgb(
                 &self.tip_percentage.to_string(),
+                output_color,
+            ),
+            theme.color_rgb(
+                &self.show_warnings.to_string(),
                 output_color,
             ),
         )
@@ -229,8 +236,8 @@ impl Interpreter {
         self.compose_native("fold", Self::c_fold); // fold stack using annonymous function
 
         /* configuration */
-        self.compose_native("save_cfg", Self::c_save_config); // save configuration
-        self.compose_native("show_cfg", Self::c_print_config); // show current configuration
+        self.compose_native("save_config", Self::c_save_config); // save configuration
+        self.compose_native("show_config", Self::c_print_config); // show current configuration
 
     }
 

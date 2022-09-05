@@ -595,14 +595,17 @@ As another example, `fold` be used with the `..` range operator to calculate the
 ### save configuration
 Save comp.toml configuration file in the home directory. This file can be used to configure some aspects of the behavior of the application like indicating the top of the stack and displaying monochrome output. If any problems are encountered with loading the configuration file, the file can be deleted from the home directory, and the default configuration will be loaded.
 ```
-% comp save_cfg
+% comp save_config
 ```
 
 ### show configuration
 ```
-% comp show_cfg
+% comp show_config
+
 show_stack_level = true
 conversion_constant = 1.61803
 monochrome = false
 tip_percentage = 0.15
+show_warnings = true
+
 ```

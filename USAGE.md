@@ -543,6 +543,13 @@ A version of a recursive factorial function that takes an integer argument is be
 )
 ```
 
+A simpler non-recursive version of a factorial function using the iota (`io`) command can be written as shown.
+```
+( factorial
+  io prod
+)
+```
+
 
 ---
 ## Commands (higher-order functions)

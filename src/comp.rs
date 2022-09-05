@@ -188,6 +188,7 @@ impl Interpreter {
         self.compose_native("avg", Self::c_avg); // average
         self.compose_native("avg_all", Self::c_avg_all); // average (all)
         self.compose_native("avg_", Self::c_avg_all); //
+        self.compose_native("sgn", Self::c_sign); // sign function
 
         /* control flow */
         self.compose_native("(", Self::c_load_function); // function definition
@@ -1111,6 +1112,20 @@ impl Interpreter {
         }
 
         self.stack.push((sum / len as f64).to_string());
+    }
+
+    pub fn c_sign(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: f64 = self.pop_stack_float();
+
+        let sgn: f64 = match a {
+            x if x < 0. => -1.,
+            x if x > 0. => 1.,
+            _ => 0.,
+        };
+
+        self.stack.push(sgn.to_string());
     }
 
     pub fn c_rand(&mut self, op: &str) {

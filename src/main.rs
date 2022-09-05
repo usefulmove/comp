@@ -651,6 +651,16 @@ mod unit_test {
         assert!(intp.pop_stack_uint() == 11);
         assert!(intp.pop_stack_uint() == 10);
         assert!(intp.pop_stack_uint() == 10);
+
+        intp.stack.push((-99).to_string());
+        intp.c_sign("");
+        intp.stack.push(109.to_string());
+        intp.c_sign("");
+        intp.stack.push(0.to_string());
+        intp.c_sign("");
+        intp.c_sum("");
+
+        assert!(intp.pop_stack_int() == 0);
     }
 
 } // unit_test

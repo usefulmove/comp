@@ -459,7 +459,11 @@ impl Interpreter {
     pub fn c_drop(&mut self, op: &str) {
         if !self.stack.is_empty() {
             self.stack.pop();
-        } else if self.config.show_warnings {
+            return;
+        }
+
+       // stack empty
+       if self.config.show_warnings {
             eprintln!(
                 "  {}: [{}] operation called on empty stack",
                 self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
@@ -489,7 +493,11 @@ impl Interpreter {
 
             if !self.stack.is_empty() {
                 self.stack.pop();
-            } else if self.config.show_warnings {
+                return;
+            }
+
+            // stack empty
+            if self.config.show_warnings {
                 eprintln!(
                     "  {}: [{}] operation called on empty stack",
                     self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
@@ -1503,12 +1511,12 @@ impl Interpreter {
 
     // read configuration file from home folder
     pub fn read_and_apply_config(&mut self, filename: &str) {
-        /*
+    /*
         println!(
             "  reading configuration file [{}]",
             self.theme.color_rgb(filename, &self.theme.blue_coffee_bold),
         );
-        */
+    */
 
         // read file contents
         let filename: String = filename.to_string();
@@ -1522,16 +1530,10 @@ impl Interpreter {
 
         let path: &Path = Path::new(&config_filename);
 
-        let file_contents = fs::read_to_string(&path);
-        if let Err(ref _error) = file_contents {
-            // do nothing - default config will be used
-        } else {
-            // read file successfully
-            let config_file_toml: String = file_contents.unwrap();
-
+        if let Ok(config_file_toml) = fs::read_to_string(&path) {
+            // read file success
             // deserialize configuration TOML and update configuration
-            let res: Result<Config, toml::de::Error> = toml::from_str(&config_file_toml);
-            let cfg: Config = match res {
+            let cfg: Config = match toml::from_str(&config_file_toml) {
                 Ok(c) => c,
                 Err(_error) => {
                     // parse fail

@@ -317,7 +317,7 @@ impl Interpreter {
 
     pub fn pop_stack_int(&mut self) -> i64 {
         let element: String = self.stack.pop().unwrap();
-        match self._parse_int(&element) {
+        match self.parse_int(&element) {
             Ok(val) => val, // parse success
             Err(_error) => {
                 // parse fail
@@ -425,7 +425,7 @@ impl Interpreter {
         Ok(value)
     }
 
-    fn _parse_int(&self, op: &str) -> Result<i64, ParseIntError> {
+    fn parse_int(&self, op: &str) -> Result<i64, ParseIntError> {
         let value: i64 = op.parse::<i64>()?;
         Ok(value)
     }
@@ -670,11 +670,8 @@ impl Interpreter {
 
     pub fn c_load_lambda(&mut self, _op: &str) {
         // clear existing anonymous function definition
-        match self.is_user_function("_") {
-            Some(index) => {
-                self.fns.remove(index);
-            }
-            None => (),
+        if let Some(index) = self.is_user_function("_") {
+            self.fns.remove(index);
         }
 
         // create new anonymous function instance
@@ -1497,7 +1494,7 @@ impl Interpreter {
 
         match n {
             n if n < 2. => 1.,
-            _           => n * Self::factorial(n - 1.),
+            _ => n * Self::factorial(n - 1.),
         }
     }
 
@@ -1505,7 +1502,7 @@ impl Interpreter {
     pub fn gcd(a: u64, b: u64) -> u64 {
         match b {
             b if b != 0 => Self::gcd(b, a % b),
-            _           => a,
+            _ => a,
         }
     }
 

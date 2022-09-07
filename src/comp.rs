@@ -127,7 +127,9 @@ impl Interpreter {
         self.compose_native("cls", Self::c_cls); // clear stack
         self.compose_native("clr", Self::c_cls); // clear stack
         self.compose_native("roll", Self::c_roll); // roll stack
+        self.compose_native("rolln", Self::c_rolln); // roll stack (n)
         self.compose_native("rot", Self::c_rot); // rotate stack (reverse direction from roll)
+        self.compose_native("rotn", Self::c_rotn); // rotate stack (n)
         self.compose_native("..", Self::c_range); // add range of numbers to stack (generic)
         self.compose_native("io", Self::c_iota); // add range of integers to stack (limited - base 1)
         self.compose_native("i0", Self::c_iota_zero); // add range of integers to stack (limited - base 0)
@@ -577,12 +579,28 @@ impl Interpreter {
         self.stack.splice(0..0, [o]); // add as first
     }
 
+    pub fn c_rolln(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let a: i64 = self.pop_stack_int();
+
+        (0..a).for_each(|_| { self.c_roll(op) });
+    }
+
     pub fn c_rot(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
         let o: String = self.stack.remove(0); // remove first
                                               //
         self.stack.push(o); // add as last
+    }
+
+    pub fn c_rotn(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let a: i64 = self.pop_stack_int();
+
+        (0..a).for_each(|_| { self.c_rot(op) });
     }
 
     pub fn c_map(&mut self, op: &str) {

@@ -1,4 +1,4 @@
-# Usage Guide
+o Usage Guide
 
 - [stack manipulation](#commands-stack-manipulation)
 - [memory usage](#commands-memory-usage)
@@ -13,7 +13,7 @@
 ---
 ## Commands (stack manipulation)
 
-### push items onto stack
+### push onto stack
 ```
 % comp 3 4
   3
@@ -46,7 +46,7 @@ take n elements from the top of the stack
   4
 ```
 
-### duplicate
+### duplicate (dup)
 duplicate last element
 ```
 % comp 3 4 dup
@@ -65,15 +65,15 @@ reverse order of last two elements
   3
 ```
 
-### clear stack
+### clear stack (cls)
 reverse order of last two elements
 ```
 % comp 1 2 3 4 cls
 
 ```
 
-### roll stack
-rotate stack elements such that the last element becomes the first
+### roll / rolln
+roll stack elements such that the last element becomes the first
 ```
 % comp 1 2 3 4 roll
   4
@@ -81,8 +81,16 @@ rotate stack elements such that the last element becomes the first
   2
   3
 ```
+roll stack n times
+```
+% comp 1 2 3 4 2 rolln
+  3
+  4
+  1
+  2
+```
 
-### rotate stack
+### rotate (rot / rotn)
 rotate stack elements such that the first element becomes the last (reverse direction from roll operation)
 ```
 % comp 1 2 3 4 rot
@@ -91,8 +99,16 @@ rotate stack elements such that the first element becomes the last (reverse dire
   4
   1
 ```
+rotate stack n times
+```
+% comp 1 2 3 4 2 rotn
+  3
+  4
+  1
+  2
+```
 
-### iota
+### iota (io)
 push an integer range (starting at 1) onto the stack
 ```
 % comp 8 io
@@ -114,7 +130,7 @@ push an integer range (starting at 0) onto the stack
   3
 ```
 
-### range
+### range (..)
 push a number range onto the stack by specifying the range start, end, and step size
 ```
 % comp 0 10 2 ..

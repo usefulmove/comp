@@ -79,22 +79,23 @@ fn main() {
             let filename: String = args[2].to_string();
             let path: &Path = Path::new(&filename);
 
-            let file_contents = fs::read_to_string(&path);
-            if let Err(ref error) = file_contents {
-                eprintln!(
-                    "  {}: could not read [{}]: {error}",
-                    theme.color_rgb("error", &theme.red_bold),
-                    theme.color_rgb(&path.display().to_string(), &theme.blue_coffee_bold),
-                );
-                exit(exitcode::OSFILE);
-            }
-
-            let file_contents: String = file_contents.unwrap();
+            let file_contents: String = match fs::read_to_string(&path) {
+                Ok(content) => content,
+                Err(error) => {
+                    eprintln!(
+                        "  {}: could not read [{}]: {error}",
+                        theme.color_rgb("error", &theme.red_bold),
+                        theme.color_rgb(&path.display().to_string(), &theme.blue_coffee_bold),
+                    );
+                    exit(exitcode::OSFILE);
+                }
+            };
 
             // create operations list vector from file contents - split elements
             let operations = file_contents
                 .split_whitespace()
                 .map(|x| x.to_string());
+
             interpreter.ops.extend(operations);
 
             // add additional operations from command line

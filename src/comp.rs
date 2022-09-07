@@ -1572,12 +1572,12 @@ impl Interpreter {
                     self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
                 );
             }
-            Err(e) => {
+            Err(error) => {
                 eprintln!(
                     "  {}: configuration file [{}] could not be saved: {}",
                     self.theme.color_rgb("error", &self.theme.red_bold),
                     self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
-                    e,
+                    error,
                 );
             }
         }

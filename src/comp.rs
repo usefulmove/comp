@@ -143,7 +143,7 @@ impl Interpreter {
         self.compose_native("sc", Self::c_store_c); // store
         self.compose_native("_c", Self::c_push_c); // retrieve
 
-        /* math operations */
+        /* maths operations */
         self.compose_native("+", Self::c_add); // add
         self.compose_native("+_", Self::c_sum); // sum (add all stack elements)
         self.compose_native("sum", Self::c_sum);
@@ -200,6 +200,7 @@ impl Interpreter {
         self.compose_native("avg_all", Self::c_avg_all); // average (all)
         self.compose_native("avg_", Self::c_avg_all); //
         self.compose_native("sgn", Self::c_sign); // sign function
+        self.compose_native("tng", Self::c_triangle); // trianglar numbers function
 
         /* control flow */
         self.compose_native("(", Self::c_load_function); // function definition
@@ -1154,6 +1155,16 @@ impl Interpreter {
         };
 
         self.stack.push(sgn.to_string());
+    }
+
+    pub fn c_triangle(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let mut a: i64 = self.pop_stack_int();
+
+        if a < 0 { a = 0; }
+
+        self.stack.push((a*(a-1)/2).to_string());
     }
 
     pub fn c_rand(&mut self, op: &str) {

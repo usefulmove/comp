@@ -1164,7 +1164,7 @@ impl Interpreter {
 
         if a < 0 { a = 0; }
 
-        self.stack.push((a*(a-1)/2).to_string());
+        self.stack.push((a*(a+1)/2).to_string());
     }
 
     pub fn c_rand(&mut self, op: &str) {

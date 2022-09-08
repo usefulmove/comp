@@ -529,7 +529,7 @@ mod unit_test {
         intp.stack.push(20.to_string());
         intp.c_triangle("");
 
-        assert!(intp.pop_stack_int() == 190);
+        assert!(intp.pop_stack_int() == 210);
     }
 
     #[test]

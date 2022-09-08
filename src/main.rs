@@ -525,6 +525,11 @@ mod unit_test {
         intp.c_fact("");
 
         assert!(intp.pop_stack_float() == 2432902008176640000.);
+
+        intp.stack.push(20.to_string());
+        intp.c_triangle("");
+
+        assert!(intp.pop_stack_int() == 190);
     }
 
     #[test]

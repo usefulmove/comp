@@ -585,7 +585,7 @@ impl Interpreter {
 
         let a: i64 = self.pop_stack_int();
 
-        (0..a).for_each(|_| { self.c_roll(op) });
+        (0..a).for_each(|_| self.c_roll(op));
     }
 
     pub fn c_rot(&mut self, op: &str) {
@@ -601,7 +601,7 @@ impl Interpreter {
 
         let a: i64 = self.pop_stack_int();
 
-        (0..a).for_each(|_| { self.c_rot(op) });
+        (0..a).for_each(|_| self.c_rot(op));
     }
 
     pub fn c_map(&mut self, op: &str) {
@@ -1114,8 +1114,8 @@ impl Interpreter {
         while !self.stack.is_empty() {
             let a: f64 = self.pop_stack_float();
 
-            if a > max { max = a; }
-            if a < min { min = a; }
+            if a > max { max = a }
+            if a < min { min = a }
         }
 
         self.stack.push((min).to_string());
@@ -1162,7 +1162,7 @@ impl Interpreter {
 
         let mut a: i64 = self.pop_stack_int();
 
-        if a < 0 { a = 0; }
+        if a < 0 { a = 0 }
 
         self.stack.push((a*(a+1)/2).to_string());
     }

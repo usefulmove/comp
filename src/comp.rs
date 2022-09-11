@@ -611,8 +611,8 @@ impl Interpreter {
 
         // add ops to execute anonymous function on each stack element
         for _ in 0..stack_len {
-            self.ops.insert(0, String::from("roll")); // roll stack
             self.ops.insert(0, String::from("_")); // execute anonymous function
+            self.ops.insert(0, String::from("rot")); // rotate stack
         }
     }
 
@@ -622,7 +622,7 @@ impl Interpreter {
         let stack_len: usize = self.stack.len();
 
         for _ in 0..(stack_len - 1) {
-            self.ops.insert(0, String::from("_")); // roll stack
+            self.ops.insert(0, String::from("_")); // execute anonymous function
             self.ops.insert(0, String::from("rot")); // rotate stack
         }
     }

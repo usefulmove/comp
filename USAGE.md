@@ -605,6 +605,20 @@ As another example, `fold` be used with the `..` range operator to calculate the
   2
 ```
 
+### scan
+use an anonymous function and the state of the previous item on the stack to update each stack item
+```
+% comp 8 io [ + ] scan
+  1
+  3
+  6
+  10
+  15
+  21
+  28
+  36
+```
+
 ---
 ## Commands (configuration)
 

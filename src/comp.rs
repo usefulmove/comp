@@ -558,9 +558,10 @@ impl Interpreter {
     pub fn c_dup(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        let end: usize = self.stack.len() - 1;
-
-        self.stack.push(self.stack[end].clone()); // remove last
+        self.stack.push(
+            self.stack[self.stack.len()-1]
+                .clone()
+        ); // remove last
     }
 
     pub fn c_swap(&mut self, op: &str) {
@@ -578,65 +579,29 @@ impl Interpreter {
     pub fn c_roll(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        let o: String = self.stack.pop().unwrap(); // remove last
-                                                   //
-        self.stack.splice(0..0, [o]); // add as first
+        self.stack.rotate_right(1);
     }
 
     pub fn c_rolln(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
 
-        let a: i64 = self.pop_stack_int();
+        let a: usize = self.pop_stack_int() as usize;
 
-        (0..a).for_each(|_| self.c_roll(op));
+        self.stack.rotate_right(a);
     }
 
     pub fn c_rot(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        let o: String = self.stack.remove(0); // remove first
-                                              //
-        self.stack.push(o); // add as last
+        self.stack.rotate_left(1);
     }
 
     pub fn c_rotn(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
 
-        let a: i64 = self.pop_stack_int();
+        let a: usize = self.pop_stack_int() as usize;
 
-        (0..a).for_each(|_| self.c_rot(op));
-    }
-
-    pub fn c_map(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        // add ops to execute anonymous function on each stack element (backwards)
-        for _ in 0..self.stack.len() {
-            self.ops.insert(0, String::from("_")); // execute anonymous function
-            self.ops.insert(0, String::from("rot")); // rotate stack
-        }
-    }
-
-    pub fn c_fold(&mut self, op: &str) {
-        Self::check_stack_error(self, 3, op);
-
-        // add ops to execute anonymous function on each stack element (backwards)
-        for _ in 0..(self.stack.len() - 1) {
-            self.ops.insert(0, String::from("_")); // execute anonymous function
-            self.ops.insert(0, String::from("rot")); // rotate stack
-        }
-    }
-
-    pub fn c_scan(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        // add ops to execute anonymous function on each stack element (backwards)
-        for _ in 0..(self.stack.len() -1) {
-            self.ops.insert(0, String::from("_")); // execute anonymous function
-            self.ops.insert(0, String::from("rot")); // rotate stack
-            self.ops.insert(0, String::from("dup")); // copy element
-        }
-        self.ops.insert(0, String::from("rot")); // rotate stack
+        self.stack.rotate_left(a);
     }
 
     pub fn c_range(&mut self, op: &str) {
@@ -705,28 +670,6 @@ impl Interpreter {
             .into_iter()
             .rev()
             .collect();
-    }
-
-    pub fn c_load_lambda(&mut self, _op: &str) {
-        // clear existing anonymous function definition
-        if let Some(index) = self.is_user_function("_") {
-            self.fns.remove(index);
-        }
-
-        // create new anonymous function instance
-        self.fns.push(
-            Function {
-                name: String::from("_"),
-                fops: Vec::new(),
-            }
-        );
-        let fn_ind: usize = self.fns.len() - 1; // index of new function in function vector
-
-        // build anonymous function operations list
-        while self.ops[0] != "]" {
-            self.fns[fn_ind].fops.push(self.ops.remove(0));
-        }
-        self.ops.remove(0); // remove "|"
     }
 
     /* ---- memory usage ---------------------------------------------------- */
@@ -1377,6 +1320,28 @@ impl Interpreter {
         self.ops.remove(0); // remove ")"
     }
 
+    pub fn c_load_lambda(&mut self, _op: &str) {
+        // clear existing anonymous function definition
+        if let Some(index) = self.is_user_function("_") {
+            self.fns.remove(index);
+        }
+
+        // create new anonymous function instance
+        self.fns.push(
+            Function {
+                name: String::from("_"),
+                fops: Vec::new(),
+            }
+        );
+        let fn_ind: usize = self.fns.len() - 1; // index of new function in function vector
+
+        // build anonymous function operations list
+        while self.ops[0] != "]" {
+            self.fns[fn_ind].fops.push(self.ops.remove(0));
+        }
+        self.ops.remove(0); // remove "|"
+    }
+
     pub fn c_equal(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
 
@@ -1511,6 +1476,40 @@ impl Interpreter {
 
         self.stack.push(self.output_rgb_dec(coq::Color{r, g, b, bold: false}));
         self.stack.push(self.output_rgb_hex_bg(coq::Color{r, g, b, bold: false}));
+    }
+
+    /* ---- higher-order functions ------------------------------------------ */
+
+    pub fn c_map(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        // add ops to execute anonymous function on each stack element (backwards)
+        for _ in 0..self.stack.len() {
+            self.ops.insert(0, String::from("_")); // execute anonymous function
+            self.ops.insert(0, String::from("rot")); // rotate stack
+        }
+    }
+
+    pub fn c_fold(&mut self, op: &str) {
+        Self::check_stack_error(self, 3, op);
+
+        // add ops to execute anonymous function on each stack element (backwards)
+        for _ in 0..(self.stack.len() - 1) {
+            self.ops.insert(0, String::from("_")); // execute anonymous function
+            self.ops.insert(0, String::from("rot")); // rotate stack
+        }
+    }
+
+    pub fn c_scan(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        // add ops to execute anonymous function on each stack element (backwards)
+        for _ in 0..(self.stack.len() -1) {
+            self.ops.insert(0, String::from("_")); // execute anonymous function
+            self.ops.insert(0, String::from("rot")); // rotate stack
+            self.ops.insert(0, String::from("dup")); // copy element
+        }
+        self.ops.insert(0, String::from("rot")); // rotate stack
     }
 
     /* ---- configuration --------------------------------------------------- */

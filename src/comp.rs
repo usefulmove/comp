@@ -207,6 +207,7 @@ impl Interpreter {
         self.compose_native("(", Self::c_load_function); // function definition
         self.compose_native("[", Self::c_load_lambda); // anonymous function definition
         self.compose_native("ifeq", Self::c_ifeq); // ifequal .. else
+        self.compose_native("eq", Self::c_equal); // equal
         self.compose_native("{", Self::c_comment); // function comment
         self.compose_native("peek", Self::c_peek); // peek at top of stack
 
@@ -1374,6 +1375,19 @@ impl Interpreter {
             self.fns[fn_ind].fops.push(self.ops.remove(0));
         }
         self.ops.remove(0); // remove ")"
+    }
+
+    pub fn c_equal(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b = self.pop_stack_float();
+        let a = self.pop_stack_float();
+
+        if a == b {
+            self.stack.push("1".to_string());
+        } else {
+            self.stack.push("0".to_string());
+        }
     }
 
     pub fn c_ifeq(&mut self, op: &str) {

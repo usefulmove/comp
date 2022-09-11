@@ -133,6 +133,7 @@ impl Interpreter {
         self.compose_native("..", Self::c_range); // add range of numbers to stack (generic)
         self.compose_native("io", Self::c_iota); // add range of integers to stack (limited - base 1)
         self.compose_native("i0", Self::c_iota_zero); // add range of integers to stack (limited - base 0)
+        self.compose_native("flip", Self::c_flip); // flip stack order
 
         /* memory usage */
         self.compose_native("store", Self::c_store); // store (pop value off stack and store in generic memory)
@@ -237,6 +238,7 @@ impl Interpreter {
         /* higher-order functions */
         self.compose_native("map", Self::c_map); // map annonymous function to stack
         self.compose_native("fold", Self::c_fold); // fold stack using annonymous function
+        //self.compose_native("scan", Self::c_scan); // scan stack using annonymous function
 
         /* configuration */
         self.compose_native("save_config", Self::c_save_config); // save configuration
@@ -685,6 +687,14 @@ impl Interpreter {
         for i in 0..=a as i64 {
             self.stack.push(i.to_string());
         }
+    }
+
+    pub fn c_flip(&mut self, _op: &str) {
+        self.stack = self.stack
+            .clone()
+            .into_iter()
+            .rev()
+            .collect();
     }
 
     pub fn c_load_lambda(&mut self, _op: &str) {

@@ -684,6 +684,7 @@ mod unit_test {
         assert!(intp.pop_stack_int() == 3);
 
 
+        intp.c_cls("");
         intp.stack.push(1.to_string());
         intp.stack.push(2.to_string());
         intp.stack.push(3.to_string());
@@ -693,5 +694,21 @@ mod unit_test {
         intp.c_rolln("");
 
         assert!(intp.pop_stack_int() == 2);
+
+
+        intp.c_cls("");
+        intp.stack.push(1.to_string());
+        intp.stack.push(2.to_string());
+        intp.stack.push(3.to_string());
+        intp.stack.push(4.to_string());
+        intp.stack.push(5.to_string());
+        intp.c_flip("");
+
+        assert!(intp.pop_stack_int() == 1);
+
+        intp.c_flip("");
+
+        assert!(intp.pop_stack_int() == 5);
+
     }
 } // unit_test

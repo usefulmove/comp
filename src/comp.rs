@@ -238,7 +238,7 @@ impl Interpreter {
         /* higher-order functions */
         self.compose_native("map", Self::c_map); // map annonymous function to stack
         self.compose_native("fold", Self::c_fold); // fold stack using annonymous function
-        //self.compose_native("scan", Self::c_scan); // scan stack using annonymous function
+        self.compose_native("scan", Self::c_scan); // scan stack using annonymous function
 
         /* configuration */
         self.compose_native("save_config", Self::c_save_config); // save configuration
@@ -609,10 +609,8 @@ impl Interpreter {
     pub fn c_map(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        let stack_len: usize = self.stack.len();
-
-        // add ops to execute anonymous function on each stack element
-        for _ in 0..stack_len {
+        // add ops to execute anonymous function on each stack element (backwards)
+        for _ in 0..self.stack.len() {
             self.ops.insert(0, String::from("_")); // execute anonymous function
             self.ops.insert(0, String::from("rot")); // rotate stack
         }
@@ -621,12 +619,23 @@ impl Interpreter {
     pub fn c_fold(&mut self, op: &str) {
         Self::check_stack_error(self, 3, op);
 
-        let stack_len: usize = self.stack.len();
-
-        for _ in 0..(stack_len - 1) {
+        // add ops to execute anonymous function on each stack element (backwards)
+        for _ in 0..(self.stack.len() - 1) {
             self.ops.insert(0, String::from("_")); // execute anonymous function
             self.ops.insert(0, String::from("rot")); // rotate stack
         }
+    }
+
+    pub fn c_scan(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        // add ops to execute anonymous function on each stack element (backwards)
+        for _ in 0..(self.stack.len() -1) {
+            self.ops.insert(0, String::from("_")); // execute anonymous function
+            self.ops.insert(0, String::from("rot")); // rotate stack
+            self.ops.insert(0, String::from("dup")); // copy element
+        }
+        self.ops.insert(0, String::from("rot")); // rotate stack
     }
 
     pub fn c_range(&mut self, op: &str) {

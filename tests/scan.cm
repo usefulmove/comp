@@ -1,0 +1,18 @@
+scan.cm peek drop
+
+8 io [ + ] scan
+sa
+cls
+8 io [ + ] 0 fold
+_a -
+
+{ on stack : 0 }
+
+
+{ evaluate }
+
+0 ifeq
+  pass
+else
+  fail
+fi

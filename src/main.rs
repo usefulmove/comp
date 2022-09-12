@@ -6,7 +6,7 @@ use std::process::exit;
 mod comp;
 mod mona;
 
-const RELEASE_STATE: &str = "e";
+const RELEASE_STATE: &str = "a";
 
 /*
 
@@ -349,6 +349,19 @@ fn level_map(level: u32) -> &'static str {
 #[cfg(test)]
 mod unit_test {
     use crate::comp::Interpreter;
+
+    #[test]
+    fn test_interpreter() {
+        let mut intp = Interpreter::new();
+
+        intp.ops.insert(0, "prod".to_string());
+        intp.ops.insert(0, "io".to_string());
+        intp.ops.insert(0, "8".to_string());
+
+        intp.process_ops();
+
+        assert!(intp.pop_stack_int() == 40320);
+    }
 
     #[test]
     fn test_core() {

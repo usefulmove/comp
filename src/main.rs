@@ -121,12 +121,14 @@ fn main() {
             // read operations list input from command line arguments
             interpreter.ops = (&args[1..]).to_vec();
         }
+
     };
 
     // load configuration
     interpreter.read_and_apply_config("comp.toml");
 
-    // process operations list
+    // process operations list ( ops list was loaded into the interpreter
+    // in the match statement above based on command line arguments )
     interpreter.process_ops();
 
     output_stack(

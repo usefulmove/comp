@@ -1533,9 +1533,7 @@ impl Interpreter {
         // is operator a user defined function?
         if !self.fns.is_empty() {
            for (i, f) in self.fns.iter().enumerate() {
-               if f.name == op {
-                   return Some(i);
-               }
+               if f.name == op { return Some(i) }
            }
         }
         None

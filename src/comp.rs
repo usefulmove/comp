@@ -86,13 +86,13 @@ impl Interpreter {
     // constructor
     pub fn new() -> Self {
         let mut cint = Self {
-            stack: Vec::new(),
+            stack: vec![],
             mem: HashMap::new(), // local interpreter memory
             mem_a: 0., // local interpreter memory
             mem_b: 0.,
             mem_c: 0.,
-            ops: Vec::new(), // operations list
-            fns: Vec::new(), // user-defined functions
+            ops: vec![], // operations list
+            fns: vec![], // user-defined functions
             cmdmap: HashMap::new(), // interpreter command map
             config: Config::new(), // configuration object
             theme: coq::Theme::new(), // output format theme
@@ -518,7 +518,7 @@ impl Interpreter {
         Self::check_stack_error(self, 1, op);
 
         let keep: String = self.pop_stack_string();
-        self.stack = Vec::new();
+        self.stack = vec![];
         self.stack.push(keep);
     }
 
@@ -1308,7 +1308,7 @@ impl Interpreter {
         self.fns.push(
             Function {
                 name: fn_name,
-                fops: Vec::new(),
+                fops: vec![],
             }
         );
         let fn_ind: usize = self.fns.len() - 1; // index of new function in function vector
@@ -1330,7 +1330,7 @@ impl Interpreter {
         self.fns.push(
             Function {
                 name: String::from("_"),
-                fops: Vec::new(),
+                fops: vec![],
             }
         );
         let fn_ind: usize = self.fns.len() - 1; // index of new function in function vector
@@ -1361,7 +1361,7 @@ impl Interpreter {
         let b = self.pop_stack_float();
         let a = self.pop_stack_float();
 
-        let mut if_ops: Vec<String> = Vec::new();
+        let mut if_ops: Vec<String> = vec![];
 
         let mut depth: usize = 0;
 

@@ -12,11 +12,11 @@ pub struct Function {
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
-    pub show_stack_level: bool,   // annotate stack level
+    pub show_stack_level: bool, // annotate stack level
     pub conversion_constant: f64, // configurable constant for a_b conversion
-    pub monochrome: bool,         // set output to monochrome
-    pub tip_percentage: f64,      // tip conversion constant
-    pub show_warnings: bool,      // show warnings
+    pub monochrome: bool, // set output to monochrome
+    pub tip_percentage: f64, // tip conversion constant
+    pub show_warnings: bool, // show warnings
 }
 
 impl Config {

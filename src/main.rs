@@ -6,7 +6,7 @@ use std::process::exit;
 mod comp;
 mod mona;
 
-const RELEASE_STATE: &str = "a";
+const RELEASE_STATE: &str = "b";
 
 /*
 
@@ -74,7 +74,6 @@ fn main() {
                 );
                 exit(exitcode::NOINPUT);
             }
-
             // read file contents
             let filename: String = args[2].to_string();
             let path: &Path = Path::new(&filename);
@@ -90,7 +89,6 @@ fn main() {
                     exit(exitcode::OSFILE);
                 }
             };
-
             // create operations list vector from file contents - split elements
             let operations = file_contents
                 .split_whitespace()
@@ -131,6 +129,7 @@ fn main() {
     // in the match statement above based on command line arguments )
     interpreter.process_ops();
 
+    /* display stack to user */
     output_stack(
         &mut interpreter.stack.clone(),
         interpreter.config.show_stack_level,
@@ -307,30 +306,35 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
         );
     }
 
-    while !stack.is_empty() {
-        let level: u32 = stack.len() as u32;
+    let len = stack.len();
+    stack.iter()
+        .enumerate()
+        .for_each(|(i, ent)| {
+
+        let level = len - i;
+
         match level {
             1 => {
-                println!(
-                    // top element
+                println!( // top element
                     "{}  {}",
                     (color_annotate_closure.f)(level_map(level)),
-                    (color_stack_top_closure.f)(&stack.remove(0)),
+                    (color_stack_top_closure.f)(&ent),
                 )
             }
             _ => {
-                println!(
-                    // all other elements
+                println!( // all other elements
                     "{}  {}",
                     (color_annotate_closure.f)(level_map(level)),
-                    (color_stack_closure.f)(&stack.remove(0)),
+                    (color_stack_closure.f)(&ent),
                 )
             }
         }
-    }
+
+        });
+
 }
 
-fn level_map(level: u32) -> &'static str {
+fn level_map(level: usize) -> &'static str {
     let ret: &str = match level {
         1 => "a.",
         2 => "b.",
@@ -345,7 +349,6 @@ fn level_map(level: u32) -> &'static str {
     ret
 }
 
-
 /* --- unit tests --- */
 
 #[cfg(test)]
@@ -354,69 +357,71 @@ mod unit_test {
 
     #[test]
     fn test_interpreter() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.ops.insert(0, "prod".to_string());
-        intp.ops.insert(0, "io".to_string());
-        intp.ops.insert(0, "8".to_string());
+        comp.ops.push(8.to_string());
+        comp.ops.push("io".to_string());
+        comp.ops.push("prod".to_string());
 
-        intp.process_ops();
+        comp.process_ops();
 
-        assert!(intp.pop_stack_int() == 40320);
+        assert!(comp.pop_stack_int() == 40320);
     }
 
     #[test]
     fn test_core() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
 
-        intp.c_add_one("");
-        intp.c_add_one("");
-        intp.c_add_one("");
-        intp.c_sub_one("");
-        intp.c_sub_one("");
-        intp.c_sub_one("");
+        comp.ops.push("++".to_string());
+        comp.ops.push("++".to_string());
+        comp.ops.push("++".to_string());
+        comp.ops.push("--".to_string());
+        comp.ops.push("--".to_string());
+        comp.ops.push("--".to_string());
 
-        intp.c_rot("");
-        intp.c_rot("");
-        intp.c_roll("");
-        intp.c_roll("");
+        comp.ops.push("rot".to_string());
+        comp.ops.push("rot".to_string());
+        comp.ops.push("roll".to_string());
+        comp.ops.push("roll".to_string());
 
-        intp.c_degrad("");
-        intp.c_cos("");
-        intp.c_acos("");
-        intp.c_sin("");
-        intp.c_asin("");
-        intp.c_tan("");
-        intp.c_atan("");
-        intp.c_raddeg("");
-        intp.c_round("");
-        intp.c_roll("");
-        intp.c_roll("");
-        intp.c_roll("");
-        intp.c_roll("");
-        intp.c_dup("");
-        intp.c_drop("");
-        intp.c_swap("");
-        intp.c_swap("");
-        intp.c_add("");
-        intp.c_sub("");
-        intp.c_div("");
+        comp.ops.push("deg_rad".to_string());
+        comp.ops.push("cos".to_string());
+        comp.ops.push("acos".to_string());
+        comp.ops.push("sin".to_string());
+        comp.ops.push("asin".to_string());
+        comp.ops.push("tan".to_string());
+        comp.ops.push("atan".to_string());
+        comp.ops.push("rad_deg".to_string());
+        comp.ops.push("round".to_string());
+        comp.ops.push("roll".to_string());
+        comp.ops.push("roll".to_string());
+        comp.ops.push("roll".to_string());
+        comp.ops.push("roll".to_string());
+        comp.ops.push("dup".to_string());
+        comp.ops.push("drop".to_string());
+        comp.ops.push("swap".to_string());
+        comp.ops.push("swap".to_string());
+        comp.ops.push("+".to_string());
+        comp.ops.push("-".to_string());
+        comp.ops.push("/".to_string());
 
-        intp.stack.push(10.to_string());
-        intp.c_log2("");
-        intp.stack.push(10.to_string());
-        intp.stack.push(2.to_string());
-        intp.c_logn("");
-        intp.c_sub("");
-        intp.c_round("");
-        intp.c_add("");
+        comp.ops.push(10.to_string());
+        comp.ops.push("log2".to_string());
+        comp.ops.push(10.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("logn".to_string());
+        comp.ops.push("-".to_string());
+        comp.ops.push("round".to_string());
+        comp.ops.push("+".to_string());
 
-        assert!(intp.pop_stack_float() == -0.2);
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == -0.2);
     }
 
     #[test]
@@ -427,194 +432,194 @@ mod unit_test {
 
     #[test]
     fn test_roots() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.stack.push(2.to_string());
-        intp.c_dup("");
-        intp.c_sqrt("");
-        intp.c_swap("");
-        intp.stack.push(32.to_string());
-        intp.c_exp("");
-        intp.stack.push((32. * 2.).to_string());
-        intp.c_nroot("");
+        comp.stack.push(2.to_string());
+        comp.c_dup("");
+        comp.c_sqrt("");
+        comp.c_swap("");
+        comp.stack.push(32.to_string());
+        comp.c_exp("");
+        comp.stack.push((32. * 2.).to_string());
+        comp.c_nroot("");
 
-        assert!(intp.pop_stack_float() == intp.pop_stack_float());
+        assert!(comp.pop_stack_float() == comp.pop_stack_float());
 
-        intp.stack.push(1.to_string());
-        intp.stack.push((-2.).to_string());
-        intp.c_chs("");
-        intp.c_chs("");
-        intp.c_pi("");
-        intp.c_mult("");
-        intp.c_pi("");
-        intp.stack.push(2.to_string());
-        intp.c_exp("");
-        intp.stack.push(1.to_string());
-        intp.c_add("");
-        intp.c_proot("");
-        intp.c_sum("");
-        intp.stack.push(2.to_string());
-        intp.c_div("");
-        intp.c_pi("");
+        comp.stack.push(1.to_string());
+        comp.stack.push((-2.).to_string());
+        comp.c_chs("");
+        comp.c_chs("");
+        comp.c_pi("");
+        comp.c_mult("");
+        comp.c_pi("");
+        comp.stack.push(2.to_string());
+        comp.c_exp("");
+        comp.stack.push(1.to_string());
+        comp.c_add("");
+        comp.c_proot("");
+        comp.c_sum("");
+        comp.stack.push(2.to_string());
+        comp.c_div("");
+        comp.c_pi("");
 
-        assert!(intp.pop_stack_float() == intp.pop_stack_float());
+        assert!(comp.pop_stack_float() == comp.pop_stack_float());
     }
 
     #[test]
     #[should_panic]
     fn test_cls() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.c_cls("");
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.c_cls("");
 
-        assert!(intp.pop_stack_float() == 0.);
+        assert!(comp.pop_stack_float() == 0.);
     }
 
     #[test]
     fn test_mem() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.c_chs("");
-        intp.c_abs("");
-        intp.c_inv("");
-        intp.c_inv("");
-        intp.c_pi("");
-        intp.c_euler("");
-        intp.stack.push(0.to_string());
-        intp.c_store_b(""); // 0
-        intp.c_store_a(""); // e
-        intp.c_store_c(""); // pi
-        intp.c_cls("");
-        intp.c_push_b(""); // 0
-        intp.c_push_c(""); // pi
-        intp.c_add("");
-        intp.c_push_a(""); // e
-        intp.c_add("");
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.c_chs("");
+        comp.c_abs("");
+        comp.c_inv("");
+        comp.c_inv("");
+        comp.c_pi("");
+        comp.c_euler("");
+        comp.stack.push(0.to_string());
+        comp.c_store_b(""); // 0
+        comp.c_store_a(""); // e
+        comp.c_store_c(""); // pi
+        comp.c_cls("");
+        comp.c_push_b(""); // 0
+        comp.c_push_c(""); // pi
+        comp.c_add("");
+        comp.c_push_a(""); // e
+        comp.c_add("");
 
-        assert!(intp.pop_stack_float() == std::f64::consts::PI + std::f64::consts::E);
+        assert!(comp.pop_stack_float() == std::f64::consts::PI + std::f64::consts::E);
     }
 
     #[test]
     fn test_cmp() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.stack.push(10.to_string());
-        intp.c_log10("");
-        intp.c_euler("");
-        intp.c_ln("");
-        intp.stack.push(105.to_string());
-        intp.stack.push(2.to_string());
-        intp.c_mod("");
-        intp.stack.push(3049.to_string());
-        intp.stack.push(1009.to_string());
-        intp.c_gcd("");
-        intp.c_product("");
+        comp.stack.push(10.to_string());
+        comp.c_log10("");
+        comp.c_euler("");
+        comp.c_ln("");
+        comp.stack.push(105.to_string());
+        comp.stack.push(2.to_string());
+        comp.c_mod("");
+        comp.stack.push(3049.to_string());
+        comp.stack.push(1009.to_string());
+        comp.c_gcd("");
+        comp.c_product("");
 
-        assert!(intp.pop_stack_float() == 1.);
+        assert!(comp.pop_stack_float() == 1.);
 
-        intp.stack.push(20.to_string());
-        intp.c_fact("");
+        comp.stack.push(20.to_string());
+        comp.c_fact("");
 
-        assert!(intp.pop_stack_float() == 2432902008176640000.);
+        assert!(comp.pop_stack_float() == 2432902008176640000.);
 
-        intp.stack.push(20.to_string());
-        intp.c_triangle("");
+        comp.stack.push(20.to_string());
+        comp.c_triangle("");
 
-        assert!(intp.pop_stack_int() == 210);
+        assert!(comp.pop_stack_int() == 210);
     }
 
     #[test]
     fn test_rand() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.stack.push(2.to_string());
-        intp.c_rand("");
-        intp.stack.push(2.to_string());
-        intp.c_rand("");
-        intp.stack.push(2.to_string());
-        intp.c_rand("");
-        intp.stack.push(2.to_string());
-        intp.c_rand("");
-        intp.stack.push(2.to_string());
-        intp.c_rand("");
-        intp.stack.push(2.to_string());
-        intp.c_rand("");
-        intp.stack.push(2.to_string());
-        intp.c_rand("");
-        intp.stack.push(2.to_string());
-        intp.c_rand("");
-        intp.stack.push(2.to_string());
-        intp.c_rand("");
-        intp.stack.push(2.to_string());
-        intp.c_rand("");
-        intp.c_max("");
+        comp.stack.push(2.to_string());
+        comp.c_rand("");
+        comp.stack.push(2.to_string());
+        comp.c_rand("");
+        comp.stack.push(2.to_string());
+        comp.c_rand("");
+        comp.stack.push(2.to_string());
+        comp.c_rand("");
+        comp.stack.push(2.to_string());
+        comp.c_rand("");
+        comp.stack.push(2.to_string());
+        comp.c_rand("");
+        comp.stack.push(2.to_string());
+        comp.c_rand("");
+        comp.stack.push(2.to_string());
+        comp.c_rand("");
+        comp.stack.push(2.to_string());
+        comp.c_rand("");
+        comp.stack.push(2.to_string());
+        comp.c_rand("");
+        comp.c_max("");
 
-        assert!(intp.pop_stack_float() <= 1.);
+        assert!(comp.pop_stack_float() <= 1.);
     }
 
     #[test]
     fn test_minmax() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.c_min("");
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.c_min("");
 
-        assert!(intp.pop_stack_float() == 1.);
+        assert!(comp.pop_stack_float() == 1.);
 
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.c_max("");
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.c_max("");
 
-        assert!(intp.pop_stack_float() == 2.);
+        assert!(comp.pop_stack_float() == 2.);
 
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.c_min_all("");
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.c_min_all("");
 
-        assert!(intp.pop_stack_float() == 1.);
+        assert!(comp.pop_stack_float() == 1.);
 
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.c_max_all("");
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.c_max_all("");
 
-        assert!(intp.pop_stack_float() == 4.);
+        assert!(comp.pop_stack_float() == 4.);
 
-        intp.stack.push((-1).to_string());
-        intp.stack.push((-5).to_string());
-        intp.stack.push((-10).to_string());
-        intp.c_minmax("");
+        comp.stack.push((-1).to_string());
+        comp.stack.push((-5).to_string());
+        comp.stack.push((-10).to_string());
+        comp.c_minmax("");
 
-        assert!(intp.pop_stack_float() == -1.);
-        assert!(intp.pop_stack_float() == -10.);
+        assert!(comp.pop_stack_float() == -1.);
+        assert!(comp.pop_stack_float() == -10.);
     }
 
 
@@ -622,108 +627,108 @@ mod unit_test {
 
     #[test]
     fn test_conv() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.stack.push(100.to_string());
-        intp.c_celfah("");
-        intp.c_fahcel("");
-        intp.c_dechex("");
-        intp.c_hexbin("");
-        intp.c_binhex("");
-        intp.c_hexdec("");
-        intp.c_decbin("");
-        intp.c_bindec("");
-        intp.c_ftm("");
-        intp.c_mft("");
+        comp.stack.push(100.to_string());
+        comp.c_celfah("");
+        comp.c_fahcel("");
+        comp.c_dechex("");
+        comp.c_hexbin("");
+        comp.c_binhex("");
+        comp.c_hexdec("");
+        comp.c_decbin("");
+        comp.c_bindec("");
+        comp.c_ftm("");
+        comp.c_mft("");
 
-        assert!(intp.pop_stack_float() == 100.);
+        assert!(comp.pop_stack_float() == 100.);
     }
 
     #[test]
     fn test_avg() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.stack.push((-2).to_string());
-        intp.stack.push(2.to_string());
-        intp.c_avg("");
+        comp.stack.push((-2).to_string());
+        comp.stack.push(2.to_string());
+        comp.c_avg("");
 
-        assert!(intp.pop_stack_float() == 0.);
+        assert!(comp.pop_stack_float() == 0.);
 
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.c_avg_all("");
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.c_avg_all("");
 
-        assert!(intp.pop_stack_float() == 2.5);
+        assert!(comp.pop_stack_float() == 2.5);
     }
 
     #[test]
     fn test_misc() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.stack.push(10.1.to_string());
-        intp.c_round("");
-        intp.stack.push(10.1.to_string());
-        intp.c_floor("");
-        intp.stack.push(10.1.to_string());
-        intp.c_ceiling("");
+        comp.stack.push(10.1.to_string());
+        comp.c_round("");
+        comp.stack.push(10.1.to_string());
+        comp.c_floor("");
+        comp.stack.push(10.1.to_string());
+        comp.c_ceiling("");
 
-        assert!(intp.pop_stack_uint() == 11);
-        assert!(intp.pop_stack_uint() == 10);
-        assert!(intp.pop_stack_uint() == 10);
+        assert!(comp.pop_stack_uint() == 11);
+        assert!(comp.pop_stack_uint() == 10);
+        assert!(comp.pop_stack_uint() == 10);
 
-        intp.stack.push((-99).to_string());
-        intp.c_sign("");
-        intp.stack.push(109.to_string());
-        intp.c_sign("");
-        intp.stack.push(0.to_string());
-        intp.c_sign("");
-        intp.c_sum("");
+        comp.stack.push((-99).to_string());
+        comp.c_sign("");
+        comp.stack.push(109.to_string());
+        comp.c_sign("");
+        comp.stack.push(0.to_string());
+        comp.c_sign("");
+        comp.c_sum("");
 
-        assert!(intp.pop_stack_int() == 0);
+        assert!(comp.pop_stack_int() == 0);
     }
 
     #[test]
     fn test_stack() {
-        let mut intp = Interpreter::new();
+        let mut comp = Interpreter::new();
 
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.stack.push(5.to_string());
-        intp.stack.push(3.to_string());
-        intp.c_rotn("");
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.stack.push(5.to_string());
+        comp.stack.push(3.to_string());
+        comp.c_rotn("");
 
-        assert!(intp.pop_stack_int() == 3);
-
-
-        intp.c_cls("");
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.stack.push(5.to_string());
-        intp.stack.push(3.to_string());
-        intp.c_rolln("");
-
-        assert!(intp.pop_stack_int() == 2);
+        assert!(comp.pop_stack_int() == 3);
 
 
-        intp.c_cls("");
-        intp.stack.push(1.to_string());
-        intp.stack.push(2.to_string());
-        intp.stack.push(3.to_string());
-        intp.stack.push(4.to_string());
-        intp.stack.push(5.to_string());
-        intp.c_flip("");
+        comp.c_cls("");
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.stack.push(5.to_string());
+        comp.stack.push(3.to_string());
+        comp.c_rolln("");
 
-        assert!(intp.pop_stack_int() == 1);
+        assert!(comp.pop_stack_int() == 2);
 
-        intp.c_flip("");
 
-        assert!(intp.pop_stack_int() == 5);
+        comp.c_cls("");
+        comp.stack.push(1.to_string());
+        comp.stack.push(2.to_string());
+        comp.stack.push(3.to_string());
+        comp.stack.push(4.to_string());
+        comp.stack.push(5.to_string());
+        comp.c_flip("");
+
+        assert!(comp.pop_stack_int() == 1);
+
+        comp.c_flip("");
+
+        assert!(comp.pop_stack_int() == 5);
 
     }
 } // unit_test

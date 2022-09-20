@@ -434,33 +434,37 @@ mod unit_test {
     fn test_roots() {
         let mut comp = Interpreter::new();
 
-        comp.stack.push(2.to_string());
-        comp.c_dup("");
-        comp.c_sqrt("");
-        comp.c_swap("");
-        comp.stack.push(32.to_string());
-        comp.c_exp("");
-        comp.stack.push((32. * 2.).to_string());
-        comp.c_nroot("");
+        comp.ops.push(2.to_string());
+        comp.ops.push("dup".to_string());
+        comp.ops.push("sqrt".to_string());
+        comp.ops.push("swap".to_string());
+        comp.ops.push(32.to_string());
+        comp.ops.push("^".to_string());
+        comp.ops.push((32. * 2.).to_string());
+        comp.ops.push("nroot".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == comp.pop_stack_float());
 
-        comp.stack.push(1.to_string());
-        comp.stack.push((-2.).to_string());
-        comp.c_chs("");
-        comp.c_chs("");
-        comp.c_pi("");
-        comp.c_mult("");
-        comp.c_pi("");
-        comp.stack.push(2.to_string());
-        comp.c_exp("");
-        comp.stack.push(1.to_string());
-        comp.c_add("");
-        comp.c_proot("");
-        comp.c_sum("");
-        comp.stack.push(2.to_string());
-        comp.c_div("");
-        comp.c_pi("");
+        comp.ops.push(1.to_string());
+        comp.ops.push((-2).to_string());
+        comp.ops.push("chs".to_string());
+        comp.ops.push("chs".to_string());
+        comp.ops.push("pi".to_string());
+        comp.ops.push("x".to_string());
+        comp.ops.push("pi".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("^".to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push("+".to_string());
+        comp.ops.push("proot".to_string());
+        comp.ops.push("sum".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("/".to_string());
+        comp.ops.push("pi".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == comp.pop_stack_float());
     }

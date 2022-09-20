@@ -349,7 +349,8 @@ fn level_map(level: usize) -> &'static str {
     ret
 }
 
-/* --- unit tests --- */
+
+/* unit tests --------------------------------------------------------------- */
 
 #[cfg(test)]
 mod unit_test {
@@ -474,19 +475,21 @@ mod unit_test {
     fn test_cls() {
         let mut comp = Interpreter::new();
 
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.c_cls("");
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push("cls".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == 0.);
     }
@@ -495,34 +498,36 @@ mod unit_test {
     fn test_mem() {
         let mut comp = Interpreter::new();
 
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.c_chs("");
-        comp.c_abs("");
-        comp.c_inv("");
-        comp.c_inv("");
-        comp.c_pi("");
-        comp.c_euler("");
-        comp.stack.push(0.to_string());
-        comp.c_store_b(""); // 0
-        comp.c_store_a(""); // e
-        comp.c_store_c(""); // pi
-        comp.c_cls("");
-        comp.c_push_b(""); // 0
-        comp.c_push_c(""); // pi
-        comp.c_add("");
-        comp.c_push_a(""); // e
-        comp.c_add("");
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push("chs".to_string());
+        comp.ops.push("abs".to_string());
+        comp.ops.push("inv".to_string());
+        comp.ops.push("inv".to_string());
+        comp.ops.push("pi".to_string());
+        comp.ops.push("e".to_string());
+        comp.ops.push(0.to_string());
+        comp.ops.push("sb".to_string());
+        comp.ops.push("sa".to_string());
+        comp.ops.push("sc".to_string());
+        comp.ops.push("cls".to_string());
+        comp.ops.push("_b".to_string());
+        comp.ops.push("_c".to_string());
+        comp.ops.push("+".to_string());
+        comp.ops.push("_a".to_string());
+        comp.ops.push("+".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == std::f64::consts::PI + std::f64::consts::E);
     }
@@ -531,27 +536,33 @@ mod unit_test {
     fn test_cmp() {
         let mut comp = Interpreter::new();
 
-        comp.stack.push(10.to_string());
-        comp.c_log10("");
-        comp.c_euler("");
-        comp.c_ln("");
-        comp.stack.push(105.to_string());
-        comp.stack.push(2.to_string());
-        comp.c_mod("");
-        comp.stack.push(3049.to_string());
-        comp.stack.push(1009.to_string());
-        comp.c_gcd("");
-        comp.c_product("");
+        comp.ops.push(10.to_string());
+        comp.ops.push("log".to_string());
+        comp.ops.push("e".to_string());
+        comp.ops.push("ln".to_string());
+        comp.ops.push(105.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("%".to_string());
+        comp.ops.push(3049.to_string());
+        comp.ops.push(1009.to_string());
+        comp.ops.push("gcd".to_string());
+        comp.ops.push("prod".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == 1.);
 
-        comp.stack.push(20.to_string());
-        comp.c_fact("");
+        comp.ops.push(20.to_string());
+        comp.ops.push("!".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == 2432902008176640000.);
 
-        comp.stack.push(20.to_string());
-        comp.c_triangle("");
+        comp.ops.push(20.to_string());
+        comp.ops.push("tng".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_int() == 210);
     }
@@ -560,27 +571,29 @@ mod unit_test {
     fn test_rand() {
         let mut comp = Interpreter::new();
 
-        comp.stack.push(2.to_string());
-        comp.c_rand("");
-        comp.stack.push(2.to_string());
-        comp.c_rand("");
-        comp.stack.push(2.to_string());
-        comp.c_rand("");
-        comp.stack.push(2.to_string());
-        comp.c_rand("");
-        comp.stack.push(2.to_string());
-        comp.c_rand("");
-        comp.stack.push(2.to_string());
-        comp.c_rand("");
-        comp.stack.push(2.to_string());
-        comp.c_rand("");
-        comp.stack.push(2.to_string());
-        comp.c_rand("");
-        comp.stack.push(2.to_string());
-        comp.c_rand("");
-        comp.stack.push(2.to_string());
-        comp.c_rand("");
-        comp.c_max("");
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push("max".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() <= 1.);
     }
@@ -625,9 +638,6 @@ mod unit_test {
         assert!(comp.pop_stack_float() == -1.);
         assert!(comp.pop_stack_float() == -10.);
     }
-
-
-    /* unit tests ----------------------------------------------------------- */
 
     #[test]
     fn test_conv() {

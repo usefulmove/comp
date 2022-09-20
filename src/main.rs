@@ -602,38 +602,52 @@ mod unit_test {
     fn test_minmax() {
         let mut comp = Interpreter::new();
 
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.c_min("");
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("min".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == 1.);
 
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.c_max("");
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("max".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == 2.);
 
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.c_min_all("");
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push("min_all".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == 1.);
 
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.c_max_all("");
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push("max_all".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == 4.);
 
-        comp.stack.push((-1).to_string());
-        comp.stack.push((-5).to_string());
-        comp.stack.push((-10).to_string());
-        comp.c_minmax("");
+
+        comp.ops.push((-1).to_string());
+        comp.ops.push((-5).to_string());
+        comp.ops.push((-10).to_string());
+        comp.ops.push("minmax".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == -1.);
         assert!(comp.pop_stack_float() == -10.);

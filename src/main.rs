@@ -6,7 +6,7 @@ use std::process::exit;
 mod comp;
 mod mona;
 
-const RELEASE_STATE: &str = "b";
+const RELEASE_STATE: &str = "c";
 
 /*
 
@@ -657,17 +657,19 @@ mod unit_test {
     fn test_conv() {
         let mut comp = Interpreter::new();
 
-        comp.stack.push(100.to_string());
-        comp.c_celfah("");
-        comp.c_fahcel("");
-        comp.c_dechex("");
-        comp.c_hexbin("");
-        comp.c_binhex("");
-        comp.c_hexdec("");
-        comp.c_decbin("");
-        comp.c_bindec("");
-        comp.c_ftm("");
-        comp.c_mft("");
+        comp.ops.push(100.to_string());
+        comp.ops.push("c_f".to_string());
+        comp.ops.push("f_c".to_string());
+        comp.ops.push("dec_hex".to_string());
+        comp.ops.push("hex_bin".to_string());
+        comp.ops.push("bin_hex".to_string());
+        comp.ops.push("hex_dec".to_string());
+        comp.ops.push("dec_bin".to_string());
+        comp.ops.push("bin_dec".to_string());
+        comp.ops.push("ft_m".to_string());
+        comp.ops.push("m_ft".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == 100.);
     }
@@ -676,17 +678,22 @@ mod unit_test {
     fn test_avg() {
         let mut comp = Interpreter::new();
 
-        comp.stack.push((-2).to_string());
-        comp.stack.push(2.to_string());
-        comp.c_avg("");
+        comp.ops.push((-2).to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("avg".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == 0.);
 
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.c_avg_all("");
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push("avg_all".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_float() == 2.5);
     }
@@ -695,24 +702,29 @@ mod unit_test {
     fn test_misc() {
         let mut comp = Interpreter::new();
 
-        comp.stack.push(10.1.to_string());
-        comp.c_round("");
-        comp.stack.push(10.1.to_string());
-        comp.c_floor("");
-        comp.stack.push(10.1.to_string());
-        comp.c_ceiling("");
+        comp.ops.push(10.1.to_string());
+        comp.ops.push("round".to_string());
+        comp.ops.push(10.1.to_string());
+        comp.ops.push("floor".to_string());
+        comp.ops.push(10.1.to_string());
+        comp.ops.push("ceil".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_uint() == 11);
         assert!(comp.pop_stack_uint() == 10);
         assert!(comp.pop_stack_uint() == 10);
 
-        comp.stack.push((-99).to_string());
-        comp.c_sign("");
-        comp.stack.push(109.to_string());
-        comp.c_sign("");
-        comp.stack.push(0.to_string());
-        comp.c_sign("");
-        comp.c_sum("");
+
+        comp.ops.push((-99).to_string());
+        comp.ops.push("sgn".to_string());
+        comp.ops.push(109.to_string());
+        comp.ops.push("sgn".to_string());
+        comp.ops.push(0.to_string());
+        comp.ops.push("sgn".to_string());
+        comp.ops.push("sum".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_int() == 0);
     }

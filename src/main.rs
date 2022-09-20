@@ -721,40 +721,49 @@ mod unit_test {
     fn test_stack() {
         let mut comp = Interpreter::new();
 
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.stack.push(5.to_string());
-        comp.stack.push(3.to_string());
-        comp.c_rotn("");
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(5.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push("rotn".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_int() == 3);
 
 
         comp.c_cls("");
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.stack.push(5.to_string());
-        comp.stack.push(3.to_string());
-        comp.c_rolln("");
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(5.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push("rolln".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_int() == 2);
 
 
         comp.c_cls("");
-        comp.stack.push(1.to_string());
-        comp.stack.push(2.to_string());
-        comp.stack.push(3.to_string());
-        comp.stack.push(4.to_string());
-        comp.stack.push(5.to_string());
-        comp.c_flip("");
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(5.to_string());
+        comp.ops.push("flip".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_int() == 1);
 
-        comp.c_flip("");
+
+        comp.ops.push("flip".to_string());
+
+        comp.process_ops();
 
         assert!(comp.pop_stack_int() == 5);
 

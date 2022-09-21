@@ -318,14 +318,14 @@ fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
                 println!( // top element
                     "{}  {}",
                     (color_annotate_closure.f)(level_map(level)),
-                    (color_stack_top_closure.f)(&ent),
+                    (color_stack_top_closure.f)(ent),
                 )
             }
             _ => {
                 println!( // all other elements
                     "{}  {}",
                     (color_annotate_closure.f)(level_map(level)),
-                    (color_stack_closure.f)(&ent),
+                    (color_stack_closure.f)(ent),
                 )
             }
         }

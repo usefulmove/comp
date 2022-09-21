@@ -727,6 +727,16 @@ mod unit_test {
         comp.process_ops();
 
         assert!(comp.pop_stack_int() == 0);
+
+
+        comp.ops.push("cls".to_string());
+        comp.ops.push(28.to_string());
+        comp.ops.push("divs".to_string());
+        comp.ops.push("sum".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_int() == 28);
     }
 
     #[test]

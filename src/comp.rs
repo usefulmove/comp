@@ -202,6 +202,7 @@ impl Interpreter {
         self.compose_native("avg_", Self::c_avg_all); //
         self.compose_native("sgn", Self::c_sign); // sign function
         self.compose_native("tng", Self::c_triangle); // trianglar numbers function
+        self.compose_native("divs", Self::c_divisors); // find divisors of a number
 
         /* control flow */
         self.compose_native("(", Self::c_load_function); // function definition
@@ -1029,6 +1030,15 @@ impl Interpreter {
         self.stack.push((a.ln()).to_string());
     }
 
+    pub fn c_rand(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: u64 = self.pop_stack_uint();
+        let num: f64 = (a as f64 * rand::random::<f64>()).floor();
+
+        self.stack.push(num.to_string());
+    }
+
     pub fn c_max(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
 
@@ -1130,13 +1140,25 @@ impl Interpreter {
         self.stack.push((a*(a+1)/2).to_string());
     }
 
-    pub fn c_rand(&mut self, op: &str) {
+    pub fn c_divisors(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        let a: u64 = self.pop_stack_uint();
-        let num: f64 = (a as f64 * rand::random::<f64>()).floor();
+        let a: i64 = self.pop_stack_int().abs();
 
-        self.stack.push(num.to_string());
+        let mut divisors: Vec<i64> = vec![1];
+        let sq: i64 = (a as f64).sqrt() as i64;
+
+        (2..=sq).for_each(|n| {
+            if a % n == 0 {
+                divisors.push(n);
+                if n != sq { divisors.push(a/n) }
+            }
+        });
+
+        divisors.sort();
+
+        divisors.into_iter()
+            .for_each(|n| self.stack.push(n.to_string()));
     }
 
     /* ---- conversions ----------------------------------------------------- */

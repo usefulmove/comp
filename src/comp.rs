@@ -1526,7 +1526,7 @@ impl Interpreter {
         Self::check_stack_error(self, 1, op);
 
         // add ops to execute anonymous function on each stack element (backwards)
-        for _ in 0..(self.stack.len() -1) {
+        for _ in 0..(self.stack.len() - 1) {
             self.ops.insert(0, String::from("_")); // execute anonymous function
             self.ops.insert(0, String::from("rot")); // rotate stack
             self.ops.insert(0, String::from("dup")); // copy element

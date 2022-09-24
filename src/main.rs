@@ -131,7 +131,7 @@ fn main() {
 
     /* display stack to user */
     output_stack(
-        &mut interpreter.stack.clone(),
+        interpreter.get_stack(),
         interpreter.config.show_stack_level,
         interpreter.config.monochrome,
     );
@@ -279,7 +279,7 @@ fn show_version() {
     );
 }
 
-fn output_stack(stack: &mut Vec<String>, annotate: bool, monochrome: bool) {
+fn output_stack(stack: Vec<String>, annotate: bool, monochrome: bool) {
     // color theme
     let theme = coq::Theme::new();
 
@@ -756,7 +756,7 @@ mod unit_test {
         assert!(comp.pop_stack_int() == 3);
 
 
-        comp.c_cls("");
+        comp.ops.push("cls".to_string());
         comp.ops.push(1.to_string());
         comp.ops.push(2.to_string());
         comp.ops.push(3.to_string());
@@ -770,7 +770,7 @@ mod unit_test {
         assert!(comp.pop_stack_int() == 2);
 
 
-        comp.c_cls("");
+        comp.ops.push("cls".to_string());
         comp.ops.push(1.to_string());
         comp.ops.push(2.to_string());
         comp.ops.push(3.to_string());

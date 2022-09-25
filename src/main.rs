@@ -98,7 +98,7 @@ fn main() {
 
             // add additional operations from command line
             if args.get(3).is_some() {
-                interpreter.ops.extend((&args[3..]).to_vec());
+                interpreter.ops.extend((args[3..]).to_vec());
             }
         }
         "--help" | "help" => {
@@ -117,7 +117,7 @@ fn main() {
         }
         _ => {
             // read operations list input from command line arguments
-            interpreter.ops = (&args[1..]).to_vec();
+            interpreter.ops = (args[1..]).to_vec();
         }
 
     };

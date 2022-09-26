@@ -236,6 +236,7 @@ impl Interpreter {
         /* RGB colors */
         self.compose_native("rgb", Self::c_rgb); // show RGB color
         self.compose_native("rgbh", Self::c_rgbh); // show RGB color (hexadecimal)
+        self.compose_native("rgb_avg", Self::c_rgb_avg); // calculate average RGB color
 
         /* higher-order functions */
         self.compose_native("map", Self::c_map); // map annonymous function to stack
@@ -1495,6 +1496,37 @@ impl Interpreter {
         let b: u8 = self.pop_stack_u8_from_hex();
         let g: u8 = self.pop_stack_u8_from_hex();
         let r: u8 = self.pop_stack_u8_from_hex();
+
+        self.stack.push(self.output_rgb_dec(coq::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_hex_bg(coq::Color{r, g, b, bold: false}));
+    }
+
+    fn c_rgb_avg(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b: String = self.pop_stack_string();
+        let a: String = self.pop_stack_string();
+
+        if a.len() != 6 || b.len() != 6 {
+            eprintln!(
+                "  {}: argument is incorrect for [{}] command",
+               self.theme.color_rgb("error", &self.theme.red_bold),
+               self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+            );
+            exit(exitcode::USAGE);
+        }
+
+        let a_r = &a[0..2];
+        let a_g = &a[2..4];
+        let a_b = &a[4..6];
+
+        let b_r = &b[0..2];
+        let b_g = &b[2..4];
+        let b_b = &b[4..6];
+
+        let r = ((u16::from_str_radix(a_r, 16).unwrap() + u16::from_str_radix(b_r, 16).unwrap()) / 2) as u8;
+        let g = ((u16::from_str_radix(a_g, 16).unwrap() + u16::from_str_radix(b_g, 16).unwrap()) / 2) as u8;
+        let b = ((u16::from_str_radix(a_b, 16).unwrap() + u16::from_str_radix(b_b, 16).unwrap()) / 2) as u8;
 
         self.stack.push(self.output_rgb_dec(coq::Color{r, g, b, bold: false}));
         self.stack.push(self.output_rgb_hex_bg(coq::Color{r, g, b, bold: false}));

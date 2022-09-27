@@ -1748,3 +1748,446 @@ impl Interpreter {
     }
 
 }
+
+
+/* unit tests --------------------------------------------------------------- */
+
+#[cfg(test)]
+mod unit_test {
+    use super::*;
+
+    #[test]
+    fn test_interpreter() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(8.to_string());
+        comp.ops.push("io".to_string());
+        comp.ops.push("prod".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_int() == 40320);
+    }
+
+    #[test]
+    fn test_core() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+
+        comp.ops.push("++".to_string());
+        comp.ops.push("++".to_string());
+        comp.ops.push("++".to_string());
+        comp.ops.push("--".to_string());
+        comp.ops.push("--".to_string());
+        comp.ops.push("--".to_string());
+
+        comp.ops.push("rot".to_string());
+        comp.ops.push("rot".to_string());
+        comp.ops.push("roll".to_string());
+        comp.ops.push("roll".to_string());
+
+        comp.ops.push("deg_rad".to_string());
+        comp.ops.push("cos".to_string());
+        comp.ops.push("acos".to_string());
+        comp.ops.push("sin".to_string());
+        comp.ops.push("asin".to_string());
+        comp.ops.push("tan".to_string());
+        comp.ops.push("atan".to_string());
+        comp.ops.push("rad_deg".to_string());
+        comp.ops.push("round".to_string());
+        comp.ops.push("roll".to_string());
+        comp.ops.push("roll".to_string());
+        comp.ops.push("roll".to_string());
+        comp.ops.push("roll".to_string());
+        comp.ops.push("dup".to_string());
+        comp.ops.push("drop".to_string());
+        comp.ops.push("swap".to_string());
+        comp.ops.push("swap".to_string());
+        comp.ops.push("+".to_string());
+        comp.ops.push("-".to_string());
+        comp.ops.push("/".to_string());
+
+        comp.ops.push(10.to_string());
+        comp.ops.push("log2".to_string());
+        comp.ops.push(10.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("logn".to_string());
+        comp.ops.push("-".to_string());
+        comp.ops.push("round".to_string());
+        comp.ops.push("+".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == -0.2);
+    }
+
+    #[test]
+    fn test_support() {
+        assert!(Interpreter::gcd(55, 10) == 5);
+        assert!(Interpreter::factorial(10.) == 3628800.);
+    }
+
+    #[test]
+    fn test_roots() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(2.to_string());
+        comp.ops.push("dup".to_string());
+        comp.ops.push("sqrt".to_string());
+        comp.ops.push("swap".to_string());
+        comp.ops.push(32.to_string());
+        comp.ops.push("^".to_string());
+        comp.ops.push((32. * 2.).to_string());
+        comp.ops.push("nroot".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == comp.pop_stack_float());
+
+        comp.ops.push(1.to_string());
+        comp.ops.push((-2).to_string());
+        comp.ops.push("chs".to_string());
+        comp.ops.push("chs".to_string());
+        comp.ops.push("pi".to_string());
+        comp.ops.push("x".to_string());
+        comp.ops.push("pi".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("^".to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push("+".to_string());
+        comp.ops.push("proot".to_string());
+        comp.ops.push("sum".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("/".to_string());
+        comp.ops.push("pi".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == comp.pop_stack_float());
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_cls() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push("cls".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == 0.);
+    }
+
+    #[test]
+    fn test_mem() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push("chs".to_string());
+        comp.ops.push("abs".to_string());
+        comp.ops.push("inv".to_string());
+        comp.ops.push("inv".to_string());
+        comp.ops.push("pi".to_string());
+        comp.ops.push("e".to_string());
+        comp.ops.push(0.to_string());
+        comp.ops.push("sb".to_string());
+        comp.ops.push("sa".to_string());
+        comp.ops.push("sc".to_string());
+        comp.ops.push("cls".to_string());
+        comp.ops.push("_b".to_string());
+        comp.ops.push("_c".to_string());
+        comp.ops.push("+".to_string());
+        comp.ops.push("_a".to_string());
+        comp.ops.push("+".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == std::f64::consts::PI + std::f64::consts::E);
+    }
+
+    #[test]
+    fn test_cmp() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(10.to_string());
+        comp.ops.push("log".to_string());
+        comp.ops.push("e".to_string());
+        comp.ops.push("ln".to_string());
+        comp.ops.push(105.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("%".to_string());
+        comp.ops.push(3049.to_string());
+        comp.ops.push(1009.to_string());
+        comp.ops.push("gcd".to_string());
+        comp.ops.push("prod".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == 1.);
+
+        comp.ops.push(20.to_string());
+        comp.ops.push("!".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == 2432902008176640000.);
+
+        comp.ops.push(20.to_string());
+        comp.ops.push("tng".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_int() == 210);
+    }
+
+    #[test]
+    fn test_rand() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("rand".to_string());
+        comp.ops.push("max".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() <= 1.);
+    }
+
+    #[test]
+    fn test_minmax() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("min".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == 1.);
+
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("max".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == 2.);
+
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push("min_all".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == 1.);
+
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push("max_all".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == 4.);
+
+
+        comp.ops.push((-1).to_string());
+        comp.ops.push((-5).to_string());
+        comp.ops.push((-10).to_string());
+        comp.ops.push("minmax".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == -1.);
+        assert!(comp.pop_stack_float() == -10.);
+    }
+
+    #[test]
+    fn test_conv() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(100.to_string());
+        comp.ops.push("c_f".to_string());
+        comp.ops.push("f_c".to_string());
+        comp.ops.push("dec_hex".to_string());
+        comp.ops.push("hex_bin".to_string());
+        comp.ops.push("bin_hex".to_string());
+        comp.ops.push("hex_dec".to_string());
+        comp.ops.push("dec_bin".to_string());
+        comp.ops.push("bin_dec".to_string());
+        comp.ops.push("ft_m".to_string());
+        comp.ops.push("m_ft".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == 100.);
+    }
+
+    #[test]
+    fn test_avg() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push((-2).to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push("avg".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == 0.);
+
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push("avg_all".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_float() == 2.5);
+    }
+
+    #[test]
+    fn test_misc() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(10.1.to_string());
+        comp.ops.push("round".to_string());
+        comp.ops.push(10.1.to_string());
+        comp.ops.push("floor".to_string());
+        comp.ops.push(10.1.to_string());
+        comp.ops.push("ceil".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_uint() == 11);
+        assert!(comp.pop_stack_uint() == 10);
+        assert!(comp.pop_stack_uint() == 10);
+
+
+        comp.ops.push((-99).to_string());
+        comp.ops.push("sgn".to_string());
+        comp.ops.push(109.to_string());
+        comp.ops.push("sgn".to_string());
+        comp.ops.push(0.to_string());
+        comp.ops.push("sgn".to_string());
+        comp.ops.push("sum".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_int() == 0);
+
+
+        comp.ops.push("cls".to_string());
+        comp.ops.push(28.to_string());
+        comp.ops.push("divs".to_string());
+        comp.ops.push("sum".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_int() == 28);
+    }
+
+    #[test]
+    fn test_stack() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(5.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push("rotn".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_int() == 3);
+
+
+        comp.ops.push("cls".to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(5.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push("rolln".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_int() == 2);
+
+
+        comp.ops.push("cls".to_string());
+        comp.ops.push(1.to_string());
+        comp.ops.push(2.to_string());
+        comp.ops.push(3.to_string());
+        comp.ops.push(4.to_string());
+        comp.ops.push(5.to_string());
+        comp.ops.push("flip".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_int() == 1);
+
+
+        comp.ops.push("flip".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_int() == 5);
+
+    }
+} // unit_test

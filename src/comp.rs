@@ -5,6 +5,9 @@ use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 use std::process::exit;
 
+static PERSISTENCE_FILE: &str = ".comp";
+static CONFIG_FILE: &str = ".comp";
+
 pub struct Function {
     name: String,
     fops: Vec<String>,
@@ -17,17 +20,19 @@ pub struct Config {
     pub monochrome: bool, // set output to monochrome
     pub tip_percentage: f64, // tip conversion constant
     pub show_warnings: bool, // show warnings
+    pub stack_persistence: bool, // stack persistence
 }
 
 impl Config {
     // constructor
     fn new() -> Self {
-        Self {
+        Self { // config defaults
             show_stack_level: true,
             conversion_constant: 1.,
             monochrome: false,
             tip_percentage: 0.15,
             show_warnings: true,
+            stack_persistence: false,
         }
     }
 }
@@ -44,6 +49,7 @@ impl fmt::Display for Config {
             monochrome = {}\n\
             tip_percentage = {}\n\
             show_warnings = {}\n\
+            stack_persistence = {}\n\
             ",
             theme.color_rgb(
                 &self.show_stack_level.to_string(),
@@ -63,6 +69,10 @@ impl fmt::Display for Config {
             ),
             theme.color_rgb(
                 &self.show_warnings.to_string(),
+                output_color,
+            ),
+            theme.color_rgb(
+                &self.stack_persistence.to_string(),
                 output_color,
             ),
         )
@@ -1619,8 +1629,41 @@ impl Interpreter {
         }
     }
 
-    // read configuration file from home folder
-    pub fn read_and_apply_config(&mut self, filename: &str) {
+    // save configuration file to home folder
+    fn save_config(&self, filename: &str) {
+        let filename: String = filename.to_string();
+
+        let home_folder: String = match home::home_dir() {
+            Some(dir) => dir.to_str().unwrap().to_string(),
+            _ => String::from(""),
+        };
+
+        let config_filename: String = format!("{}/{}", home_folder, filename);
+
+        let path: &Path = Path::new(&config_filename);
+
+        let config_data: String = toml::to_string(&self.config).unwrap();
+
+        match fs::write(path, config_data) {
+            Ok(_) => {
+                println!(
+                    "  configuration file [{}] saved",
+                    self.theme.color_rgb(CONFIG_FILE, &self.theme.blue_smurf_bold),
+                );
+            }
+            Err(error) => {
+                eprintln!(
+                    "  {}: configuration file [{}] could not be saved: {}",
+                    self.theme.color_rgb("error", &self.theme.red_bold),
+                    self.theme.color_rgb(CONFIG_FILE, &self.theme.blue_smurf_bold),
+                    error,
+                );
+            }
+        }
+    }
+
+    // load configuration file from home folder
+    pub fn load_config(&mut self, filename: &str) {
     /*
         println!(
             "  reading configuration file [{}]",
@@ -1652,7 +1695,7 @@ impl Interpreter {
                             "  {}: configuration file [{}] (ignored) has been corrupted or \
                             is improperly constructed for this version of comp",
                             self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
-                            self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
+                            self.theme.color_rgb(CONFIG_FILE, &self.theme.blue_smurf_bold),
                         );
                     }
                     Config::new()
@@ -1663,36 +1706,67 @@ impl Interpreter {
         }
     }
 
-    // save configuration file to home folder
-    fn save_config(&self, filename: &str) {
-        let filename: String = filename.to_string();
-
+    // save stack file to home folder for later use (persistence)
+    pub fn save_stack(&self) {
         let home_folder: String = match home::home_dir() {
             Some(dir) => dir.to_str().unwrap().to_string(),
             _ => String::from(""),
         };
 
-        let config_filename: String = format!("{}/{}", home_folder, filename);
+        let config_filename: String = format!("{}/{}", home_folder, PERSISTENCE_FILE);
 
         let path: &Path = Path::new(&config_filename);
 
-        let config_data: String = toml::to_string(&self.config).unwrap();
+        let stack_data: String = serde_yaml::to_string(&self.stack).unwrap();
 
-        match fs::write(path, config_data) {
+        match fs::write(path, stack_data) {
             Ok(_) => {
+                /*
                 println!(
-                    "  configuration file [{}] saved",
-                    self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
+                    "  stack snapshot [{}] saved",
+                    self.theme.color_rgb(PERSISTENCE_FILE, &self.theme.blue_smurf_bold),
                 );
+                */
             }
             Err(error) => {
                 eprintln!(
-                    "  {}: configuration file [{}] could not be saved: {}",
+                    "  {}: stack snapshot [{}] could not be saved: {}",
                     self.theme.color_rgb("error", &self.theme.red_bold),
-                    self.theme.color_rgb("conf.toml", &self.theme.blue_smurf_bold),
+                    self.theme.color_rgb(PERSISTENCE_FILE, &self.theme.blue_smurf_bold),
                     error,
                 );
             }
+        }
+    }
+
+    // load stack file from home folder
+    pub fn load_stack(&mut self) {
+        let home_folder: String = match home::home_dir() {
+            Some(dir) => dir.to_str().unwrap().to_string(),
+            _ => String::from(""),
+        };
+
+        let config_filename: String = format!("{}/{}", home_folder, PERSISTENCE_FILE);
+
+        let path: &Path = Path::new(&config_filename);
+
+        if let Ok(stack_file_yaml) = fs::read_to_string(&path) {
+            // read file success
+            // deserialize stack YAML and load
+            match serde_yaml::from_str(&stack_file_yaml) {
+                Ok(s) => self.stack = s,
+                Err(_error) => {
+                    // parse fail
+                    if self.config.show_warnings {
+                        eprintln!(
+                            "  {}: stack snapshot [{}] (ignored) has been corrupted or \
+                            is improperly constructed for this version of comp",
+                            self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
+                            self.theme.color_rgb(PERSISTENCE_FILE, &self.theme.blue_smurf_bold),
+                        );
+                    }
+                }
+            };
         }
     }
 

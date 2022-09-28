@@ -6,7 +6,7 @@ use std::process::exit;
 mod comp;
 mod mona;
 
-const RELEASE_STATE: &str = "c";
+const RELEASE_STATE: &str = "a";
 
 /*
 
@@ -46,84 +46,87 @@ fn main() {
     let mut interpreter = comp::Interpreter::new();
 
     // get command arguments
-    let mut args: Vec<String> = env::args().collect();
+    let args: Vec<String> = env::args().collect();
 
-    // if no arguments are passed, behave as if help flag was passed
-    if args.len() <= 1 {
-        args.push(String::from("help"));
+
+    if args.len() > 1 {
+        match args[1].as_str() {
+            "--commands" | "--" => {
+                // display available commands
+                let mut cmds: Vec<String> = interpreter.get_cmds();
+                cmds.sort_unstable();
+
+                for cmd in cmds {
+                    print!("{} ", theme.color_rgb(&cmd, &theme.blue_smurf));
+                }
+                println!();
+                return;
+            }
+            "--file" | "-f" => {
+                // read operations list input from file
+                if args.get(2).is_none() {
+                    eprintln!(
+                        "  {}: no file path provided",
+                        theme.color_rgb("error", &theme.red_bold),
+                    );
+                    exit(exitcode::NOINPUT);
+                }
+                // read file contents
+                let filename: String = args[2].to_string();
+                let path: &Path = Path::new(&filename);
+
+                let file_contents: String = match fs::read_to_string(&path) {
+                    Ok(content) => content,
+                    Err(error) => {
+                        eprintln!(
+                            "  {}: could not read [{}]: {error}",
+                            theme.color_rgb("error", &theme.red_bold),
+                            theme.color_rgb(&path.display().to_string(), &theme.blue_coffee_bold),
+                        );
+                        exit(exitcode::OSFILE);
+                    }
+                };
+                // create operations list vector from file contents - split elements
+                let operations = file_contents
+                    .split_whitespace()
+                    .map(|x| x.to_string());
+
+                interpreter.ops.extend(operations);
+
+                // add additional operations from command line
+                if args.get(3).is_some() {
+                    interpreter.ops.extend((args[3..]).to_vec());
+                }
+            }
+            "--help" | "help" => {
+                // display command usage information
+                show_help();
+                return;
+            }
+            "mona" => {
+                println!("{}", mona::MONA);
+                return;
+            }
+            "--version" | "version" => {
+                // display version information
+                show_version();
+                return;
+            }
+            _ => {
+                // read operations list input from command line arguments
+                interpreter.ops = (args[1..]).to_vec();
+            }
+
+        };
     }
 
-    match args[1].as_str() {
-        "--commands" | "--" => {
-            // display available commands
-            let mut cmds: Vec<String> = interpreter.get_cmds();
-            cmds.sort_unstable();
-
-            for cmd in cmds {
-                print!("{} ", theme.color_rgb(&cmd, &theme.blue_smurf));
-            }
-            println!();
-            return;
-        }
-        "--file" | "-f" => {
-            // read operations list input from file
-            if args.get(2).is_none() {
-                eprintln!(
-                    "  {}: no file path provided",
-                    theme.color_rgb("error", &theme.red_bold),
-                );
-                exit(exitcode::NOINPUT);
-            }
-            // read file contents
-            let filename: String = args[2].to_string();
-            let path: &Path = Path::new(&filename);
-
-            let file_contents: String = match fs::read_to_string(&path) {
-                Ok(content) => content,
-                Err(error) => {
-                    eprintln!(
-                        "  {}: could not read [{}]: {error}",
-                        theme.color_rgb("error", &theme.red_bold),
-                        theme.color_rgb(&path.display().to_string(), &theme.blue_coffee_bold),
-                    );
-                    exit(exitcode::OSFILE);
-                }
-            };
-            // create operations list vector from file contents - split elements
-            let operations = file_contents
-                .split_whitespace()
-                .map(|x| x.to_string());
-
-            interpreter.ops.extend(operations);
-
-            // add additional operations from command line
-            if args.get(3).is_some() {
-                interpreter.ops.extend((args[3..]).to_vec());
-            }
-        }
-        "--help" | "help" => {
-            // display command usage information
-            show_help();
-            return;
-        }
-        "mona" => {
-            println!("{}", mona::MONA);
-            return;
-        }
-        "--version" | "version" => {
-            // display version information
-            show_version();
-            return;
-        }
-        _ => {
-            // read operations list input from command line arguments
-            interpreter.ops = (args[1..]).to_vec();
-        }
-
-    };
-
     // load configuration
-    interpreter.read_and_apply_config("comp.toml");
+    interpreter.load_config("comp.toml");
+
+    // load stack
+    if interpreter.config.stack_persistence {
+        interpreter.load_stack();
+    }
 
     // process operations list ( ops list was loaded into the interpreter
     // in the match statement above based on command line arguments )
@@ -135,6 +138,11 @@ fn main() {
         interpreter.config.show_stack_level,
         interpreter.config.monochrome,
     );
+
+    // save stack
+    if interpreter.config.stack_persistence {
+        interpreter.save_stack();
+    }
 
     exit(exitcode::OK);
 } // main

@@ -1,7 +1,8 @@
 [package]
 name = "comp"
-version = "0.23.36"
+version = "0.24.0"
 edition = "2021"
+authors = ["Duane Edmonds"]
 
 [dependencies]
 colored = "2"
@@ -11,4 +12,5 @@ home = "0.5.3"
 rand = "0.8.5"
 regex = "1.6.0"
 serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9.13"
 toml = "0.5.9"

@@ -1605,7 +1605,7 @@ impl Interpreter {
             "  {}",
             self.theme.color_rgb(
                 &out,
-                &self.theme.orange_sherbet,
+                &self.theme.blue_coffee,
             ),
         );
     }

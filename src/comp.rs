@@ -220,7 +220,6 @@ impl Interpreter {
         self.compose_native("ifeq", Self::c_ifeq); // ifequal .. else
         self.compose_native("eq", Self::c_equal); // equal
         self.compose_native("{", Self::c_comment); // function comment
-        self.compose_native("peek", Self::c_peek); // peek at top of stack
 
         /* conversion */
         self.compose_native("dec_hex", Self::c_dechex); // decimal to hexadecimal
@@ -256,6 +255,10 @@ impl Interpreter {
         /* configuration */
         self.compose_native("save_config", Self::c_save_config); // save configuration
         self.compose_native("show_config", Self::c_print_config); // show current configuration
+
+        /* output */
+        self.compose_native("peek", Self::c_peek); // peek at top of stack
+        self.compose_native("print", Self::c_print); // print element on top of stack
 
     }
 
@@ -1475,18 +1478,6 @@ impl Interpreter {
         }
     }
 
-    fn c_peek(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        println!(
-            "  {}",
-            self.theme.color_rgb(
-                &self.stack[self.stack.len() - 1],
-                &self.theme.white,
-            ),
-        );
-    }
-
     /* ---- RGB colors ------------------------------------------------------ */
 
     fn c_rgb(&mut self, op: &str) {
@@ -1589,6 +1580,34 @@ impl Interpreter {
             "{}",
             self.config,
         )
+    }
+
+    /* ---- output ---------------------------------------------------------- */
+
+    fn c_peek(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        println!(
+            "  {}",
+            self.theme.color_rgb(
+                &self.stack[self.stack.len() - 1],
+                &self.theme.white,
+            ),
+        );
+    }
+
+    fn c_print(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let out = self.pop_stack_string();
+
+        println!(
+            "  {}",
+            self.theme.color_rgb(
+                &out,
+                &self.theme.orange_sherbet,
+            ),
+        );
     }
 
     // support functions -------------------------------------------------------

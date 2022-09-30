@@ -1,6 +1,6 @@
 { fold tests }
 
-fold.cm peek drop
+{ executing_fold.cm print }
 
 ( count
     [ drop 1 + ] 0 fold
@@ -47,7 +47,8 @@ io
 { evaluate }
 
 122522400 ifeq
-  pass
+  pass_fold
 else
-  fail
+  FAIL_fold
 fi
+print

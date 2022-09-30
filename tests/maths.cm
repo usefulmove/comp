@@ -1,4 +1,4 @@
-maths.cm peek drop
+{ executing_maths.cm print }
 
   { manual maths tests }
 
@@ -36,7 +36,8 @@ rot rot roll roll
 
 sum round
 1252 ifeq
-  pass
+  pass_maths
 else
-  fail
+  FAIL_maths
 fi
+print

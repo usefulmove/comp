@@ -1,6 +1,6 @@
 { functions manual tests }
 
-functions.cm peek drop
+{ executing_functions.cm print }
 
 {   comments test   } { }
 { note -- comments are identified inside curly brackets.
@@ -61,7 +61,8 @@ basie
 
 sum
 113003 ifeq
-  pass
+  pass_functions
 else
-  fail
+  FAIL_functions
 fi
+print

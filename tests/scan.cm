@@ -1,4 +1,4 @@
-scan.cm peek drop
+{ executing_scan.cm print }
 
 8 io [ + ] scan
 sa
@@ -12,7 +12,8 @@ _a -
 { evaluate }
 
 0 ifeq
-  pass
+  pass_scan
 else
-  fail
+  FAIL_scan
 fi
+print

@@ -1,4 +1,4 @@
-# Comp interpreter
+# Comp
 
 <img src="https://raw.githubusercontent.com/usefulmove/comp/main/assets/system-preferences-icon-64x64.png" align="right"/>
 
@@ -11,7 +11,7 @@
 * [Issues][5]
 * [Feature Requests][6]
 
-A simple and efficient, stack-based command interpreter written in Rust. The interpreter implements a high-level, reverse-Polish language (similar to Forth) that is inspired by the command interface for the original HP scientific calculators of the 1970's. The posfix language consists of lists of elements where each element is either a value to be added to the stack or an operation. As examples, `comp 3 4 +` adds the values 3 and 4 and `comp 3 dup x 4 dup x +` computes the sum of the squares of 3 and 4.
+A simple and efficient, stack-based interpreter written in Rust. The interpreter implements a high-level, reverse-Polish language (similar to Forth) that is inspired by the command interface for the original HP scientific calculators of the 1970's. The posfix language consists of lists of elements where each element is either a value to be added to the stack or an operation. As examples, `comp 3 4 +` adds the values 3 and 4 and `comp 3 dup x 4 dup x +` computes the sum of the squares of 3 and 4.
 
 For more information, see the comp command [usage documentation][1].
 

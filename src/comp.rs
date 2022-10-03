@@ -39,7 +39,7 @@ impl Config {
 
 impl fmt::Display for Config {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let theme = coq::Theme::new();
+        let theme = cor::Theme::new();
         let output_color = &theme.blue_smurf;
         write!(
             f,
@@ -89,7 +89,7 @@ pub struct Interpreter {
     mem_c: f64,
     fns: Vec<Function>,
     cmdmap: HashMap<String, fn(&mut Interpreter, &str)>,
-    theme: coq::Theme,
+    theme: cor::Theme,
 }
 
 impl Interpreter {
@@ -105,7 +105,7 @@ impl Interpreter {
             fns: vec![], // user-defined functions
             cmdmap: HashMap::new(), // interpreter command map
             config: Config::new(), // configuration object
-            theme: coq::Theme::new(), // output format theme
+            theme: cor::Theme::new(), // output format theme
         };
         cint.init();
 
@@ -1487,8 +1487,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_float_pos() as u8;
         let r: u8 = self.pop_stack_float_pos() as u8;
 
-        self.stack.push(self.output_rgb_dec(coq::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex_bg(coq::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_dec(cor::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_hex_bg(cor::Color{r, g, b, bold: false}));
     }
 
     fn c_rgbh(&mut self, op: &str) {
@@ -1498,8 +1498,8 @@ impl Interpreter {
         let g: u8 = self.pop_stack_u8_from_hex();
         let r: u8 = self.pop_stack_u8_from_hex();
 
-        self.stack.push(self.output_rgb_dec(coq::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex_bg(coq::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_dec(cor::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_hex_bg(cor::Color{r, g, b, bold: false}));
     }
 
     fn c_rgb_avg(&mut self, op: &str) {
@@ -1529,8 +1529,8 @@ impl Interpreter {
         let g = ((u16::from_str_radix(a_g, 16).unwrap() + u16::from_str_radix(b_g, 16).unwrap()) / 2) as u8;
         let b = ((u16::from_str_radix(a_b, 16).unwrap() + u16::from_str_radix(b_b, 16).unwrap()) / 2) as u8;
 
-        self.stack.push(self.output_rgb_dec(coq::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex_bg(coq::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_dec(cor::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_hex_bg(cor::Color{r, g, b, bold: false}));
     }
 
     /* ---- higher-order functions ------------------------------------------ */
@@ -1789,7 +1789,7 @@ impl Interpreter {
         }
     }
 
-    fn output_rgb_dec(&self, color: coq::Color) -> String {
+    fn output_rgb_dec(&self, color: cor::Color) -> String {
         format!(
             "{} {} {}",
             self.theme.color_rgb(
@@ -1798,7 +1798,7 @@ impl Interpreter {
             ),
             self.theme.color_rgb(
                 &color.g.to_string(),
-                &coq::Color {
+                &cor::Color {
                     r: color.r,
                     g: color.g,
                     b: color.b,
@@ -1812,7 +1812,7 @@ impl Interpreter {
         )
     }
 
-    fn _output_rgb_hex(&self, color: coq::Color) -> String {
+    fn _output_rgb_hex(&self, color: cor::Color) -> String {
         format!(
             "{}",
             self.theme.color_rgb(
@@ -1822,7 +1822,7 @@ impl Interpreter {
         )
     }
 
-    fn output_rgb_hex_bg(&self, color: coq::Color) -> String {
+    fn output_rgb_hex_bg(&self, color: cor::Color) -> String {
         format!(
             "{}",
             self.theme.color_rgb_bg(

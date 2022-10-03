@@ -18,8 +18,8 @@ square_all
 
 sum
 24573 ifeq
-  pass_map
+  pass..map
 else
-  FAIL_map
+  FAIL..map
 fi
 print

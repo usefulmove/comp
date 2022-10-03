@@ -1,12 +1,12 @@
 [package]
 name = "comp"
-version = "0.24.0"
+version = "0.24.1"
 edition = "2021"
 authors = ["Duane Edmonds"]
 
 [dependencies]
 colored = "2"
-coq = { path = "../coq" }
+cor = { path = "../cor" }
 exitcode = "1.1.2"
 home = "0.5.3"
 rand = "0.8.5"

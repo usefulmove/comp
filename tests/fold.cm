@@ -47,8 +47,8 @@ io
 { evaluate }
 
 122522400 ifeq
-  pass_fold
+  pass..fold
 else
-  FAIL_fold
+  FAIL..fold
 fi
 print

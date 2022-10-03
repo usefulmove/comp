@@ -18,8 +18,8 @@ memloc2
 { evaluate }
 
 512 ifeq
-  pass_memory
+  pass..memory
 else
-  FAIL_memory
+  FAIL..memory
 fi
 print

@@ -61,8 +61,8 @@ basie
 
 sum
 113003 ifeq
-  pass_functions
+  pass..functions
 else
-  FAIL_functions
+  FAIL..functions
 fi
 print

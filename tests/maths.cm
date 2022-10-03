@@ -36,8 +36,8 @@ rot rot roll roll
 
 sum round
 1252 ifeq
-  pass_maths
+  pass..maths
 else
-  FAIL_maths
+  FAIL..maths
 fi
 print

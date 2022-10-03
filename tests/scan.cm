@@ -12,8 +12,8 @@ _a -
 { evaluate }
 
 0 ifeq
-  pass_scan
+  pass..scan
 else
-  FAIL_scan
+  FAIL..scan
 fi
 print

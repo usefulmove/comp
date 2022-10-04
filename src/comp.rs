@@ -116,7 +116,7 @@ impl Interpreter {
     pub fn process_ops(&mut self) {
         while !self.ops.is_empty() {
             let operation: String = self.ops.remove(0); // pop first operation
-            self.process_node(&operation);
+            self.evaluate_op(&operation);
         }
     }
 
@@ -262,7 +262,7 @@ impl Interpreter {
 
     }
 
-    fn process_node(&mut self, op: &str) {
+    fn evaluate_op(&mut self, op: &str) {
         /* native command? */
         if self.cmdmap.contains_key(op) {
             let f = self.cmdmap[op];

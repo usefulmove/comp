@@ -104,7 +104,8 @@ fn main() {
                 return;
             }
             "mona" => {
-                println!("{}", mona::MONA);
+                print!("{}", theme.color_rgb(mona::MONA, &cor::Color::new(243, 196, 129, true)));
+                println!("{}", theme.color_rgb("allen mullen", &cor::Color::new(60, 49, 32, false)));
                 return;
             }
             "--version" | "version" => {

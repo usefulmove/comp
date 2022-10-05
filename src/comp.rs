@@ -219,6 +219,10 @@ impl Interpreter {
         self.compose_native("[", Self::c_load_lambda); // anonymous function definition
         self.compose_native("ifeq", Self::c_ifeq); // ifequal .. else
         self.compose_native("eq", Self::c_equal); // equal
+        self.compose_native("lt", Self::c_lessthan); // less than
+        self.compose_native("lte", Self::c_lessthanorequal); // less than or equal
+        self.compose_native("gt", Self::c_greaterthan); // greater than
+        self.compose_native("gte", Self::c_greaterthanorequal); // greater than or equal
         self.compose_native("{", Self::c_comment); // function comment
 
         /* conversion */
@@ -1436,10 +1440,57 @@ impl Interpreter {
         let b = self.pop_stack_float();
         let a = self.pop_stack_float();
 
-        if a == b {
-            self.stack.push("1".to_string());
-        } else {
-            self.stack.push("0".to_string());
+        match a == b {
+            false => self.stack.push("0".to_string()),
+            true => self.stack.push("1".to_string()),
+        }
+    }
+
+    fn c_lessthan(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b = self.pop_stack_float();
+        let a = self.pop_stack_float();
+
+        match a < b {
+            false => self.stack.push("0".to_string()),
+            true => self.stack.push("1".to_string()),
+        }
+    }
+
+    fn c_lessthanorequal(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b = self.pop_stack_float();
+        let a = self.pop_stack_float();
+
+        match a <= b {
+            false => self.stack.push("0".to_string()),
+            true => self.stack.push("1".to_string()),
+        }
+    }
+
+    fn c_greaterthan(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b = self.pop_stack_float();
+        let a = self.pop_stack_float();
+
+        match a > b {
+            false => self.stack.push("0".to_string()),
+            true => self.stack.push("1".to_string()),
+        }
+    }
+
+    fn c_greaterthanorequal(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b = self.pop_stack_float();
+        let a = self.pop_stack_float();
+
+        match a >= b {
+            false => self.stack.push("0".to_string()),
+            true => self.stack.push("1".to_string()),
         }
     }
 

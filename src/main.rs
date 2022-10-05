@@ -326,14 +326,14 @@ fn output_stack(stack: Vec<String>, annotate: bool, monochrome: bool) {
             1 => {
                 println!( // top element
                     "{}  {}",
-                    (color_annotate_closure.f)(level_map(level)),
+                    (color_annotate_closure.f)(annotate_level(level)),
                     (color_stack_top_closure.f)(ent),
                 )
             }
             _ => {
                 println!( // all other elements
                     "{}  {}",
-                    (color_annotate_closure.f)(level_map(level)),
+                    (color_annotate_closure.f)(annotate_level(level)),
                     (color_stack_closure.f)(ent),
                 )
             }
@@ -343,7 +343,7 @@ fn output_stack(stack: Vec<String>, annotate: bool, monochrome: bool) {
 
 }
 
-fn level_map(level: usize) -> &'static str {
+fn annotate_level(level: usize) -> &'static str {
     let ret: &str = match level {
         1 => "a.",
         2 => "b.",

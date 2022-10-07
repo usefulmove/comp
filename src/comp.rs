@@ -6,7 +6,7 @@ use std::path::Path;
 use std::process::exit;
 
 static PERSISTENCE_FILE: &str = ".comp";
-static CONFIG_FILE: &str = ".comp";
+static CONFIG_FILE: &str = "comp.toml";
 
 pub struct Function {
     name: String,
@@ -1780,7 +1780,7 @@ impl Interpreter {
     }
 
     // load configuration file from home folder
-    pub fn load_config(&mut self, filename: &str) {
+    pub fn load_config(&mut self) {
     /*
         println!(
             "  reading configuration file [{}]",
@@ -1789,7 +1789,7 @@ impl Interpreter {
     */
 
         // read file contents
-        let filename: String = filename.to_string();
+        let filename: String = CONFIG_FILE.to_string();
 
         let home_folder: String = match home::home_dir() {
             Some(dir) => dir.to_str().unwrap().to_string(),

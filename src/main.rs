@@ -122,7 +122,7 @@ fn main() {
     }
 
     // load configuration
-    interpreter.load_config("comp.toml");
+    interpreter.load_config();
 
     // load stack
     if interpreter.config.stack_persistence {

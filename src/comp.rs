@@ -305,7 +305,7 @@ impl Interpreter {
         let element: String = self.stack.pop().unwrap();
         match self.parse_float(&element) {
             Ok(val) => val, // parse success
-            Err(_error) => {
+            Err(_) => {
                 // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
@@ -327,7 +327,7 @@ impl Interpreter {
                 }
                 val
             }
-            Err(_error) => {
+            Err(_) => {
                 // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
@@ -344,7 +344,7 @@ impl Interpreter {
         let element: String = self.stack.pop().unwrap();
         match self.parse_int(&element) {
             Ok(val) => val, // parse success
-            Err(_error) => {
+            Err(_) => {
                 // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
@@ -361,7 +361,7 @@ impl Interpreter {
         let element: String = self.stack.pop().unwrap();
         match self._parse_u8(&element) {
             Ok(val) => val, // parse success
-            Err(_error) => {
+            Err(_) => {
                 // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
@@ -378,7 +378,7 @@ impl Interpreter {
         let element: String = self.stack.pop().unwrap();
         match self.parse_usize(&element) {
             Ok(val) => val, // parse success
-            Err(_error) => {
+            Err(_) => {
                 // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
@@ -395,7 +395,7 @@ impl Interpreter {
         let element: String = self.stack.pop().unwrap();
         match self.parse_u64(&element) {
             Ok(val) => val, // parse success
-            Err(_error) => {
+            Err(_) => {
                 // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
@@ -412,7 +412,7 @@ impl Interpreter {
         let element: String = self.stack.pop().unwrap();
         match self.parse_u128(&element) {
             Ok(val) => val, // parse success
-            Err(_error) => {
+            Err(_) => {
                 // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
@@ -430,7 +430,7 @@ impl Interpreter {
 
         match i64::from_str_radix(&element, 16) {
             Ok(val) => val, // parse success
-            Err(_error) => {
+            Err(_) => {
                 // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
@@ -448,7 +448,7 @@ impl Interpreter {
 
         match u8::from_str_radix(&element, 16) {
             Ok(val) => val, // parse success
-            Err(_error) => {
+            Err(_) => {
                 // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
@@ -466,7 +466,7 @@ impl Interpreter {
 
         match i64::from_str_radix(&element, 2) {
             Ok(val) => val, // parse success
-            Err(_error) => {
+            Err(_) => {
                 // parse fail
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
@@ -1805,7 +1805,7 @@ impl Interpreter {
             // deserialize configuration TOML and update configuration
             let cfg: Config = match toml::from_str(&config_file_toml) {
                 Ok(c) => c,
-                Err(_error) => {
+                Err(_) => {
                     // parse fail
                     if self.config.show_warnings {
                         eprintln!(
@@ -1872,7 +1872,7 @@ impl Interpreter {
             // deserialize stack YAML and load
             match serde_yaml::from_str(&stack_file_yaml) {
                 Ok(s) => self.stack = s,
-                Err(_error) => {
+                Err(_) => {
                     // parse fail
                     if self.config.show_warnings {
                         eprintln!(

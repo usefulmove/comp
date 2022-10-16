@@ -245,6 +245,16 @@ impl Interpreter {
         self.compose_native("tip", Self::c_tip); // calculate tip
         self.compose_native("a_b", Self::c_conv_const); // apply convert constant
         self.compose_native("b_a", Self::c_conv_const_inv); // apply convert constant (inverse)
+        self.compose_native("ascii", Self::c_ascii); // ascii table
+
+        /* binary operations */
+        self.compose_native("not", Self::c_not); // bitwise not
+        self.compose_native("and", Self::c_and); // bitwise and
+        self.compose_native("nand", Self::c_nand); // bitwise nand
+        self.compose_native("or", Self::c_or); // bitwise or
+        self.compose_native("nor", Self::c_nor); // bitwise nor
+        self.compose_native("xor", Self::c_xor); // bitwise xor
+        self.compose_native("ones", Self::c_ones); // count number of high bits
 
         /* RGB colors */
         self.compose_native("rgb", Self::c_rgb); // show RGB color
@@ -1390,6 +1400,83 @@ impl Interpreter {
         self.stack.push((a / self.config.conversion_constant).to_string());
     }
 
+    fn c_ascii(&mut self, _op: &str) {
+        (0..=255)
+            .map(|a| (a, a as u8 as char))
+            .filter(|(_val, c)| c.is_alphanumeric() || c.is_ascii_punctuation())
+            .map(|(val, c)| {
+                format!(
+                    "'{}'  {}",
+                    self.theme.color_rgb(&c.to_string(), &self.theme.blue_coffee_bold),
+                    self.theme.color_rgb(&val.to_string(), &self.theme.grey_mouse),
+                )
+             })
+            .for_each(|s| println!("  {}", s));
+    }
+
+    /* ---- binary operations ----------------------------------------------- */
+
+    fn c_not(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: u64 = self.pop_stack_u64();
+
+        self.stack.push((!a).to_string());
+    }
+
+    fn c_and(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b: u64 = self.pop_stack_u64();
+        let a: u64 = self.pop_stack_u64();
+
+        self.stack.push((a & b).to_string());
+    }
+
+    fn c_nand(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b: u64 = self.pop_stack_u64();
+        let a: u64 = self.pop_stack_u64();
+
+        self.stack.push((!(a & b)).to_string());
+    }
+
+    fn c_or(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b: u64 = self.pop_stack_u64();
+        let a: u64 = self.pop_stack_u64();
+
+        self.stack.push((a | b).to_string());
+    }
+
+    fn c_nor(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b: u64 = self.pop_stack_u64();
+        let a: u64 = self.pop_stack_u64();
+
+        self.stack.push((!(a | b)).to_string());
+    }
+
+    fn c_xor(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b: u64 = self.pop_stack_u64();
+        let a: u64 = self.pop_stack_u64();
+
+        self.stack.push((a ^ b).to_string());
+    }
+
+    fn c_ones(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: u64 = self.pop_stack_u64();
+
+        self.stack.push(a.count_ones().to_string());
+    }
+
     /* ---- control flow ---------------------------------------------------- */
 
     fn c_load_function(&mut self, _op: &str) {
@@ -1708,7 +1795,7 @@ impl Interpreter {
             "  {}",
             self.theme.color_rgb(
                 &out,
-                &self.theme.blue_coffee,
+                &self.theme.yellow_canary,
             ),
         );
     }
@@ -1741,8 +1828,8 @@ impl Interpreter {
     // greatest common divisor
     pub fn gcd(a: u64, b: u64) -> u64 {
         match b {
-            b if b != 0 => Self::gcd(b, a % b),
-            _ => a,
+            0 => a,
+            _ => Self::gcd(b, a % b),
         }
     }
 

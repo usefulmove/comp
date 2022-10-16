@@ -6,7 +6,7 @@ use std::process::exit;
 mod comp;
 mod mona;
 
-const RELEASE_STATE: &str = "a";
+const RELEASE_STATE: &str = "b";
 
 /*
 

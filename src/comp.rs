@@ -246,6 +246,15 @@ impl Interpreter {
         self.compose_native("a_b", Self::c_conv_const); // apply convert constant
         self.compose_native("b_a", Self::c_conv_const_inv); // apply convert constant (inverse)
 
+        /* binary operations */
+        self.compose_native("not", Self::c_not); // bitwise NOT
+        self.compose_native("and", Self::c_and); // bitwise AND
+        self.compose_native("nand", Self::c_nand); // bitwise NAND
+        self.compose_native("or", Self::c_or); // bitwise OR
+        self.compose_native("nor", Self::c_nor); // bitwise NOR
+        self.compose_native("xor", Self::c_xor); // bitwise XOR
+        self.compose_native("ones", Self::c_count_ones); // count ones
+
         /* RGB colors */
         self.compose_native("rgb", Self::c_rgb); // show RGB color
         self.compose_native("rgbh", Self::c_rgbh); // show RGB color (hexadecimal)
@@ -1388,6 +1397,69 @@ impl Interpreter {
         let a: f64 = self.pop_stack_float();
 
         self.stack.push((a / self.config.conversion_constant).to_string());
+    }
+
+    /* ---- binary operations ----------------------------------------------- */
+
+    fn c_not(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: i64 = self.pop_stack_int_from_bin();
+
+        self.stack.push(format!("{:b}", !a));
+    }
+
+    fn c_and(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b: i64 = self.pop_stack_int_from_bin();
+        let a: i64 = self.pop_stack_int_from_bin();
+
+        self.stack.push(format!("{:b}", a & b));
+    }
+
+    fn c_nand(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b: i64 = self.pop_stack_int_from_bin();
+        let a: i64 = self.pop_stack_int_from_bin();
+
+        self.stack.push(format!("{:b}", !(a & b)));
+    }
+
+    fn c_or(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b: i64 = self.pop_stack_int_from_bin();
+        let a: i64 = self.pop_stack_int_from_bin();
+
+        self.stack.push(format!("{:b}", a | b));
+    }
+
+    fn c_nor(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b: i64 = self.pop_stack_int_from_bin();
+        let a: i64 = self.pop_stack_int_from_bin();
+
+        self.stack.push(format!("{:b}", !(a | b)));
+    }
+
+    fn c_xor(&mut self, op: &str) {
+        Self::check_stack_error(self, 2, op);
+
+        let b: i64 = self.pop_stack_int_from_bin();
+        let a: i64 = self.pop_stack_int_from_bin();
+
+        self.stack.push(format!("{:b}", a ^ b));
+    }
+
+    fn c_count_ones(&mut self, op: &str) {
+        Self::check_stack_error(self, 1, op);
+
+        let a: i64 = self.pop_stack_int_from_bin();
+
+        self.stack.push(a.count_ones().to_string());
     }
 
     /* ---- control flow ---------------------------------------------------- */

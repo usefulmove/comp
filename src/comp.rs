@@ -2468,4 +2468,65 @@ mod unit_test {
         assert!(comp.pop_stack_i64() == 5);
 
     }
+
+    #[test]
+    fn test_binary_ops() {
+        let mut comp = Interpreter::new();
+
+        comp.ops.push(10.to_string());
+        comp.ops.push(6.to_string());
+        comp.ops.push("and".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_u64() == 2);
+
+
+        comp.ops.push(10.to_string());
+        comp.ops.push(6.to_string());
+        comp.ops.push("nand".to_string());
+        comp.ops.push("not".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_u64() == 2);
+
+
+        comp.ops.push(10.to_string());
+        comp.ops.push(6.to_string());
+        comp.ops.push("or".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_u64() == 14);
+
+
+        comp.ops.push(10.to_string());
+        comp.ops.push(6.to_string());
+        comp.ops.push("nor".to_string());
+        comp.ops.push("not".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_u64() == 14);
+
+
+        comp.ops.push(10.to_string());
+        comp.ops.push(6.to_string());
+        comp.ops.push("xor".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_u64() == 12);
+
+
+        comp.ops.push(341.to_string());
+        comp.ops.push("ones".to_string());
+
+        comp.process_ops();
+
+        assert!(comp.pop_stack_u64() == 5);
+
+    }
+
 } // unit_test

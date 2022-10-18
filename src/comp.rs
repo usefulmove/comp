@@ -115,8 +115,8 @@ impl Interpreter {
     // process operations method
     pub fn process_ops(&mut self) {
         while !self.ops.is_empty() {
-            let operation: String = self.ops.remove(0); // pop first operation
-            self.evaluate_op(&operation);
+            let op: &str = &self.ops.remove(0); // pop first operation
+            self.evaluate_op(op);
         }
     }
 

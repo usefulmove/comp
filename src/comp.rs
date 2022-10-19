@@ -868,11 +868,7 @@ impl Interpreter {
     }
 
     fn c_abs(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.abs()).to_string());
+        self.cmd_gen(1, op, |a, _| a.abs());
     }
 
     fn c_round(&mut self, op: &str) {

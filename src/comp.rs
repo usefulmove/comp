@@ -852,7 +852,7 @@ impl Interpreter {
     }
 
     fn c_chs(&mut self, op: &str) {
-        self.cmd_gen(1, op, |a, _| -1. * a);
+        self.cmd_gen(1, op, |a, _| -a);
     }
 
     fn c_abs(&mut self, op: &str) {

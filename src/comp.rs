@@ -826,11 +826,7 @@ impl Interpreter {
     }
 
     fn c_add_one(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a + 1.).to_string());
+        self.cmd_gen(1, op, |a, _| a + 1.);
     }
 
     fn c_sub(&mut self, op: &str) {
@@ -838,11 +834,7 @@ impl Interpreter {
     }
 
     fn c_sub_one(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a - 1.).to_string());
+        self.cmd_gen(1, op, |a, _| a - 1.);
     }
 
     fn c_mult(&mut self, op: &str) {
@@ -860,11 +852,7 @@ impl Interpreter {
     }
 
     fn c_chs(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((-1. * a).to_string());
+        self.cmd_gen(1, op, |a, _| -1. * a);
     }
 
     fn c_abs(&mut self, op: &str) {
@@ -872,39 +860,19 @@ impl Interpreter {
     }
 
     fn c_round(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.round()).to_string());
+        self.cmd_gen(1, op, |a, _| a.round());
     }
 
     fn c_floor(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push(a.floor().to_string());
+        self.cmd_gen(1, op, |a, _| a.floor());
     }
 
     fn c_ceiling(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push(a.ceil().to_string());
+        self.cmd_gen(1, op, |a, _| a.ceil());
     }
 
     fn c_pos(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let mut a: f64 = self.pop_stack_float();
-
-        if a < 0. {
-            a = 0.;
-        }
-
-        self.stack.push(a.to_string());
+        self.cmd_gen(1, op, |a, _| if a < 0. {0.} else {a});
     }
 
     fn c_inv(&mut self, op: &str) {

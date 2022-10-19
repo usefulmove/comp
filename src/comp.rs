@@ -541,6 +541,25 @@ impl Interpreter {
     }
 
     /* command functions ---------------------------------------------------- */
+
+    /*** command generation helper function ***/
+    fn cmd_gen(&mut self, args: usize, op: &str, f: fn(f64, f64) -> f64) {
+        Self::check_stack_error(self, args, op);
+
+        match args {
+            1 => {
+                let a: f64 = self.pop_stack_float();
+                self.stack.push(f(a, 0.).to_string());
+            }
+            2 => {
+                let b: f64 = self.pop_stack_float();
+                let a: f64 = self.pop_stack_float();
+                self.stack.push(f(a, b).to_string());
+            }
+            _ => unimplemented!(),
+        }
+    }
+
     /* ---- stack manipulation ---------------------------------------------- */
 
     fn c_drop(&mut self, op: &str) {
@@ -797,12 +816,7 @@ impl Interpreter {
     /* ---- math operations ------------------------------------------------- */
 
     fn c_add(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a + b).to_string());
+        self.cmd_gen(2, op, |a, b| a + b);
     }
 
     fn c_sum(&mut self, op: &str) {
@@ -820,12 +834,7 @@ impl Interpreter {
     }
 
     fn c_sub(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a - b).to_string());
+        self.cmd_gen(2, op, |a, b| a - b);
     }
 
     fn c_sub_one(&mut self, op: &str) {
@@ -837,12 +846,7 @@ impl Interpreter {
     }
 
     fn c_mult(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a * b).to_string());
+        self.cmd_gen(2, op, |a, b| a * b);
     }
 
     fn c_product(&mut self, op: &str) {
@@ -852,12 +856,7 @@ impl Interpreter {
     }
 
     fn c_div(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a / b).to_string());
+        self.cmd_gen(2, op, |a, b| a / b);
     }
 
     fn c_chs(&mut self, op: &str) {

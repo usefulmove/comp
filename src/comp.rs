@@ -542,7 +542,7 @@ impl Interpreter {
 
     /* command functions ---------------------------------------------------- */
 
-    /*** command generation helper function ***/
+    /*** command generator helper function ***/
     fn commandgen(&mut self, args: usize, op: &str, f: fn(f64, f64) -> f64) {
         Self::check_stack_error(self, args, op);
 
@@ -1052,12 +1052,7 @@ impl Interpreter {
     }
 
     fn c_max(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.max(b)).to_string());
+        self.commandgen(2, op, |a, b| a.max(b));
     }
 
     fn c_max_all(&mut self, op: &str) {
@@ -1072,12 +1067,7 @@ impl Interpreter {
     }
 
     fn c_min(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.min(b)).to_string());
+        self.commandgen(2, op, |a, b| a.min(b));
     }
 
     fn c_min_all(&mut self, op: &str) {
@@ -1108,12 +1098,7 @@ impl Interpreter {
     }
 
     fn c_avg(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push(((a + b) / 2.).to_string());
+        self.commandgen(2, op, |a, b| (a + b) / 2.);
     }
 
     fn c_avg_all(&mut self, op: &str) {
@@ -1454,63 +1439,28 @@ impl Interpreter {
     }
 
     fn c_equal(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b = self.pop_stack_float();
-        let a = self.pop_stack_float();
-
-        match a == b {
-            false => self.stack.push("0".to_string()),
-            true => self.stack.push("1".to_string()),
-        }
+        let f = |a, b| if a == b {1.} else {0.};
+        self.commandgen(2, op, f);
     }
 
     fn c_lessthan(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b = self.pop_stack_float();
-        let a = self.pop_stack_float();
-
-        match a < b {
-            false => self.stack.push("0".to_string()),
-            true => self.stack.push("1".to_string()),
-        }
+        let f = |a, b| if a < b {1.} else {0.};
+        self.commandgen(2, op, f);
     }
 
     fn c_lessthanorequal(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b = self.pop_stack_float();
-        let a = self.pop_stack_float();
-
-        match a <= b {
-            false => self.stack.push("0".to_string()),
-            true => self.stack.push("1".to_string()),
-        }
+        let f = |a, b| if a <= b {1.} else {0.};
+        self.commandgen(2, op, f);
     }
 
     fn c_greaterthan(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b = self.pop_stack_float();
-        let a = self.pop_stack_float();
-
-        match a > b {
-            false => self.stack.push("0".to_string()),
-            true => self.stack.push("1".to_string()),
-        }
+        let f = |a, b| if a > b {1.} else {0.};
+        self.commandgen(2, op, f);
     }
 
     fn c_greaterthanorequal(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b = self.pop_stack_float();
-        let a = self.pop_stack_float();
-
-        match a >= b {
-            false => self.stack.push("0".to_string()),
-            true => self.stack.push("1".to_string()),
-        }
+        let f = |a, b| if a >= b {1.} else {0.};
+        self.commandgen(2, op, f);
     }
 
     fn c_ifeq(&mut self, op: &str) {

@@ -543,7 +543,7 @@ impl Interpreter {
     /* command functions ---------------------------------------------------- */
 
     /*** command generation helper function ***/
-    fn cmd_gen(&mut self, args: usize, op: &str, f: fn(f64, f64) -> f64) {
+    fn commandgen(&mut self, args: usize, op: &str, f: fn(f64, f64) -> f64) {
         Self::check_stack_error(self, args, op);
 
         match args {
@@ -816,7 +816,7 @@ impl Interpreter {
     /* ---- math operations ------------------------------------------------- */
 
     fn c_add(&mut self, op: &str) {
-        self.cmd_gen(2, op, |a, b| a + b);
+        self.commandgen(2, op, |a, b| a + b);
     }
 
     fn c_sum(&mut self, op: &str) {
@@ -826,19 +826,19 @@ impl Interpreter {
     }
 
     fn c_add_one(&mut self, op: &str) {
-        self.cmd_gen(1, op, |a, _| a + 1.);
+        self.commandgen(1, op, |a, _| a + 1.);
     }
 
     fn c_sub(&mut self, op: &str) {
-        self.cmd_gen(2, op, |a, b| a - b);
+        self.commandgen(2, op, |a, b| a - b);
     }
 
     fn c_sub_one(&mut self, op: &str) {
-        self.cmd_gen(1, op, |a, _| a - 1.);
+        self.commandgen(1, op, |a, _| a - 1.);
     }
 
     fn c_mult(&mut self, op: &str) {
-        self.cmd_gen(2, op, |a, b| a * b);
+        self.commandgen(2, op, |a, b| a * b);
     }
 
     fn c_product(&mut self, op: &str) {
@@ -848,56 +848,43 @@ impl Interpreter {
     }
 
     fn c_div(&mut self, op: &str) {
-        self.cmd_gen(2, op, |a, b| a / b);
+        self.commandgen(2, op, |a, b| a / b);
     }
 
     fn c_chs(&mut self, op: &str) {
-        self.cmd_gen(1, op, |a, _| -a);
+        self.commandgen(1, op, |a, _| -a);
     }
 
     fn c_abs(&mut self, op: &str) {
-        self.cmd_gen(1, op, |a, _| a.abs());
+        self.commandgen(1, op, |a, _| a.abs());
     }
 
     fn c_round(&mut self, op: &str) {
-        self.cmd_gen(1, op, |a, _| a.round());
+        self.commandgen(1, op, |a, _| a.round());
     }
 
     fn c_floor(&mut self, op: &str) {
-        self.cmd_gen(1, op, |a, _| a.floor());
+        self.commandgen(1, op, |a, _| a.floor());
     }
 
     fn c_ceiling(&mut self, op: &str) {
-        self.cmd_gen(1, op, |a, _| a.ceil());
+        self.commandgen(1, op, |a, _| a.ceil());
     }
 
     fn c_pos(&mut self, op: &str) {
-        self.cmd_gen(1, op, |a, _| if a < 0. {0.} else {a});
+        self.commandgen(1, op, |a, _| if a < 0. {0.} else {a});
     }
 
     fn c_inv(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((1. / a).to_string());
+        self.commandgen(1, op, |a, _| 1. / a);
     }
 
     fn c_sqrt(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.sqrt()).to_string());
+        self.commandgen(1, op, |a, _| a.sqrt());
     }
 
     fn c_nroot(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.powf(1. / b)).to_string());
+        self.commandgen(2, op, |a, b| a.powf(1. / b));
     }
 
     fn c_proot(&mut self, op: &str) {
@@ -930,21 +917,11 @@ impl Interpreter {
     }
 
     fn c_exp(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.powf(b)).to_string());
+        self.commandgen(2, op, |a, b| a.powf(b));
     }
 
     fn c_mod(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a % b).to_string());
+        self.commandgen(2, op, |a, b| a % b);
     }
 
     fn c_fact(&mut self, op: &str) {
@@ -977,19 +954,11 @@ impl Interpreter {
     }
 
     fn c_degrad(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.to_radians()).to_string());
+        self.commandgen(1, op, |a, _| a.to_radians());
     }
 
     fn c_raddeg(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.to_degrees()).to_string());
+        self.commandgen(1, op, |a, _| a.to_degrees());
     }
 
     fn c_sin(&mut self, op: &str) {

@@ -962,84 +962,43 @@ impl Interpreter {
     }
 
     fn c_sin(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.sin()).to_string());
+        self.commandgen(1, op, |a, _| a.sin());
     }
 
     fn c_asin(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.asin()).to_string());
+        self.commandgen(1, op, |a, _| a.asin());
     }
 
     fn c_cos(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.cos()).to_string());
+        self.commandgen(1, op, |a, _| a.cos());
     }
 
     fn c_acos(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.acos()).to_string());
+        self.commandgen(1, op, |a, _| a.acos());
     }
 
     fn c_tan(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.tan()).to_string());
+        self.commandgen(1, op, |a, _| a.tan());
     }
 
     fn c_atan(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.atan()).to_string());
+        self.commandgen(1, op, |a, _| a.atan());
     }
 
     fn c_log10(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.log10()).to_string());
+        self.commandgen(1, op, |a, _| a.log10());
     }
 
     fn c_log2(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.log2()).to_string());
+        self.commandgen(1, op, |a, _| a.log2());
     }
 
     fn c_logn(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.log(b)).to_string());
+        self.commandgen(2, op, |a, b| a.log(b));
     }
 
     fn c_ln(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: f64 = self.pop_stack_float();
-
-        self.stack.push((a.ln()).to_string());
+        self.commandgen(1, op, |a, _| a.ln());
     }
 
     fn c_rand(&mut self, op: &str) {
@@ -1209,51 +1168,27 @@ impl Interpreter {
     }
 
     fn c_celfah(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a = self.pop_stack_float();
-
-        self.stack.push((a * 9. / 5. + 32.).to_string());
+        self.commandgen(1, op, |a, _| (a * 9. / 5.) + 32.);
     }
 
     fn c_fahcel(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a = self.pop_stack_float();
-
-        self.stack.push(((a - 32.) * 5. / 9.).to_string());
+        self.commandgen(1, op, |a, _| (a - 32.) * 5. / 9.);
     }
 
     fn c_mikm(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a = self.pop_stack_float();
-
-        self.stack.push((a * 1.609344).to_string());
+        self.commandgen(1, op, |a, _| a * 1.609344);
     }
 
     fn c_kmmi(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a = self.pop_stack_float();
-
-        self.stack.push((a / 1.609344).to_string());
+        self.commandgen(1, op, |a, _| a / 1.609344);
     }
 
     fn c_ftm(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a = self.pop_stack_float();
-
-        self.stack.push((a / 3.281).to_string());
+        self.commandgen(1, op, |a, _| a / 3.281);
     }
 
     fn c_mft(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a = self.pop_stack_float();
-
-        self.stack.push((a * 3.281).to_string());
+        self.commandgen(1, op, |a, _| a * 3.281);
     }
 
     fn c_hexrgb(&mut self, op: &str) {

@@ -1073,17 +1073,15 @@ impl Interpreter {
     }
 
     fn c_sign(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
+        fn sgn(a: f64) -> f64 {
+            match a {
+                x if x < 0. => -1.,
+                x if x > 0. => 1.,
+                _ => 0.,
+            }
+        }
 
-        let a: f64 = self.pop_stack_float();
-
-        let sgn: f64 = match a {
-            x if x < 0. => -1.,
-            x if x > 0. => 1.,
-            _ => 0.,
-        };
-
-        self.stack.push(sgn.to_string());
+        self.commandgen(1, op, |a, _| sgn(a));
     }
 
     fn c_triangle(&mut self, op: &str) {

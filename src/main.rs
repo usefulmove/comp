@@ -125,9 +125,7 @@ fn main() {
     interpreter.load_config();
 
     // load stack
-    if interpreter.config.stack_persistence {
-        interpreter.load_stack();
-    }
+    if interpreter.config.stack_persistence {interpreter.load_stack()}
 
     // process operations list ( ops list was loaded into the interpreter
     // in the match statement above based on command line arguments )
@@ -141,9 +139,7 @@ fn main() {
     );
 
     // save stack
-    if interpreter.config.stack_persistence {
-        interpreter.save_stack();
-    }
+    if interpreter.config.stack_persistence {interpreter.save_stack()}
 
     exit(exitcode::OK);
 } // main

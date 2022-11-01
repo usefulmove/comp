@@ -187,86 +187,86 @@ fn show_help() {
     );
     println!(
         "    {} {} {}",
-        theme.color_rgb("comp", &theme.grey_mouse),
-        theme.color_rgb("-f", &theme.yellow_canary_bold),
-        theme.color_rgb("<path>", &theme.blue_coffee_bold),
+        theme.grey_mouse("comp"),
+        theme.yellow_canary_bold("-f"),
+        theme.blue_coffee_bold("<path>"),
     );
     println!();
     println!(
         "{}",
-        theme.color_rgb("OPTIONS", &theme.cream_bold)
+        theme.cream_bold("OPTIONS")
     );
     println!(
         "        {}      show version",
-        theme.color_rgb("--version", &theme.yellow_canary_bold),
+        theme.yellow_canary_bold("--version"),
     );
     println!(
         "    {}{} {}         read from file at the specified path",
-        theme.color_rgb("-f", &theme.yellow_canary_bold),
-        theme.color_rgb(",", &theme.grey_mouse),
-        theme.color_rgb("--file", &theme.yellow_canary_bold),
+        theme.yellow_canary_bold("-f"),
+        theme.grey_mouse(","),
+        theme.yellow_canary_bold("--file"),
     );
     println!(
         "    {}{} {}     display available commands",
-        theme.color_rgb("--", &theme.yellow_canary_bold),
-        theme.color_rgb(",", &theme.grey_mouse),
-        theme.color_rgb("--commands", &theme.yellow_canary_bold),
+        theme.yellow_canary_bold("--"),
+        theme.grey_mouse(","),
+        theme.yellow_canary_bold("--commands"),
     );
     println!(
         "        {}         show help information",
-        theme.color_rgb("--help", &theme.yellow_canary_bold),
+        theme.yellow_canary_bold("--help"),
     );
     println!();
     println!(
         "{}",
-        theme.color_rgb("DESCRIPTION", &theme.cream_bold)
+        theme.cream_bold("DESCRIPTION")
     );
     println!(
         "The comp interpreter takes a {} sequence of (postfix) operations as \
     command line arguments or a {} argument that specifies the path to a file \
     containing a list of operations. Each operation is either a command ({}) \
     or a {}. The available commands are listed below.",
-        theme.color_rgb("<list>", &theme.blue_coffee_bold),
-        theme.color_rgb("<path>", &theme.blue_coffee_bold),
-        theme.color_rgb("symbol", &theme.green_eggs_bold),
-        theme.color_rgb("value", &theme.blue_smurf_bold),
+        theme.blue_coffee_bold("<list>"),
+        theme.blue_coffee_bold("<path>"),
+        theme.green_eggs_bold("symbol"),
+        theme.blue_smurf_bold("value"),
     );
     println!();
     println!(
         "    Usage Guide:   {}",
-        theme.color_rgb("https://github.com/usefulmove/comp/blob/main/USAGE.md", &theme.grey_mouse),
+        theme.grey_mouse("https://github.com/usefulmove/comp/blob/main/USAGE.md"),
     );
     println!(
         "    Repository:    {}",
-        theme.color_rgb("https://github.com/usefulmove/comp#readme", &theme.grey_mouse),
+        theme.grey_mouse("https://github.com/usefulmove/comp#readme"),
     );
     println!();
     println!(
         "{}",
-        theme.color_rgb("EXAMPLES", &theme.cream_bold)
+        theme.cream_bold("EXAMPLES")
     );
     println!(
         "    {} {} {}                  {}",
-        theme.color_rgb("comp", &theme.grey_mouse),
-        theme.color_rgb("1 2", &theme.blue_smurf_bold),
-        theme.color_rgb("+", &theme.green_eggs_bold),
-        theme.color_rgb("add 1 and 2", &theme.cream_bold),
+        theme.grey_mouse("comp"),
+        theme.blue_smurf_bold("1 2"),
+        theme.green_eggs_bold("+"),
+        theme.cream_bold("add 1 and 2"),
     );
     println!(
         "    {} {} {}                  {}",
-        theme.color_rgb("comp", &theme.grey_mouse),
-        theme.color_rgb("5 2", &theme.blue_smurf_bold),
-        theme.color_rgb("/", &theme.green_eggs_bold),
-        theme.color_rgb("divide 5 by 2", &theme.cream_bold),
+        theme.grey_mouse("comp"),
+        theme.blue_smurf_bold("5 2"),
+        theme.green_eggs_bold("/"),
+        theme.cream_bold("divide 5 by 2"),
     );
     println!(
         "    {} {} {} {} {}      {}",
-        theme.color_rgb("comp", &theme.grey_mouse),
-        theme.color_rgb("3", &theme.blue_smurf_bold),
-        theme.color_rgb("dup x", &theme.green_eggs_bold),
-        theme.color_rgb("4", &theme.blue_smurf_bold),
-        theme.color_rgb("dup x +", &theme.green_eggs_bold),
-        theme.color_rgb("sum of the squares of 3 and 4", &theme.cream_bold),
+        theme.grey_mouse("comp"),
+        theme.blue_smurf_bold("3"),
+        theme.green_eggs_bold("dup x"),
+        theme.blue_smurf_bold("4"),
+        theme.green_eggs_bold("dup x +"),
+        theme.cream_bold("sum of the squares of 3 and 4"),
     );
     println!();
 }

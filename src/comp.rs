@@ -1275,64 +1275,31 @@ impl Interpreter {
     /* ---- binary operations ----------------------------------------------- */
 
     fn c_not(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: u64 = self.pop_stack_u64();
-
-        self.stack.push((!a).to_string());
+        self.cmdgen_u64(1, op, |a, _| !a);
     }
 
     fn c_and(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: u64 = self.pop_stack_u64();
-        let a: u64 = self.pop_stack_u64();
-
-        self.stack.push((a & b).to_string());
+        self.cmdgen_u64(2, op, |a, b| a & b);
     }
 
     fn c_nand(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: u64 = self.pop_stack_u64();
-        let a: u64 = self.pop_stack_u64();
-
-        self.stack.push((!(a & b)).to_string());
+        self.cmdgen_u64(2, op, |a, b| !(a & b));
     }
 
     fn c_or(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: u64 = self.pop_stack_u64();
-        let a: u64 = self.pop_stack_u64();
-
-        self.stack.push((a | b).to_string());
+        self.cmdgen_u64(2, op, |a, b| a | b);
     }
 
     fn c_nor(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: u64 = self.pop_stack_u64();
-        let a: u64 = self.pop_stack_u64();
-
-        self.stack.push((!(a | b)).to_string());
+        self.cmdgen_u64(2, op, |a, b| !(a | b));
     }
 
     fn c_xor(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: u64 = self.pop_stack_u64();
-        let a: u64 = self.pop_stack_u64();
-
-        self.stack.push((a ^ b).to_string());
+        self.cmdgen_u64(2, op, |a, b| a ^ b);
     }
 
     fn c_ones(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: u64 = self.pop_stack_u64();
-
-        self.stack.push(a.count_ones().to_string());
+        self.cmdgen_u64(1, op, |a, _| a.count_ones() as _);
     }
 
     /* ---- control flow ---------------------------------------------------- */
@@ -1618,7 +1585,7 @@ impl Interpreter {
             "  {}",
             self.theme.color_rgb(
                 &out,
-                &self.theme.yellow_canary,
+                &self.theme.grey_mouse,
             ),
         );
     }

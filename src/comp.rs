@@ -40,7 +40,7 @@ impl Config {
 impl fmt::Display for Config {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let theme = cor::Theme::new();
-        let output_color = &theme.blue_smurf;
+        let fmt = |val: &str| theme.color_rgb(val, &theme.blue_smurf);
         write!(
             f,
             "\n\
@@ -51,30 +51,12 @@ impl fmt::Display for Config {
             show_warnings = {}\n\
             stack_persistence = {}\n\
             ",
-            theme.color_rgb(
-                &self.show_stack_level.to_string(),
-                output_color,
-            ),
-            theme.color_rgb(
-                &self.conversion_constant.to_string(),
-                output_color,
-            ),
-            theme.color_rgb(
-                &self.monochrome.to_string(),
-                output_color,
-            ),
-            theme.color_rgb(
-                &self.tip_percentage.to_string(),
-                output_color,
-            ),
-            theme.color_rgb(
-                &self.show_warnings.to_string(),
-                output_color,
-            ),
-            theme.color_rgb(
-                &self.stack_persistence.to_string(),
-                output_color,
-            ),
+            fmt(&self.show_stack_level.to_string()),
+            fmt(&self.conversion_constant.to_string()),
+            fmt(&self.monochrome.to_string()),
+            fmt(&self.tip_percentage.to_string()),
+            fmt(&self.show_warnings.to_string()),
+            fmt(&self.stack_persistence.to_string()),
         )
     }
 }
@@ -1048,9 +1030,7 @@ impl Interpreter {
 
         let mut sum: f64 = 0.;
         let len: usize = self.stack.len();
-        for _ in 0..len {
-            sum += self.pop_stack_float();
-        }
+        for _ in 0..len {sum += self.pop_stack_float()}
 
         self.stack.push((sum / len as f64).to_string());
     }

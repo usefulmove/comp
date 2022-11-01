@@ -57,7 +57,7 @@ fn main() {
                 cmds.sort_unstable();
 
                 for cmd in cmds {
-                    print!("{} ", theme.color_rgb(&cmd, &theme.blue_smurf));
+                    print!("{} ", theme.blue_smurf(&cmd));
                 }
                 println!();
                 return;
@@ -67,7 +67,7 @@ fn main() {
                 if args.get(2).is_none() {
                     eprintln!(
                         "  {}: no file path provided",
-                        theme.color_rgb("error", &theme.red_bold),
+                        theme.red_bold("error"),
                     );
                     exit(exitcode::NOINPUT);
                 }
@@ -80,8 +80,8 @@ fn main() {
                     Err(error) => {
                         eprintln!(
                             "  {}: could not read [{}]: {error}",
-                            theme.color_rgb("error", &theme.red_bold),
-                            theme.color_rgb(&path.display().to_string(), &theme.blue_coffee_bold),
+                            theme.red_bold("error"),
+                            theme.blue_coffee_bold(&path.display().to_string()),
                         );
                         exit(exitcode::OSFILE);
                     }
@@ -165,25 +165,25 @@ fn show_help() {
     println!();
     println!(
         "{}",
-        theme.color_rgb("COMP", &theme.cream_bold)
+        theme.cream_bold("COMP")
     );
     println!(
         "    {} {} {} {}",
-        theme.color_rgb("comp", &theme.grey_mouse),
-        theme.color_rgb("..", &theme.charcoal_cream),
-        theme.color_rgb("command interpreter", &theme.cream_bold),
-        theme.color_rgb(env!("CARGO_PKG_VERSION"), &theme.grey_mouse),
+        theme.grey_mouse("comp"),
+        theme.charcoal_cream(".."),
+        theme.cream_bold("command interpreter"),
+        theme.grey_mouse(env!("CARGO_PKG_VERSION")),
     );
     println!();
     println!(
         "{}",
-        theme.color_rgb("USAGE", &theme.cream_bold)
+        theme.cream_bold("USAGE")
     );
     println!(
         "    {} {} {}",
-        theme.color_rgb("comp", &theme.grey_mouse),
-        theme.color_rgb("[OPTIONS]", &theme.cream_bold),
-        theme.color_rgb("<list>", &theme.blue_coffee_bold),
+        theme.grey_mouse("comp"),
+        theme.cream_bold("[OPTIONS]"),
+        theme.blue_coffee_bold("<list>"),
     );
     println!(
         "    {} {} {}",

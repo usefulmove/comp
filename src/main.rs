@@ -289,25 +289,25 @@ fn output_stack(stack: Vec<String>, annotate: bool, monochrome: bool) {
     let theme = cor::Theme::new();
 
     let mut color_stack_top_closure = BoxedClosure::new(
-        |x| theme.color_rgb(x, &theme.blue_coffee_bold)
+        |x| theme.blue_coffee_bold(x)
     );
     let mut color_stack_closure = BoxedClosure::new(
-        |x| theme.color_rgb(x, &theme.blue_smurf)
+        |x| theme.blue_smurf(x)
     );
     let mut color_annotate_closure = BoxedClosure::new(
         |x| theme.color_blank(x)
     );
     if annotate {
         color_annotate_closure = BoxedClosure::new(
-            |x| theme.color_rgb(x, &theme.charcoal_cream)
+            |x| theme.charcoal_cream(x)
         );
     }
     if monochrome {
         color_stack_top_closure = BoxedClosure::new(
-            |x| theme.color_rgb(x, &theme.white_bold)
+            |x| theme.white_bold(x)
         );
         color_stack_closure = BoxedClosure::new(
-            |x| theme.color_rgb(x, &theme.white)
+            |x| theme.white(x)
         );
     }
 

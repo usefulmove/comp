@@ -418,23 +418,6 @@ impl Interpreter {
         }
     }
 
-    pub fn pop_stack_u128(&mut self) -> u128 {
-        let element: String = self.stack.pop().unwrap();
-        match self.parse_u128(&element) {
-            Ok(val) => val, // parse success
-            Err(_) => {
-                // parse fail
-                eprintln!(
-                    "  {}: unknown expression [{}] is not a recognized operation \
-                    or valid value (u)",
-                   self.theme.color_rgb("error", &self.theme.red_bold),
-                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
-                );
-                exit(exitcode::USAGE);
-            }
-        }
-    }
-
     pub fn pop_stack_int_from_hex(&mut self) -> i64 {
         let element: String = self.stack.pop().unwrap();
 
@@ -519,11 +502,6 @@ impl Interpreter {
 
     fn parse_u64(&self, op: &str) -> Result<u64, ParseIntError> {
         let value = op.parse::<u64>()?;
-        Ok(value)
-    }
-
-    fn parse_u128(&self, op: &str) -> Result<u128, ParseIntError> {
-        let value = op.parse::<u128>()?;
         Ok(value)
     }
 
@@ -942,11 +920,7 @@ impl Interpreter {
     }
 
     fn c_fact(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: u128 = self.pop_stack_u128();
-
-        self.stack.push((Self::factorial(a)).to_string());
+        self.cmdgen_u64(1, op, |a, _| Self::factorial(a));
     }
 
     fn c_gcd(&mut self, op: &str) {
@@ -1611,7 +1585,7 @@ impl Interpreter {
     }
 
     // factorial
-    pub fn factorial(n: u128) -> u128 {
+    pub fn factorial(n: u64) -> u64 {
         (1..=n).product()
     }
 

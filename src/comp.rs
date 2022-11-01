@@ -784,24 +784,24 @@ impl Interpreter {
         self.mem_a = self.pop_stack_float();
     }
 
-    fn c_push_a(&mut self, _op: &str) {
-        self.stack.push(self.mem_a.to_string());
-    }
-
     fn c_store_b(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
         self.mem_b = self.pop_stack_float();
     }
 
-    fn c_push_b(&mut self, _op: &str) {
-        self.stack.push(self.mem_b.to_string());
-    }
-
     fn c_store_c(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
         self.mem_c = self.pop_stack_float();
+    }
+
+    fn c_push_a(&mut self, _op: &str) {
+        self.stack.push(self.mem_a.to_string());
+    }
+
+    fn c_push_b(&mut self, _op: &str) {
+        self.stack.push(self.mem_b.to_string());
     }
 
     fn c_push_c(&mut self, _op: &str) {

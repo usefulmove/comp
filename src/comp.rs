@@ -320,8 +320,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (f)",
-                    self.theme.color_rgb("error", &self.theme.red_bold),
-                    self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                    self.theme.red_bold("error"),
+                    self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -342,8 +342,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (f)",
-                    self.theme.color_rgb("error", &self.theme.red_bold),
-                    self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                    self.theme.red_bold("error"),
+                    self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -359,8 +359,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                   self.theme.color_rgb("error", &self.theme.red_bold),
-                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                   self.theme.red_bold("error"),
+                   self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -376,8 +376,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                   self.theme.color_rgb("error", &self.theme.red_bold),
-                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                   self.theme.red_bold("error"),
+                   self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }

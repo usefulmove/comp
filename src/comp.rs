@@ -837,9 +837,7 @@ impl Interpreter {
     }
 
     fn c_product(&mut self, op: &str) {
-        while self.stack.len() > 1 {
-            self.c_mult(op);
-        }
+        while self.stack.len() > 1 {self.c_mult(op)}
     }
 
     fn c_div(&mut self, op: &str) {
@@ -889,25 +887,28 @@ impl Interpreter {
         let b: f64 = self.pop_stack_float();
         let a: f64 = self.pop_stack_float();
 
-        if (b * b - 4. * a * c) < 0. {
-            self.stack
-                .push((-1. * b / (2. * a)).to_string()); // r_1 real
-            self.stack
-                .push(((4. * a * c - b * b).sqrt() / (2. * a)).to_string()); // r_1 imag
-            self.stack
-                .push((-1. * b / (2. * a)).to_string()); // r_2 real
-            self.stack
-                .push((-1. * (4. * a * c - b * b).sqrt() / (2. * a)).to_string());
-        // r_2 imag
-        } else {
-            self.stack
-                .push((-1. * b + (b * b - 4. * a * c).sqrt() / (2. * a)).to_string()); // r_1 real
-            self.stack
-                .push(0.0.to_string()); // r_1 imag
-            self.stack
-                .push((-1. * b - (b * b - 4. * a * c).sqrt() / (2. * a)).to_string()); // r_2 real
-            self.stack
-                .push(0.0.to_string()); // r_2 imag
+        let disc = b*b - 4.*a*c; // discriminant
+        match disc < 0. {
+            true => {
+                self.stack
+                    .push((-1.*b / (2.*a)).to_string()); // r_1 real
+                self.stack
+                    .push(((-disc).sqrt() / (2.*a)).to_string()); // r_1 imag
+                self.stack
+                    .push((-1.*b / (2.*a)).to_string()); // r_2 real
+                self.stack
+                    .push((-1. * (-disc).sqrt() / (2.*a)).to_string()); // r_2 imag
+            }
+            _ => {
+                self.stack
+                    .push((-1.*b + disc.sqrt() / (2.*a)).to_string()); // r_1 real
+                self.stack
+                    .push(0.0.to_string()); // r_1 imag
+                self.stack
+                    .push((-1.*b - disc.sqrt() / (2.*a)).to_string()); // r_2 real
+                self.stack
+                    .push(0.0.to_string()); // r_2 imag
+            }
         }
     }
 
@@ -1030,8 +1031,8 @@ impl Interpreter {
         while !self.stack.is_empty() {
             let a: f64 = self.pop_stack_float();
 
-            if a > max { max = a }
-            if a < min { min = a }
+            if a > max {max = a}
+            if a < min {min = a}
         }
 
         self.stack.push((min).to_string());

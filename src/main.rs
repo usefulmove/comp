@@ -278,9 +278,9 @@ fn show_version() {
     let version: &str = env!("CARGO_PKG_VERSION");
     println!(
         "  {} {}{}",
-        theme.color_rgb("comp", &theme.grey_mouse),
-        theme.color_rgb(version, &theme.blue_smurf_bold),
-        theme.color_rgb(RELEASE_STATE, &theme.white_bold),
+        theme.grey_mouse("comp"),
+        theme.blue_smurf_bold(version),
+        theme.white_bold(RELEASE_STATE),
     );
 }
 

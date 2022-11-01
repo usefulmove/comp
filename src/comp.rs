@@ -40,7 +40,7 @@ impl Config {
 impl fmt::Display for Config {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let theme = cor::Theme::new();
-        let fmt = |val: &str| theme.color_rgb(val, &theme.blue_smurf);
+        let fmt = |val: &str| theme.blue_smurf(val);
         write!(
             f,
             "\n\
@@ -375,8 +375,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                   self.theme.color_rgb("error", &self.theme.red_bold),
-                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                   self.theme.red_bold("error"),
+                   self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -392,8 +392,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                   self.theme.color_rgb("error", &self.theme.red_bold),
-                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                   self.theme.red_bold("error"),
+                   self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -410,8 +410,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
-                   self.theme.color_rgb("error", &self.theme.red_bold),
-                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                   self.theme.red_bold("error"),
+                   self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -428,8 +428,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
-                   self.theme.color_rgb("error", &self.theme.red_bold),
-                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                   self.theme.red_bold("error"),
+                   self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -446,8 +446,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_b)",
-                   self.theme.color_rgb("error", &self.theme.red_bold),
-                   self.theme.color_rgb(&element, &self.theme.blue_coffee_bold),
+                   self.theme.red_bold("error"),
+                   self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -493,8 +493,8 @@ impl Interpreter {
             eprintln!(
                 "  {}: [{}] operation called without at least {min_depth} \
                 element(s) on stack",
-               self.theme.color_rgb("error", &self.theme.red_bold),
-               self.theme.color_rgb(command, &self.theme.blue_coffee_bold),
+               self.theme.red_bold("error"),
+               self.theme.blue_coffee_bold(command),
             );
             exit(exitcode::USAGE);
         }
@@ -549,8 +549,8 @@ impl Interpreter {
        if self.config.show_warnings {
             eprintln!(
                 "  {}: [{}] operation called on empty stack",
-                self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
-                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+                self.theme.yellow_canary_bold("warning"),
+                self.theme.blue_coffee_bold(op),
             );
         }
         // do not stop execution

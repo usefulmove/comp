@@ -56,9 +56,7 @@ fn main() {
                 let mut cmds: Vec<String> = interpreter.get_cmds();
                 cmds.sort_unstable();
 
-                for cmd in cmds {
-                    print!("{} ", theme.blue_smurf(&cmd));
-                }
+                for cmd in cmds {print!("{} ", theme.blue_smurf(&cmd))}
                 println!();
                 return;
             }
@@ -94,9 +92,7 @@ fn main() {
                 interpreter.ops.extend(operations);
 
                 // add additional operations from command line
-                if args.get(3).is_some() {
-                    interpreter.ops.extend((args[3..]).to_vec());
-                }
+                if args.get(3).is_some() {interpreter.ops.extend((args[3..]).to_vec())}
             }
             "--help" | "help" => {
                 // display command usage information

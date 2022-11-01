@@ -564,9 +564,9 @@ impl Interpreter {
         if drop_count < 1 {
             eprintln!(
                 "  {}: [{}] operation called with bad argument [{}]",
-                self.theme.color_rgb("error", &self.theme.red_bold),
-                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
-                self.theme.color_rgb(&drop_count.to_string(), &self.theme.blue_coffee_bold),
+                self.theme.red_bold("error"),
+                self.theme.blue_coffee_bold(op),
+                self.theme.blue_coffee_bold(&drop_count.to_string()),
             );
             exit(exitcode::USAGE);
         }
@@ -583,8 +583,8 @@ impl Interpreter {
             if self.config.show_warnings {
                 eprintln!(
                     "  {}: [{}] operation called on empty stack",
-                    self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
-                    self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+                    self.theme.yellow_canary_bold("warning"),
+                    self.theme.blue_coffee_bold(op),
                 );
             }
             // do not stop execution
@@ -608,9 +608,9 @@ impl Interpreter {
         if take_count < 1 {
             eprintln!(
                 "  {}: [{}] operation called with bad argument [{}]",
-                self.theme.color_rgb("error", &self.theme.red_bold),
-                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
-                self.theme.color_rgb(&take_count.to_string(), &self.theme.blue_coffee_bold),
+                self.theme.red_bold("error"),
+                self.theme.blue_coffee_bold(op),
+                self.theme.blue_coffee_bold(&take_count.to_string()),
             );
             exit(exitcode::USAGE);
         }
@@ -620,10 +620,10 @@ impl Interpreter {
                 eprintln!(
                     "  {}: [{}] operation called with argument [{}] \
                     greater than stack depth [{}]",
-                    self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
-                    self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
-                    self.theme.color_rgb(&take_count.to_string(), &self.theme.blue_coffee_bold),
-                    self.theme.color_rgb(&len.to_string(), &self.theme.blue_coffee_bold),
+                    self.theme.yellow_canary_bold("warning"),
+                    self.theme.blue_coffee_bold(op),
+                    self.theme.blue_coffee_bold(&take_count.to_string()),
+                    self.theme.blue_coffee_bold(&len.to_string()),
                 );
             }
             return;
@@ -711,8 +711,8 @@ impl Interpreter {
         if a < 1 {
             eprintln!(
                 "  {}: [{}] operation called with invalid argument - argument cannot be less than 1",
-                self.theme.color_rgb("error", &self.theme.red_bold),
-                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+                self.theme.red_bold("error"),
+                self.theme.blue_coffee_bold(op),
             );
             exit(exitcode::USAGE);
         }
@@ -730,8 +730,8 @@ impl Interpreter {
         if a < 0 {
             eprintln!(
                 "  {}: [{}] operation called with invalid argument - argument cannot be negative",
-                self.theme.color_rgb("error", &self.theme.red_bold),
-                self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+                self.theme.red_bold("error"),
+                self.theme.blue_coffee_bold(op),
             );
             exit(exitcode::USAGE);
         }
@@ -1154,8 +1154,8 @@ impl Interpreter {
         if she.len() < 5 {
             eprintln!(
                 "  {}: argument too short [{}] is not of sufficient length",
-               self.theme.color_rgb("error", &self.theme.red_bold),
-               self.theme.color_rgb(&she, &self.theme.blue_coffee_bold),
+               self.theme.red_bold("error"),
+               self.theme.blue_coffee_bold(&she),
             );
             exit(exitcode::USAGE);
         }
@@ -1214,8 +1214,8 @@ impl Interpreter {
             .map(|(val, c)| {
                 format!(
                     "'{}'  {}",
-                    self.theme.color_rgb(&c.to_string(), &self.theme.blue_coffee_bold),
-                    self.theme.color_rgb(&val.to_string(), &self.theme.grey_mouse),
+                    self.theme.blue_coffee_bold(&c.to_string()),
+                    self.theme.grey_mouse(&val.to_string()),
                 )
              })
             .for_each(|s| println!("  {}", s));
@@ -1440,8 +1440,8 @@ impl Interpreter {
         if a.len() != 6 || b.len() != 6 {
             eprintln!(
                 "  {}: argument is incorrect for [{}] command",
-               self.theme.color_rgb("error", &self.theme.red_bold),
-               self.theme.color_rgb(op, &self.theme.blue_coffee_bold),
+               self.theme.red_bold("error"),
+               self.theme.blue_coffee_bold(op),
             );
             exit(exitcode::USAGE);
         }
@@ -1518,10 +1518,7 @@ impl Interpreter {
 
         println!(
             "  {}",
-            self.theme.color_rgb(
-                &self.stack[self.stack.len() - 1],
-                &self.theme.white,
-            ),
+            self.theme.white(&self.stack[self.stack.len() - 1]),
         );
     }
 
@@ -1532,10 +1529,7 @@ impl Interpreter {
 
         println!(
             "  {}",
-            self.theme.color_rgb(
-                &out,
-                &self.theme.grey_mouse,
-            ),
+            self.theme.grey_mouse(&out),
         );
     }
 
@@ -1591,14 +1585,14 @@ impl Interpreter {
             Ok(_) => {
                 println!(
                     "  configuration file [{}] saved",
-                    self.theme.color_rgb(CONFIG_FILE, &self.theme.blue_smurf_bold),
+                    self.theme.blue_smurf_bold(CONFIG_FILE),
                 );
             }
             Err(error) => {
                 eprintln!(
                     "  {}: configuration file [{}] could not be saved: {}",
-                    self.theme.color_rgb("error", &self.theme.red_bold),
-                    self.theme.color_rgb(CONFIG_FILE, &self.theme.blue_smurf_bold),
+                    self.theme.red_bold("error"),
+                    self.theme.blue_smurf_bold(CONFIG_FILE),
                     error,
                 );
             }
@@ -1610,7 +1604,7 @@ impl Interpreter {
     /*
         println!(
             "  reading configuration file [{}]",
-            self.theme.color_rgb(filename, &self.theme.blue_coffee_bold),
+            self.theme.blue_coffee_bold(filename),
         );
     */
 
@@ -1637,8 +1631,8 @@ impl Interpreter {
                         eprintln!(
                             "  {}: configuration file [{}] (ignored) has been corrupted or \
                             is improperly constructed for this version of comp",
-                            self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
-                            self.theme.color_rgb(CONFIG_FILE, &self.theme.blue_smurf_bold),
+                            self.theme.yellow_canary_bold("warning"),
+                            self.theme.blue_smurf_bold(CONFIG_FILE),
                         );
                     }
                     Config::new()
@@ -1667,15 +1661,15 @@ impl Interpreter {
                 /*
                 println!(
                     "  stack snapshot [{}] saved",
-                    self.theme.color_rgb(PERSISTENCE_FILE, &self.theme.blue_smurf_bold),
+                    self.theme.blue_smurf_bold(PERSISTENCE_FILE),
                 );
                 */
             }
             Err(error) => {
                 eprintln!(
                     "  {}: stack snapshot [{}] could not be saved: {}",
-                    self.theme.color_rgb("error", &self.theme.red_bold),
-                    self.theme.color_rgb(PERSISTENCE_FILE, &self.theme.blue_smurf_bold),
+                    self.theme.red_bold("error"),
+                    self.theme.blue_smurf_bold(PERSISTENCE_FILE),
                     error,
                 );
             }
@@ -1704,8 +1698,8 @@ impl Interpreter {
                         eprintln!(
                             "  {}: stack snapshot [{}] (ignored) has been corrupted or \
                             is improperly constructed for this version of comp",
-                            self.theme.color_rgb("warning", &self.theme.yellow_canary_bold),
-                            self.theme.color_rgb(PERSISTENCE_FILE, &self.theme.blue_smurf_bold),
+                            self.theme.yellow_canary_bold("warning"),
+                            self.theme.blue_smurf_bold(PERSISTENCE_FILE),
                         );
                     }
                 }

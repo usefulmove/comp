@@ -1048,13 +1048,7 @@ impl Interpreter {
     }
 
     fn c_triangle(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let mut a: i64 = self.pop_stack_i64();
-
-        if a < 0 { a = 0 }
-
-        self.stack.push((a*(a+1)/2).to_string());
+        self.cmdgen_u64(1, op, |a, _| a * (a + 1) / 2);
     }
 
     fn c_divisors(&mut self, op: &str) {

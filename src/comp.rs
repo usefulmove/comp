@@ -543,7 +543,7 @@ impl Interpreter {
     /* command functions ---------------------------------------------------- */
 
     /*** command generator helper function ***/
-    fn cmdgen(&mut self, args: usize, op: &str, f: fn(f64, f64) -> f64) {
+    fn cmdgen_f64(&mut self, args: usize, op: &str, f: fn(f64, f64) -> f64) {
         Self::check_stack_error(self, args, op);
 
         match args {
@@ -554,6 +554,23 @@ impl Interpreter {
             2 => {
                 let b: f64 = self.pop_stack_float();
                 let a: f64 = self.pop_stack_float();
+                self.stack.push(f(a, b).to_string());
+            }
+            _ => unimplemented!(),
+        }
+    }
+
+    fn cmdgen_u64(&mut self, args: usize, op: &str, f: fn(u64, u64) -> u64) {
+        Self::check_stack_error(self, args, op);
+
+        match args {
+            1 => {
+                let a: u64 = self.pop_stack_u64();
+                self.stack.push(f(a, 0).to_string());
+            }
+            2 => {
+                let b: u64 = self.pop_stack_u64();
+                let a: u64 = self.pop_stack_u64();
                 self.stack.push(f(a, b).to_string());
             }
             _ => unimplemented!(),
@@ -816,7 +833,7 @@ impl Interpreter {
     /* ---- math operations ------------------------------------------------- */
 
     fn c_add(&mut self, op: &str) {
-        self.cmdgen(2, op, |a, b| a + b);
+        self.cmdgen_f64(2, op, |a, b| a + b);
     }
 
     fn c_sum(&mut self, op: &str) {
@@ -826,19 +843,19 @@ impl Interpreter {
     }
 
     fn c_add_one(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a + 1.);
+        self.cmdgen_f64(1, op, |a, _| a + 1.);
     }
 
     fn c_sub(&mut self, op: &str) {
-        self.cmdgen(2, op, |a, b| a - b);
+        self.cmdgen_f64(2, op, |a, b| a - b);
     }
 
     fn c_sub_one(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a - 1.);
+        self.cmdgen_f64(1, op, |a, _| a - 1.);
     }
 
     fn c_mult(&mut self, op: &str) {
-        self.cmdgen(2, op, |a, b| a * b);
+        self.cmdgen_f64(2, op, |a, b| a * b);
     }
 
     fn c_product(&mut self, op: &str) {
@@ -848,43 +865,43 @@ impl Interpreter {
     }
 
     fn c_div(&mut self, op: &str) {
-        self.cmdgen(2, op, |a, b| a / b);
+        self.cmdgen_f64(2, op, |a, b| a / b);
     }
 
     fn c_chs(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| -a);
+        self.cmdgen_f64(1, op, |a, _| -a);
     }
 
     fn c_abs(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.abs());
+        self.cmdgen_f64(1, op, |a, _| a.abs());
     }
 
     fn c_round(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.round());
+        self.cmdgen_f64(1, op, |a, _| a.round());
     }
 
     fn c_floor(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.floor());
+        self.cmdgen_f64(1, op, |a, _| a.floor());
     }
 
     fn c_ceiling(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.ceil());
+        self.cmdgen_f64(1, op, |a, _| a.ceil());
     }
 
     fn c_pos(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| if a < 0. {0.} else {a});
+        self.cmdgen_f64(1, op, |a, _| if a < 0. {0.} else {a});
     }
 
     fn c_inv(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| 1. / a);
+        self.cmdgen_f64(1, op, |a, _| 1. / a);
     }
 
     fn c_sqrt(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.sqrt());
+        self.cmdgen_f64(1, op, |a, _| a.sqrt());
     }
 
     fn c_nroot(&mut self, op: &str) {
-        self.cmdgen(2, op, |a, b| a.powf(1. / b));
+        self.cmdgen_f64(2, op, |a, b| a.powf(1. / b));
     }
 
     fn c_proot(&mut self, op: &str) {
@@ -917,11 +934,11 @@ impl Interpreter {
     }
 
     fn c_exp(&mut self, op: &str) {
-        self.cmdgen(2, op, |a, b| a.powf(b));
+        self.cmdgen_f64(2, op, |a, b| a.powf(b));
     }
 
     fn c_mod(&mut self, op: &str) {
-        self.cmdgen(2, op, |a, b| a % b);
+        self.cmdgen_f64(2, op, |a, b| a % b);
     }
 
     fn c_fact(&mut self, op: &str) {
@@ -933,12 +950,7 @@ impl Interpreter {
     }
 
     fn c_gcd(&mut self, op: &str) {
-        Self::check_stack_error(self, 2, op);
-
-        let b: u64 = self.pop_stack_u64();
-        let a: u64 = self.pop_stack_u64();
-
-        self.stack.push(Self::gcd(a, b).to_string());
+        self.cmdgen_u64(2, op, Self::gcd);
     }
 
     fn c_pi(&mut self, _op: &str) {
@@ -954,64 +966,60 @@ impl Interpreter {
     }
 
     fn c_degrad(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.to_radians());
+        self.cmdgen_f64(1, op, |a, _| a.to_radians());
     }
 
     fn c_raddeg(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.to_degrees());
+        self.cmdgen_f64(1, op, |a, _| a.to_degrees());
     }
 
     fn c_sin(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.sin());
+        self.cmdgen_f64(1, op, |a, _| a.sin());
     }
 
     fn c_asin(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.asin());
+        self.cmdgen_f64(1, op, |a, _| a.asin());
     }
 
     fn c_cos(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.cos());
+        self.cmdgen_f64(1, op, |a, _| a.cos());
     }
 
     fn c_acos(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.acos());
+        self.cmdgen_f64(1, op, |a, _| a.acos());
     }
 
     fn c_tan(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.tan());
+        self.cmdgen_f64(1, op, |a, _| a.tan());
     }
 
     fn c_atan(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.atan());
+        self.cmdgen_f64(1, op, |a, _| a.atan());
     }
 
     fn c_log10(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.log10());
+        self.cmdgen_f64(1, op, |a, _| a.log10());
     }
 
     fn c_log2(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.log2());
+        self.cmdgen_f64(1, op, |a, _| a.log2());
     }
 
     fn c_logn(&mut self, op: &str) {
-        self.cmdgen(2, op, |a, b| a.log(b));
+        self.cmdgen_f64(2, op, |a, b| a.log(b));
     }
 
     fn c_ln(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a.ln());
+        self.cmdgen_f64(1, op, |a, _| a.ln());
     }
 
     fn c_rand(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: u64 = self.pop_stack_u64();
-        let num: f64 = (a as f64 * rand::random::<f64>()).floor();
-
-        self.stack.push(num.to_string());
+        let f = |a, _| (a as f64 * rand::random::<f64>()) as u64;
+        self.cmdgen_u64(1, op, f);
     }
 
     fn c_max(&mut self, op: &str) {
-        self.cmdgen(2, op, |a, b| a.max(b));
+        self.cmdgen_f64(2, op, |a, b| a.max(b));
     }
 
     fn c_max_all(&mut self, op: &str) {
@@ -1026,7 +1034,7 @@ impl Interpreter {
     }
 
     fn c_min(&mut self, op: &str) {
-        self.cmdgen(2, op, |a, b| a.min(b));
+        self.cmdgen_f64(2, op, |a, b| a.min(b));
     }
 
     fn c_min_all(&mut self, op: &str) {
@@ -1057,7 +1065,7 @@ impl Interpreter {
     }
 
     fn c_avg(&mut self, op: &str) {
-        self.cmdgen(2, op, |a, b| (a + b) / 2.);
+        self.cmdgen_f64(2, op, |a, b| (a + b) / 2.);
     }
 
     fn c_avg_all(&mut self, op: &str) {
@@ -1081,7 +1089,7 @@ impl Interpreter {
             }
         }
 
-        self.cmdgen(1, op, |a, _| sgn(a));
+        self.cmdgen_f64(1, op, |a, _| sgn(a));
     }
 
     fn c_triangle(&mut self, op: &str) {
@@ -1166,27 +1174,27 @@ impl Interpreter {
     }
 
     fn c_celfah(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| (a * 9. / 5.) + 32.);
+        self.cmdgen_f64(1, op, |a, _| (a * 9. / 5.) + 32.);
     }
 
     fn c_fahcel(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| (a - 32.) * 5. / 9.);
+        self.cmdgen_f64(1, op, |a, _| (a - 32.) * 5. / 9.);
     }
 
     fn c_mikm(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a * 1.609344);
+        self.cmdgen_f64(1, op, |a, _| a * 1.609344);
     }
 
     fn c_kmmi(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a / 1.609344);
+        self.cmdgen_f64(1, op, |a, _| a / 1.609344);
     }
 
     fn c_ftm(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a / 3.281);
+        self.cmdgen_f64(1, op, |a, _| a / 3.281);
     }
 
     fn c_mft(&mut self, op: &str) {
-        self.cmdgen(1, op, |a, _| a * 3.281);
+        self.cmdgen_f64(1, op, |a, _| a * 3.281);
     }
 
     fn c_hexrgb(&mut self, op: &str) {
@@ -1373,27 +1381,27 @@ impl Interpreter {
 
     fn c_equal(&mut self, op: &str) {
         let f = |a, b| if a == b {1.} else {0.};
-        self.cmdgen(2, op, f);
+        self.cmdgen_f64(2, op, f);
     }
 
     fn c_lessthan(&mut self, op: &str) {
         let f = |a, b| if a < b {1.} else {0.};
-        self.cmdgen(2, op, f);
+        self.cmdgen_f64(2, op, f);
     }
 
     fn c_lessthanorequal(&mut self, op: &str) {
         let f = |a, b| if a <= b {1.} else {0.};
-        self.cmdgen(2, op, f);
+        self.cmdgen_f64(2, op, f);
     }
 
     fn c_greaterthan(&mut self, op: &str) {
         let f = |a, b| if a > b {1.} else {0.};
-        self.cmdgen(2, op, f);
+        self.cmdgen_f64(2, op, f);
     }
 
     fn c_greaterthanorequal(&mut self, op: &str) {
         let f = |a, b| if a >= b {1.} else {0.};
-        self.cmdgen(2, op, f);
+        self.cmdgen_f64(2, op, f);
     }
 
     fn c_ifeq(&mut self, op: &str) {

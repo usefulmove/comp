@@ -6,7 +6,7 @@ use std::process::exit;
 mod comp;
 mod mona;
 
-const RELEASE_STATE: &str = "b";
+const RELEASE_STATE: &str = "c";
 
 /*
 
@@ -102,8 +102,8 @@ fn main() {
                 return;
             }
             "mona" => {
-                print!("{}", theme.white_bold(mona::MONA));
-                println!("{}", theme.charcoal_cream("a. mullen"));
+                let anom = mona::MONA.chars().rev().collect::<String>();
+                print!("{}", theme.white_bold(&anom));
                 return;
             }
             "--version" | "version" => {

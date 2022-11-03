@@ -103,7 +103,7 @@ fn main() {
             }
             "mona" => {
                 let anom = mona::MONA.chars().rev().collect::<String>();
-                print!("{}", theme.white_bold(&anom));
+                print!("{}\n", theme.white_bold(&anom));
                 return;
             }
             "--version" | "version" => {

@@ -103,7 +103,7 @@ fn main() {
             }
             "mona" => {
                 print!("{}", theme.white_bold(mona::MONA));
-                println!("{}", theme.blue_smurf("a. mullen"));
+                println!("{}", theme.charcoal_cream("a. mullen"));
                 return;
             }
             "--version" | "version" => {

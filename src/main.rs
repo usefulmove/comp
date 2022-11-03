@@ -301,38 +301,28 @@ fn output_stack(stack: Vec<String>, annotate: bool, monochrome: bool) {
         );
     }
     if monochrome {
-        color_stack_top_closure = BoxedClosure::new(
-            |x| theme.white_bold(x)
-        );
-        color_stack_closure = BoxedClosure::new(
-            |x| theme.white(x)
-        );
+        color_stack_top_closure = BoxedClosure::new(|x| theme.white_bold(x));
+        color_stack_closure = BoxedClosure::new(|x| theme.white(x));
     }
 
     let len = stack.len();
     stack.iter()
         .enumerate()
         .for_each(|(i, ent)| {
+            let level = len - i;
 
-        let level = len - i;
-
-        match level {
-            1 => {
-                println!( // top element
-                    "{}  {}",
-                    (color_annotate_closure.f)(annotate_level(level)),
-                    (color_stack_top_closure.f)(ent),
-                )
+            match level {
+                1 => { println!("{}  {}", // top element
+                        (color_annotate_closure.f)(annotate_level(level)),
+                        (color_stack_top_closure.f)(ent),
+                    )
+                }
+                _ => { println!("{}  {}", // all other elements
+                        (color_annotate_closure.f)(annotate_level(level)),
+                        (color_stack_closure.f)(ent),
+                    )
+                }
             }
-            _ => {
-                println!( // all other elements
-                    "{}  {}",
-                    (color_annotate_closure.f)(annotate_level(level)),
-                    (color_stack_closure.f)(ent),
-                )
-            }
-        }
-
         });
 
 }

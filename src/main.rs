@@ -56,8 +56,10 @@ fn main() {
                 let mut cmds: Vec<String> = interpreter.get_cmds();
                 cmds.sort_unstable();
 
-                for cmd in cmds {print!("{} ", theme.blue_smurf(&cmd))}
+                cmds.iter()
+                    .for_each(|cmd| print!("{} ", theme.blue_smurf(cmd)));
                 println!();
+
                 return;
             }
             "--file" | "-f" => {
@@ -100,8 +102,8 @@ fn main() {
                 return;
             }
             "mona" => {
-                print!("{}", theme.color_rgb(mona::MONA, &cor::Color::new(243, 196, 129, true)));
-                println!("{}", theme.color_rgb("allen mullen", &cor::Color::new(60, 49, 32, false)));
+                print!("{}", theme.white_bold(mona::MONA));
+                println!("{}", theme.blue_smurf("allen mullen"));
                 return;
             }
             "--version" | "version" => {

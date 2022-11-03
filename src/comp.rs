@@ -293,32 +293,10 @@ impl Interpreter {
         self.stack.pop().unwrap()
     }
 
-    pub fn pop_stack_float(&mut self) -> f64 {
+    pub fn pop_stack_f64(&mut self) -> f64 {
         let element: String = self.stack.pop().unwrap();
-        match self.parse_float(&element) {
+        match self.parse_f64(&element) {
             Ok(val) => val, // parse success
-            Err(_) => {
-                // parse fail
-                eprintln!(
-                    "  {}: unknown expression [{}] is not a recognized operation \
-                    or valid value (f)",
-                    self.theme.red_bold("error"),
-                    self.theme.blue_coffee_bold(&element),
-                );
-                exit(exitcode::USAGE);
-            }
-        }
-    }
-
-    pub fn pop_stack_float_pos(&mut self) -> f64 {
-        let element: String = self.stack.pop().unwrap();
-        match self.parse_float(&element) {
-            Ok(mut val) => { // parse success
-                if val < 0. {
-                    val = 0.;
-                }
-                val
-            }
             Err(_) => {
                 // parse fail
                 eprintln!(
@@ -334,7 +312,7 @@ impl Interpreter {
 
     pub fn pop_stack_i64(&mut self) -> i64 {
         let element: String = self.stack.pop().unwrap();
-        match self.parse_int(&element) {
+        match self.parse_i64(&element) {
             Ok(val) => val, // parse success
             Err(_) => {
                 // parse fail
@@ -349,9 +327,9 @@ impl Interpreter {
         }
     }
 
-    pub fn _pop_stack_u8(&mut self) -> u8 {
+    pub fn pop_stack_u8(&mut self) -> u8 {
         let element: String = self.stack.pop().unwrap();
-        match self._parse_u8(&element) {
+        match self.parse_u8(&element) {
             Ok(val) => val, // parse success
             Err(_) => {
                 // parse fail
@@ -454,17 +432,9 @@ impl Interpreter {
         }
     }
 
-    fn parse_float(&self, op: &str) -> Result<f64, ParseFloatError> {
-        self.parse_f64(op)
-    }
-
     fn parse_f64(&self, op: &str) -> Result<f64, ParseFloatError> {
         let value = op.parse::<f64>()?;
         Ok(value)
-    }
-
-    fn parse_int(&self, op: &str) -> Result<i64, ParseIntError> {
-        self.parse_i64(op)
     }
 
     fn parse_i64(&self, op: &str) -> Result<i64, ParseIntError> {
@@ -472,7 +442,7 @@ impl Interpreter {
         Ok(value)
     }
 
-    fn _parse_u8(&self, op: &str) -> Result<u8, ParseIntError> {
+    fn parse_u8(&self, op: &str) -> Result<u8, ParseIntError> {
         let value = op.parse::<u8>()?;
         Ok(value)
     }
@@ -508,12 +478,12 @@ impl Interpreter {
 
         match args {
             1 => {
-                let a: f64 = self.pop_stack_float();
+                let a: f64 = self.pop_stack_f64();
                 self.stack.push(f(a, 0.).to_string());
             }
             2 => {
-                let b: f64 = self.pop_stack_float();
-                let a: f64 = self.pop_stack_float();
+                let b: f64 = self.pop_stack_f64();
+                let a: f64 = self.pop_stack_f64();
                 self.stack.push(f(a, b).to_string());
             }
             _ => unimplemented!(),
@@ -684,9 +654,9 @@ impl Interpreter {
     fn c_range(&mut self, op: &str) {
         Self::check_stack_error(self, 3, op);
 
-        let step: f64  = self.pop_stack_float();
-        let end: f64 = self.pop_stack_float();
-        let start: f64 = self.pop_stack_float();
+        let step: f64  = self.pop_stack_f64();
+        let end: f64 = self.pop_stack_f64();
+        let start: f64 = self.pop_stack_f64();
 
         let mut value: f64 = start;
         if end >= start {
@@ -763,19 +733,19 @@ impl Interpreter {
     fn c_store_a(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        self.mem_a = self.pop_stack_float();
+        self.mem_a = self.pop_stack_f64();
     }
 
     fn c_store_b(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        self.mem_b = self.pop_stack_float();
+        self.mem_b = self.pop_stack_f64();
     }
 
     fn c_store_c(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        self.mem_c = self.pop_stack_float();
+        self.mem_c = self.pop_stack_f64();
     }
 
     fn c_push_a(&mut self, _op: &str) {
@@ -865,9 +835,9 @@ impl Interpreter {
     fn c_proot(&mut self, op: &str) {
         Self::check_stack_error(self, 3, op);
 
-        let c: f64 = self.pop_stack_float();
-        let b: f64 = self.pop_stack_float();
-        let a: f64 = self.pop_stack_float();
+        let c: f64 = self.pop_stack_f64();
+        let b: f64 = self.pop_stack_f64();
+        let a: f64 = self.pop_stack_f64();
 
         let disc = b*b - 4.*a*c; // discriminant
         match disc < 0. {
@@ -984,7 +954,7 @@ impl Interpreter {
 
         let mut m: f64 = f64::MIN;
         while !self.stack.is_empty() {
-            m = m.max(self.pop_stack_float());
+            m = m.max(self.pop_stack_f64());
         }
 
         self.stack.push(m.to_string());
@@ -999,7 +969,7 @@ impl Interpreter {
 
         let mut m: f64 = f64::MAX;
         while !self.stack.is_empty() {
-            m = m.min(self.pop_stack_float());
+            m = m.min(self.pop_stack_f64());
         }
 
         self.stack.push(m.to_string());
@@ -1011,7 +981,7 @@ impl Interpreter {
         let mut max: f64 = f64::MIN;
         let mut min: f64 = f64::MAX;
         while !self.stack.is_empty() {
-            let a: f64 = self.pop_stack_float();
+            let a: f64 = self.pop_stack_f64();
 
             if a > max {max = a}
             if a < min {min = a}
@@ -1030,7 +1000,7 @@ impl Interpreter {
 
         let mut sum: f64 = 0.;
         let len: usize = self.stack.len();
-        for _ in 0..len {sum += self.pop_stack_float()}
+        for _ in 0..len {sum += self.pop_stack_f64()}
 
         self.stack.push((sum / len as f64).to_string());
     }
@@ -1186,7 +1156,7 @@ impl Interpreter {
     fn c_tip(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_f64();
 
         self.stack.push((a * self.config.tip_percentage).to_string());
     }
@@ -1194,7 +1164,7 @@ impl Interpreter {
     fn c_conv_const(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_f64();
 
         self.stack.push((a * self.config.conversion_constant).to_string());
     }
@@ -1202,7 +1172,7 @@ impl Interpreter {
     fn c_conv_const_inv(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        let a: f64 = self.pop_stack_float();
+        let a: f64 = self.pop_stack_f64();
 
         self.stack.push((a / self.config.conversion_constant).to_string());
     }
@@ -1323,8 +1293,8 @@ impl Interpreter {
     fn c_ifeq(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
 
-        let b = self.pop_stack_float();
-        let a = self.pop_stack_float();
+        let b = self.pop_stack_f64();
+        let a = self.pop_stack_f64();
 
         let mut if_ops: Vec<String> = vec![];
 
@@ -1412,9 +1382,9 @@ impl Interpreter {
     fn c_rgb(&mut self, op: &str) {
         Self::check_stack_error(self, 3, op);
 
-        let b: u8 = self.pop_stack_float_pos() as u8;
-        let g: u8 = self.pop_stack_float_pos() as u8;
-        let r: u8 = self.pop_stack_float_pos() as u8;
+        let b = self.pop_stack_u8();
+        let g = self.pop_stack_u8();
+        let r = self.pop_stack_u8();
 
         self.stack.push(self.output_rgb_dec(cor::Color{r, g, b, bold: false}));
         self.stack.push(self.output_rgb_hex_bg(cor::Color{r, g, b, bold: false}));
@@ -1423,9 +1393,9 @@ impl Interpreter {
     fn c_rgbh(&mut self, op: &str) {
         Self::check_stack_error(self, 3, op);
 
-        let b: u8 = self.pop_stack_u8_from_hex();
-        let g: u8 = self.pop_stack_u8_from_hex();
-        let r: u8 = self.pop_stack_u8_from_hex();
+        let b = self.pop_stack_u8_from_hex();
+        let g = self.pop_stack_u8_from_hex();
+        let r = self.pop_stack_u8_from_hex();
 
         self.stack.push(self.output_rgb_dec(cor::Color{r, g, b, bold: false}));
         self.stack.push(self.output_rgb_hex_bg(cor::Color{r, g, b, bold: false}));
@@ -1434,8 +1404,8 @@ impl Interpreter {
     fn c_rgb_avg(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
 
-        let b: String = self.pop_stack_string();
-        let a: String = self.pop_stack_string();
+        let b = self.pop_stack_string();
+        let a = self.pop_stack_string();
 
         if a.len() != 6 || b.len() != 6 {
             eprintln!(
@@ -1833,7 +1803,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == -0.2);
+        assert!(comp.pop_stack_f64() == -0.2);
     }
 
     #[test]
@@ -1857,7 +1827,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == comp.pop_stack_float());
+        assert!(comp.pop_stack_f64() == comp.pop_stack_f64());
 
         comp.ops.push(1.to_string());
         comp.ops.push((-2).to_string());
@@ -1878,7 +1848,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == comp.pop_stack_float());
+        assert!(comp.pop_stack_f64() == comp.pop_stack_f64());
     }
 
     #[test]
@@ -1902,7 +1872,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == 0.);
+        assert!(comp.pop_stack_f64() == 0.);
     }
 
     #[test]
@@ -1940,7 +1910,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == std::f64::consts::PI + std::f64::consts::E);
+        assert!(comp.pop_stack_f64() == std::f64::consts::PI + std::f64::consts::E);
     }
 
     #[test]
@@ -1961,14 +1931,14 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == 1.);
+        assert!(comp.pop_stack_f64() == 1.);
 
         comp.ops.push(20.to_string());
         comp.ops.push("!".to_string());
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == 2432902008176640000.);
+        assert!(comp.pop_stack_f64() == 2432902008176640000.);
 
         comp.ops.push(20.to_string());
         comp.ops.push("tng".to_string());
@@ -2006,7 +1976,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() <= 1.);
+        assert!(comp.pop_stack_f64() <= 1.);
     }
 
     #[test]
@@ -2019,7 +1989,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == 1.);
+        assert!(comp.pop_stack_f64() == 1.);
 
 
         comp.ops.push(1.to_string());
@@ -2028,7 +1998,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == 2.);
+        assert!(comp.pop_stack_f64() == 2.);
 
 
         comp.ops.push(1.to_string());
@@ -2039,7 +2009,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == 1.);
+        assert!(comp.pop_stack_f64() == 1.);
 
 
         comp.ops.push(1.to_string());
@@ -2050,7 +2020,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == 4.);
+        assert!(comp.pop_stack_f64() == 4.);
 
 
         comp.ops.push((-1).to_string());
@@ -2060,8 +2030,8 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == -1.);
-        assert!(comp.pop_stack_float() == -10.);
+        assert!(comp.pop_stack_f64() == -1.);
+        assert!(comp.pop_stack_f64() == -10.);
     }
 
     #[test]
@@ -2082,7 +2052,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == 100.);
+        assert!(comp.pop_stack_f64() == 100.);
     }
 
     #[test]
@@ -2095,7 +2065,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == 0.);
+        assert!(comp.pop_stack_f64() == 0.);
 
 
         comp.ops.push(1.to_string());
@@ -2106,7 +2076,7 @@ mod unit_test {
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_float() == 2.5);
+        assert!(comp.pop_stack_f64() == 2.5);
     }
 
     #[test]

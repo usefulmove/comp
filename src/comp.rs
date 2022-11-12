@@ -1509,7 +1509,8 @@ impl Interpreter {
         // is operator a user defined function?
         if !self.fns.is_empty() {
            for (i, f) in self.fns.iter().enumerate() {
-               if f.name == op { return Some(i) }
+               if f.name == op {return Some(i)} 
+               // return function index
            }
         }
         None
@@ -1519,6 +1520,7 @@ impl Interpreter {
         // is operator a user defined memory item?
         if self.mem.contains_key(op) {
             return Some(self.mem[op].clone());
+            // return stored memory value
         }
         None
     }

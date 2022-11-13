@@ -106,32 +106,34 @@ fn main() {
                 use rand::Rng;
 
                 let mut magic8:HashMap<u8, &str> = HashMap::new();
-                magic8.insert(0, "\"it is certain\"");
-                magic8.insert(1, "\"it is decidedly so\"");
-                magic8.insert(2, "\"without a doubt\"");
-                magic8.insert(3, "\"yes definitely\"");
-                magic8.insert(4, "\"you may rely on it\"");
-                magic8.insert(5, "\"as I see it, yes\"");
-                magic8.insert(6, "\"most likely\"");
-                magic8.insert(7, "\"outlook good\"");
-                magic8.insert(8, "\"yes\"");
-                magic8.insert(9, "\"signs point to yes\"");
-                magic8.insert(10, "\"reply hazy, try again\"");
-                magic8.insert(11, "\"ask again later\"");
-                magic8.insert(12, "\"better not tell you now\"");
-                magic8.insert(13, "\"cannot predict now\"");
-                magic8.insert(14, "\"concentrate and ask again\"");
-                magic8.insert(15, "\"don't count on it\"");
-                magic8.insert(16, "\"my reply is no\"");
-                magic8.insert(17, "\"my sources say no\"");
-                magic8.insert(18, "\"outlook not so good\"");
-                magic8.insert(19, "\"very doubtful\"");
+                magic8.insert(0, "it is certain");
+                magic8.insert(1, "it is decidedly so");
+                magic8.insert(2, "without a doubt");
+                magic8.insert(3, "yes definitely");
+                magic8.insert(4, "you may rely on it");
+                magic8.insert(5, "as I see it, yes");
+                magic8.insert(6, "most likely");
+                magic8.insert(7, "outlook good");
+                magic8.insert(8, "yes");
+                magic8.insert(9, "signs point to yes");
+                magic8.insert(10, "reply hazy, try again");
+                magic8.insert(11, "ask again later");
+                magic8.insert(12, "better not tell you now");
+                magic8.insert(13, "cannot predict now");
+                magic8.insert(14, "concentrate and ask again");
+                magic8.insert(15, "don't count on it");
+                magic8.insert(16, "my reply is no");
+                magic8.insert(17, "my sources say no");
+                magic8.insert(18, "outlook not so good");
+                magic8.insert(19, "very doubtful");
 
                 let mut rng = rand::thread_rng();
                 let id: u8 = rng.gen_range(0..20);
                 println!(
-                    "  {}",
+                    "  {}{}{}",
+                    theme.grey_mouse("\""),
                     theme.blue_smurf_bold(magic8.get(&id).unwrap()),
+                    theme.grey_mouse("\""),
                 );
                 return;
             }

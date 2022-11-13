@@ -16,4 +16,4 @@
 - `sgn`
 
 ## maintainability
-- 
+- add companion object for Command enum

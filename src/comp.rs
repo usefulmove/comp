@@ -1262,7 +1262,7 @@ impl Interpreter {
         while self.ops[0] != "]" {
             self.fns[fn_ind].fops.push(self.ops.remove(0));
         }
-        self.ops.remove(0); // remove "|"
+        self.ops.remove(0); // remove "]"
     }
 
     fn c_equal(&mut self, op: &str) {

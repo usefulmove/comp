@@ -11,9 +11,9 @@
 # exp
 
 ## features
-- `abs`
-- `swap`
-- `sgn`
+- ~~`abs`~~
+- ~~`swap`~~
+- ~~`sgn`~~
 
 ## maintainability
 - add companion object for Command enum

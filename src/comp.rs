@@ -66,9 +66,6 @@ pub struct Interpreter {
     pub config: Config,
     stack: Vec<String>,
     mem: HashMap<String, String>,
-    mem_a: f64,
-    mem_b: f64,
-    mem_c: f64,
     fns: Vec<Function>,
     cmdmap: HashMap<String, fn(&mut Interpreter, &str)>,
     theme: cor::Theme,
@@ -80,9 +77,6 @@ impl Interpreter {
         let mut cint = Self {
             stack: vec![],
             mem: HashMap::new(), // local interpreter memory
-            mem_a: 0., // local interpreter memory
-            mem_b: 0.,
-            mem_c: 0.,
             ops: vec![], // operations list
             fns: vec![], // user-defined functions
             cmdmap: HashMap::new(), // interpreter command map
@@ -117,7 +111,6 @@ impl Interpreter {
         self.build_native("dup", Self::c_dup); // duplicate
         self.build_native("swap", Self::c_swap); // swap x and y
         self.build_native("cls", Self::c_cls); // clear stack
-        self.build_native("clr", Self::c_cls); // clear stack
         self.build_native("roll", Self::c_roll); // roll stack
         self.build_native("rolln", Self::c_rolln); // roll stack (n)
         self.build_native("rot", Self::c_rot); // rotate stack (reverse direction from roll)
@@ -129,20 +122,12 @@ impl Interpreter {
 
         /* memory usage */
         self.build_native("store", Self::c_store); // store (pop value off stack and store in generic memory)
-        self.build_native("sa", Self::c_store_a); // store (pop value off stack and store)
-        self.build_native("_a", Self::c_push_a); // retrieve (push stored value onto the stack)
-        self.build_native("sb", Self::c_store_b); // store
-        self.build_native("_b", Self::c_push_b); // retrieve
-        self.build_native("sc", Self::c_store_c); // store
-        self.build_native("_c", Self::c_push_c); // retrieve
 
         /* maths operations */
         self.build_native("+", Self::c_add); // add
         self.build_native("+_", Self::c_sum); // sum (add all stack elements)
         self.build_native("sum", Self::c_sum);
-        self.build_native("++", Self::c_add_one); // add one
         self.build_native("-", Self::c_sub); // subtract
-        self.build_native("--", Self::c_sub_one); // subtract one
         self.build_native("x", Self::c_mult); // multiply
         self.build_native("x_", Self::c_product); // product (multiply all stack elements)
         self.build_native("prod", Self::c_product);
@@ -730,36 +715,6 @@ impl Interpreter {
         self.mem.insert(key, val);
     }
 
-    fn c_store_a(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        self.mem_a = self.pop_stack_f64();
-    }
-
-    fn c_store_b(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        self.mem_b = self.pop_stack_f64();
-    }
-
-    fn c_store_c(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        self.mem_c = self.pop_stack_f64();
-    }
-
-    fn c_push_a(&mut self, _op: &str) {
-        self.stack.push(self.mem_a.to_string());
-    }
-
-    fn c_push_b(&mut self, _op: &str) {
-        self.stack.push(self.mem_b.to_string());
-    }
-
-    fn c_push_c(&mut self, _op: &str) {
-        self.stack.push(self.mem_c.to_string());
-    }
-
     /* ---- math operations ------------------------------------------------- */
 
     fn c_add(&mut self, op: &str) {
@@ -772,16 +727,8 @@ impl Interpreter {
         }
     }
 
-    fn c_add_one(&mut self, op: &str) {
-        self.cmdgen_f64(1, op, |a, _| a + 1.);
-    }
-
     fn c_sub(&mut self, op: &str) {
         self.cmdgen_f64(2, op, |a, b| a - b);
-    }
-
-    fn c_sub_one(&mut self, op: &str) {
-        self.cmdgen_f64(1, op, |a, _| a - 1.);
     }
 
     fn c_mult(&mut self, op: &str) {
@@ -1509,7 +1456,7 @@ impl Interpreter {
         // is operator a user defined function?
         if !self.fns.is_empty() {
            for (i, f) in self.fns.iter().enumerate() {
-               if f.name == op {return Some(i)} 
+               if f.name == op {return Some(i)}
                // return function index
            }
         }
@@ -1761,13 +1708,6 @@ mod unit_test {
         comp.ops.push(3.to_string());
         comp.ops.push(4.to_string());
 
-        comp.ops.push("++".to_string());
-        comp.ops.push("++".to_string());
-        comp.ops.push("++".to_string());
-        comp.ops.push("--".to_string());
-        comp.ops.push("--".to_string());
-        comp.ops.push("--".to_string());
-
         comp.ops.push("rot".to_string());
         comp.ops.push("rot".to_string());
         comp.ops.push("roll".to_string());
@@ -1900,14 +1840,17 @@ mod unit_test {
         comp.ops.push("pi".to_string());
         comp.ops.push("e".to_string());
         comp.ops.push(0.to_string());
-        comp.ops.push("sb".to_string());
-        comp.ops.push("sa".to_string());
-        comp.ops.push("sc".to_string());
+        comp.ops.push("b".to_string());
+        comp.ops.push("store".to_string());
+        comp.ops.push("a".to_string());
+        comp.ops.push("store".to_string());
+        comp.ops.push("c".to_string());
+        comp.ops.push("store".to_string());
         comp.ops.push("cls".to_string());
-        comp.ops.push("_b".to_string());
-        comp.ops.push("_c".to_string());
+        comp.ops.push("b".to_string());
+        comp.ops.push("c".to_string());
         comp.ops.push("+".to_string());
-        comp.ops.push("_a".to_string());
+        comp.ops.push("a".to_string());
         comp.ops.push("+".to_string());
 
         comp.process_ops();

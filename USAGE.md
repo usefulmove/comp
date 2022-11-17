@@ -1,4 +1,4 @@
-o Usage Guide
+# Usage Guide
 
 - [stack manipulation](#commands-stack-manipulation)
 - [memory usage](#commands-memory-usage)
@@ -156,16 +156,8 @@ push a number range onto the stack by specifying the range start, end, and step 
 ---
 ## Commands (memory usage)
 
-### store and retrieve (basic, limited)
-Values can be stored in the locations `a b c` using the store command (e.g, `sa`) into memory for retrieval (e.g., `_a`) in subsequent operations. The stored value is removed from the stack when the store command is executed.
-```
-% comp 1 2 3 sa drop _a
-  1
-  3
-```
-
-### store and retrieve (general)
-Additional values can be stored using more generic text variables that are not associated with either built-in commands or user-defined functions using the `store` command as shown below.
+### store and retrieve
+ Values can be stored using generic variables that are not associated with either built-in commands or user-defined functions using the `store` command as shown below.
 ```
 % comp 1 2 3 saved_here store 4 5 6 cls saved_here
   3
@@ -191,22 +183,10 @@ Additional values can be stored using more generic text variables that are not a
   10
 ```
 
-### add one
-```
-% comp 1 ++
-  2
-```
-
 ### subtract
 ```
 % comp 3 4 -
   -1
-```
-
-### subtract one
-```
-% comp 1 --
-  0
 ```
 
 ### multiply

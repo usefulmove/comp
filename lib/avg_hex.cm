@@ -1,10 +1,10 @@
 ( avg_hex
     { save values from stack }
-    hex_dec sb
-    hex_dec sa
+    hex_dec b store
+    hex_dec a store
 
     { compute average }
-    _a _b + 2 /
+    a b + 2 /
     round
     dec_hex
 )

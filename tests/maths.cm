@@ -6,11 +6,11 @@
        10 ! 2 %
        5 +_ sqrt 2 ^ sqrt
    1 - 2 /
-1000 x sc
+1000 x c store
       pi cos acos 4 /
 tan atan sin asin 4 x
 
-          100 2 x_ _c swap
+          100 2 x_ c swap
 1 0 -9 chs chs proot drop
 swap drop
 
@@ -21,7 +21,7 @@ swap drop
 dup + 10 - 10 / e swap ^
 e 10 exp - 50 + 10 gcd 3
 mod e ln - 27.0 3 nroot
-- swap sa - round _a roll
+- swap a store - round a roll
 roll roll roll
 
 rot rot roll roll

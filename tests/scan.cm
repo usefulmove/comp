@@ -1,10 +1,10 @@
 { executing_scan.cm print }
 
 8 io [ + ] scan
-sa
+a store
 cls
 8 io [ + ] 0 fold
-_a -
+a -
 
 { on stack : 0 }
 

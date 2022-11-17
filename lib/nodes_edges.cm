@@ -15,7 +15,7 @@
         drop
         0
     else
-        --
+        1 -
         dup
         nodes_edges
         +

@@ -118,7 +118,7 @@ impl Interpreter {
         self.build_native("..", Self::c_range); // add range of numbers to stack (generic)
         self.build_native("io", Self::c_iota); // add range of integers to stack (limited - base 1)
         self.build_native("i0", Self::c_iota_zero); // add range of integers to stack (limited - base 0)
-        self.build_native("flip", Self::c_flip); // flip stack order
+        self.build_native("rev", Self::c_flip); // flip stack order
 
         /* memory usage */
         self.build_native("store", Self::c_store); // store (pop value off stack and store in generic memory)
@@ -2102,14 +2102,14 @@ mod unit_test {
         comp.ops.push(3.to_string());
         comp.ops.push(4.to_string());
         comp.ops.push(5.to_string());
-        comp.ops.push("flip".to_string());
+        comp.ops.push("rev".to_string());
 
         comp.process_ops();
 
         assert!(comp.pop_stack_i64() == 1);
 
 
-        comp.ops.push("flip".to_string());
+        comp.ops.push("rev".to_string());
 
         comp.process_ops();
 

@@ -1,7 +1,7 @@
 { toss two dice. take highest one. - what's the average over n tosses? }
 
 ( toss_die
-    6 rand ++
+    6 rand 1 +
 )
 
 ( double_high

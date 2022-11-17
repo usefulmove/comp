@@ -15,7 +15,7 @@
                 drop
                 1
             else
-                -- dup -- fib
+                1 - dup 1 - fib
                 swap fib +
             fi
         fi

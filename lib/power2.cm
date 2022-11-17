@@ -1,11 +1,11 @@
 ( power2
-    sa
+    a store
     { 2 ^ a }
-    _a 0
+    a 0
     ifeq
         1
     else
-        _a -- power2
+        a 1 - power2
         2 x
     fi
 )

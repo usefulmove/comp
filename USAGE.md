@@ -534,7 +534,7 @@ A version of a recursive factorial function that takes an integer argument is be
     drop
     1
   else
-    dup -- factorial x
+    dup 1 - factorial x
   fi
 )
 ```

@@ -1,3 +1,0 @@
-( triangle
-    -- io sum { remove sum to make functional without empty stack }
-)

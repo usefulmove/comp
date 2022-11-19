@@ -104,21 +104,21 @@ impl Interpreter {
     fn init(&mut self) {
 
         /* stack manipulation */
+        self.build_native("..", Self::c_range); // add range of numbers to stack (generic)
+        self.build_native("to", Self::c_range); // take element on top of stack
+        self.build_native("cls", Self::c_cls); // clear stack
         self.build_native("drop", Self::c_drop); // drop element on top of stack
         self.build_native("dropn", Self::c_dropn); // drop n elements
-        self.build_native("take", Self::c_take); // take element on top of stack
-        self.build_native("taken", Self::c_taken); // take n elements
         self.build_native("dup", Self::c_dup); // duplicate
-        self.build_native("swap", Self::c_swap); // swap x and y
-        self.build_native("cls", Self::c_cls); // clear stack
+        self.build_native("io", Self::c_iota); // add range of integers to stack (limited - base 1)
+        self.build_native("rev", Self::c_flip); // flip stack order
         self.build_native("roll", Self::c_roll); // roll stack
         self.build_native("rolln", Self::c_rolln); // roll stack (n)
         self.build_native("rot", Self::c_rot); // rotate stack (reverse direction from roll)
         self.build_native("rotn", Self::c_rotn); // rotate stack (n)
-        self.build_native("..", Self::c_range); // add range of numbers to stack (generic)
-        self.build_native("io", Self::c_iota); // add range of integers to stack (limited - base 1)
-        self.build_native("i0", Self::c_iota_zero); // add range of integers to stack (limited - base 0)
-        self.build_native("rev", Self::c_flip); // flip stack order
+        self.build_native("swap", Self::c_swap); // swap x and y
+        self.build_native("take", Self::c_take); // take element on top of stack
+        self.build_native("taken", Self::c_taken); // take n elements
 
         /* memory usage */
         self.build_native("store", Self::c_store); // store (pop value off stack and store in generic memory)
@@ -677,25 +677,6 @@ impl Interpreter {
         }
     }
 
-    fn c_iota_zero(&mut self, op: &str) {
-        Self::check_stack_error(self, 1, op);
-
-        let a: i64 = self.pop_stack_i64();
-
-        if a < 0 {
-            eprintln!(
-                "  {}: [{}] operation called with invalid argument - argument cannot be negative",
-                self.theme.red_bold("error"),
-                self.theme.blue_coffee_bold(op),
-            );
-            exit(exitcode::USAGE);
-        }
-
-        for i in 0..=a as i64 {
-            self.stack.push(i.to_string());
-        }
-    }
-
     fn c_flip(&mut self, _op: &str) {
         self.stack = self.stack
             .clone()
@@ -1127,7 +1108,8 @@ impl Interpreter {
     fn c_ascii(&mut self, _op: &str) {
         (0..=255)
             .map(|a| (a, a as u8 as char))
-            .filter(|(_val, c)| c.is_alphanumeric() || c.is_ascii_punctuation())
+            //.filter(|(_val, c)| c.is_alphanumeric() || c.is_ascii_punctuation())
+            .filter(|(_val, c)| !c.is_control())
             .map(|(val, c)| {
                 format!(
                     "'{}'  {}",

@@ -781,11 +781,11 @@ impl Interpreter {
             }
             _ => {
                 self.stack
-                    .push((-1.*b + disc.sqrt() / (2.*a)).to_string()); // r_1 real
+                    .push(((-1.*b + disc.sqrt()) / (2.*a)).to_string()); // r_1 real
                 self.stack
                     .push(0.0.to_string()); // r_1 imag
                 self.stack
-                    .push((-1.*b - disc.sqrt() / (2.*a)).to_string()); // r_2 real
+                    .push(((-1.*b - disc.sqrt()) / (2.*a)).to_string()); // r_2 real
                 self.stack
                     .push(0.0.to_string()); // r_2 imag
             }

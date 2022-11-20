@@ -135,7 +135,6 @@ impl Interpreter {
         self.build_native("chs", Self::c_chs); // change sign
         self.build_native("abs", Self::c_abs); // absolute value
         self.build_native("round", Self::c_round); // round
-        self.build_native("int", Self::c_round);
         self.build_native("floor", Self::c_floor); // floor
         self.build_native("ceil", Self::c_ceiling); // ceiling
         self.build_native("pos", Self::c_pos);
@@ -144,9 +143,7 @@ impl Interpreter {
         self.build_native("nroot", Self::c_nroot); // nth root
         self.build_native("proot", Self::c_proot); // find principal roots
         self.build_native("^", Self::c_exp); // exponentiation
-        self.build_native("exp", Self::c_exp);
         self.build_native("%", Self::c_mod); // modulus
-        self.build_native("mod", Self::c_mod);
         self.build_native("!", Self::c_fact); // factorial
         self.build_native("gcd", Self::c_gcd); // greatest common divisor
         self.build_native("pi", Self::c_pi); // pi
@@ -165,7 +162,6 @@ impl Interpreter {
         self.build_native("log10", Self::c_log10);
         self.build_native("logn", Self::c_logn); // logarithm (base n)
         self.build_native("ln", Self::c_ln); // natural logarithm
-        self.build_native("loge", Self::c_ln);
         self.build_native("rand", Self::c_rand); // random number
         self.build_native("max", Self::c_max); // maximum
         self.build_native("max_all", Self::c_max_all); // maximum (all)

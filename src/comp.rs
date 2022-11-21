@@ -256,7 +256,7 @@ impl Interpreter {
 
         /* user memory */
         if let Some(value) = self.is_user_memory(op) {
-            // user-defined memory - push value onto stack
+            // user-defined memory - add value to memory
             self.ops.insert(0, value);
             return;
         }

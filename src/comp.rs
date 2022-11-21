@@ -196,9 +196,7 @@ impl Interpreter {
         self.build_native("bin_hex", Self::c_binhex); // binary to hexadecimal
         self.build_native("hex_bin", Self::c_hexbin); // hexadecimal to binary
         self.build_native("c_f", Self::c_celfah); // Celsius to Fahrenheit
-        self.build_native("C_F", Self::c_celfah);
         self.build_native("f_c", Self::c_fahcel); // Fahrenheit to Celsius
-        self.build_native("F_C", Self::c_fahcel);
         self.build_native("mi_km", Self::c_mikm); // miles to kilometers
         self.build_native("km_mi", Self::c_kmmi); // kilometers to miles
         self.build_native("ft_m", Self::c_ftm); // feet to meters
@@ -960,7 +958,7 @@ impl Interpreter {
             }
         });
 
-        divisors.sort();
+        divisors.sort_unstable();
 
         divisors.into_iter()
             .for_each(|n| self.stack.push(n.to_string()));
@@ -1033,11 +1031,11 @@ impl Interpreter {
     }
 
     fn c_ftm(&mut self, op: &str) {
-        self.cmdgen_f64(1, op, |a, _| a / 3.281);
+        self.cmdgen_f64(1, op, |a, _| a * 0.3048);
     }
 
     fn c_mft(&mut self, op: &str) {
-        self.cmdgen_f64(1, op, |a, _| a * 3.281);
+        self.cmdgen_f64(1, op, |a, _| a / 0.3048);
     }
 
     fn c_hexrgb(&mut self, op: &str) {

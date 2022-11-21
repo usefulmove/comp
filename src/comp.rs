@@ -1100,18 +1100,21 @@ impl Interpreter {
     }
 
     fn c_ascii(&mut self, _op: &str) {
-        (0..=255)
-            .map(|a| (a, a as u8 as char))
-            //.filter(|(_val, c)| c.is_alphanumeric() || c.is_ascii_punctuation())
-            .filter(|(_val, c)| !c.is_control())
-            .map(|(val, c)| {
-                format!(
-                    "'{}'  {}",
-                    self.theme.blue_coffee_bold(&c.to_string()),
-                    self.theme.grey_mouse(&val.to_string()),
-                )
-             })
-            .for_each(|s| println!("  {}", s));
+        let out: String =
+            (0..=255)
+                .map(|a| (a, a as u8 as char))
+                .filter(|(_val, c)| !c.is_control())
+                .map(|(val, c)| {
+                    format!(
+                        "('{}' {})",
+                        self.theme.blue_coffee_bold(&c.to_string()),
+                        self.theme.grey_mouse(&val.to_string()),
+                    )
+                }) // "('é'  233")
+                .fold(String::new(), |acc, s| acc + &s + "   ");
+            //.for_each(|s| println!("  {}", s));
+
+        println!("{}", out);
     }
 
     /* ---- binary operations ----------------------------------------------- */

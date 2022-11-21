@@ -863,7 +863,7 @@ impl Interpreter {
     }
 
     fn c_rand(&mut self, op: &str) {
-        let f = |a, _| (a as f64 * rand::random::<f64>()) as u64;
+        let f = |a, _| (a as f64 * rand::random::<f64>() + 1.) as u64;
         self.cmdgen_u64(1, op, f);
     }
 

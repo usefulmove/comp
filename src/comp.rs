@@ -1112,7 +1112,6 @@ impl Interpreter {
                     )
                 }) // "('é'  233")
                 .fold(String::new(), |acc, s| acc + &s + "   ");
-            //.for_each(|s| println!("  {}", s));
 
         println!("{}", out);
     }

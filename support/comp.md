@@ -1,7 +1,7 @@
 # comp
 
 ## features
-- (?) range (`to` and `until`) commands (Scala)
+- (none)
 
 ## maintainability
--
+- (none)

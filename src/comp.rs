@@ -121,7 +121,8 @@ impl Interpreter {
         self.build_native("taken", Self::c_taken); // take n elements
 
         /* memory usage */
-        self.build_native("store", Self::c_store); // store (pop value off stack and store in generic memory)
+        self.build_native("assign", Self::c_assign); // store (pop value off stack and store in generic memory)
+        self.build_native("store", Self::c_assign);
 
         /* maths operations */
         self.build_native("+", Self::c_add); // add
@@ -250,7 +251,7 @@ impl Interpreter {
             // user-defined function - copy user function ops (fops) into main ops
             for fop in self.fns[index].fops.iter().rev() {
                 self.ops.insert(0, fop.clone());
-            }
+             }
             return;
         }
 
@@ -681,7 +682,7 @@ impl Interpreter {
 
     /* ---- memory usage ---------------------------------------------------- */
 
-    fn c_store(&mut self, op: &str) {
+    fn c_assign(&mut self, op: &str) {
         Self::check_stack_error(self, 2, op);
 
         let key = self.pop_stack_string();

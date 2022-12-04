@@ -130,10 +130,10 @@ push an integer range (starting at 0) onto the stack
   3
 ```
 
-### range (..)
+### range (to)
 push a number range onto the stack by specifying the range start, end, and step size
 ```
-% comp 0 10 2 ..
+% comp 0 10 2 to
   0
   2
   4
@@ -142,7 +142,7 @@ push a number range onto the stack by specifying the range start, end, and step 
   10
 ```
 ```
-% comp 20 -10 5 ..
+% comp 20 -10 5 to
   20
   15
   10
@@ -577,11 +577,11 @@ use an anonymous function to collapse the values on the stack into a single valu
   14400
 ```
 
-As another example, `fold` be used with the `..` range operator to calculate the sum of the reciprocals of powers of 2 as shown below.
+As another example, `fold` be used with the `to range operator to calculate the sum of the reciprocals of powers of 2 as shown below.
 <img src="https://raw.githubusercontent.com/usefulmove/comp/main/assets/series-of-reciprocals-of-powers-of-2.jpg" align="center"/>
 <br>
 ```
-% comp 0 100 1 .. [ 2 swap ^ inv + ] 0 fold
+% comp 0 100 1 to [ 2 swap ^ inv + ] 0 fold
   2
 ```
 

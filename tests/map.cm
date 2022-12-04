@@ -4,7 +4,7 @@
     [ dup x ] map
 )
 
-1 10 1 ..
+1 10 1 to
 square_all
 
 [ 1 - ] map

@@ -6,7 +6,7 @@
     [ drop 1 + ] 0 fold
 )
 
-3 60 3 .. count
+3 60 3 to count
 
 ( on stack : 20 )
 

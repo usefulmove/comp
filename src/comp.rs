@@ -104,8 +104,7 @@ impl Interpreter {
     fn init(&mut self) {
 
         /* stack manipulation */
-        self.build_native("..", Self::c_range); // add range of numbers to stack (generic)
-        self.build_native("to", Self::c_range); // take element on top of stack
+        self.build_native("to", Self::c_range); // add range of numbers to stack (generic)
         self.build_native("cls", Self::c_cls); // clear stack
         self.build_native("drop", Self::c_drop); // drop element on top of stack
         self.build_native("dropn", Self::c_dropn); // drop n elements

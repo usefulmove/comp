@@ -1895,11 +1895,11 @@ mod unit_test {
         comp.ops.push("rand".to_string());
         comp.ops.push(2.to_string());
         comp.ops.push("rand".to_string());
-        comp.ops.push("max".to_string());
+        comp.ops.push("max_all".to_string());
 
         comp.process_ops();
 
-        assert!(comp.pop_stack_f64() <= 1.);
+        assert!(comp.pop_stack_f64() <= 2.);
     }
 
     #[test]

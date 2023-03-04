@@ -1,7 +1,7 @@
 use colored::ColoredString;
-use std::{env, fs};
 use std::path::Path;
 use std::process::exit;
+use std::{env, fs};
 
 mod comp;
 mod mona;
@@ -34,7 +34,6 @@ const RELEASE_STATE: &str = "c";
 
 */
 
-
 fn main() {
     // enable or disable backtrace on error
     env::set_var("RUST_BACKTRACE", "0");
@@ -47,7 +46,6 @@ fn main() {
 
     // get command arguments
     let args: Vec<String> = env::args().collect();
-
 
     if args.len() > 1 {
         match args[1].as_str() {
@@ -65,10 +63,7 @@ fn main() {
             "--file" | "-f" => {
                 // read operations list input from file
                 if args.get(2).is_none() {
-                    eprintln!(
-                        "  {}: no file path provided",
-                        theme.red_bold("error"),
-                    );
+                    eprintln!("  {}: no file path provided", theme.red_bold("error"),);
                     exit(exitcode::NOINPUT);
                 }
                 // read file contents
@@ -87,14 +82,14 @@ fn main() {
                     }
                 };
                 // create operations list vector from file contents - split elements
-                let operations = file_contents
-                    .split_whitespace()
-                    .map(|x| x.to_string());
+                let operations = file_contents.split_whitespace().map(|x| x.to_string());
 
                 interpreter.ops.extend(operations);
 
                 // add additional operations from command line
-                if args.get(3).is_some() {interpreter.ops.extend((args[3..]).to_vec())}
+                if args.get(3).is_some() {
+                    interpreter.ops.extend((args[3..]).to_vec())
+                }
             }
             "--help" | "help" => {
                 // display command usage information
@@ -102,10 +97,10 @@ fn main() {
                 return;
             }
             "magic8" => {
-                use std::collections::HashMap;
                 use rand::Rng;
+                use std::collections::HashMap;
 
-                let mut magic8:HashMap<u8, &str> = HashMap::new();
+                let mut magic8: HashMap<u8, &str> = HashMap::new();
                 magic8.insert(0, "it is certain");
                 magic8.insert(1, "it is decidedly so");
                 magic8.insert(2, "without a doubt");
@@ -151,7 +146,6 @@ fn main() {
                 // read operations list input from command line arguments
                 interpreter.ops = (args[1..]).to_vec();
             }
-
         };
     }
 
@@ -159,7 +153,9 @@ fn main() {
     interpreter.load_config();
 
     // load stack
-    if interpreter.config.stack_persistence {interpreter.load_stack()}
+    if interpreter.config.stack_persistence {
+        interpreter.load_stack()
+    }
 
     // process operations list ( ops list was loaded into the interpreter
     // in the match statement above based on command line arguments )
@@ -173,7 +169,9 @@ fn main() {
     );
 
     // save stack
-    if interpreter.config.stack_persistence {interpreter.save_stack()}
+    if interpreter.config.stack_persistence {
+        interpreter.save_stack()
+    }
 
     exit(exitcode::OK);
 } // main
@@ -184,7 +182,8 @@ struct BoxedClosure<'a> {
 
 impl<'a> BoxedClosure<'a> {
     fn new<F>(closure: F) -> Self
-    where F: Fn(&str) -> ColoredString + 'a,
+    where
+        F: Fn(&str) -> ColoredString + 'a,
     {
         BoxedClosure {
             f: Box::new(closure),
@@ -197,10 +196,7 @@ fn show_help() {
     let theme = cor::Theme::new();
 
     println!();
-    println!(
-        "{}",
-        theme.cream_bold("COMP")
-    );
+    println!("{}", theme.cream_bold("COMP"));
     println!(
         "    {} {} {} {}",
         theme.grey_mouse("comp"),
@@ -209,10 +205,7 @@ fn show_help() {
         theme.grey_mouse(env!("CARGO_PKG_VERSION")),
     );
     println!();
-    println!(
-        "{}",
-        theme.cream_bold("USAGE")
-    );
+    println!("{}", theme.cream_bold("USAGE"));
     println!(
         "    {} {} {}",
         theme.grey_mouse("comp"),
@@ -226,10 +219,7 @@ fn show_help() {
         theme.blue_coffee_bold("<path>"),
     );
     println!();
-    println!(
-        "{}",
-        theme.cream_bold("OPTIONS")
-    );
+    println!("{}", theme.cream_bold("OPTIONS"));
     println!(
         "        {}      show version",
         theme.yellow_canary_bold("--version"),
@@ -251,10 +241,7 @@ fn show_help() {
         theme.yellow_canary_bold("--help"),
     );
     println!();
-    println!(
-        "{}",
-        theme.cream_bold("DESCRIPTION")
-    );
+    println!("{}", theme.cream_bold("DESCRIPTION"));
     println!(
         "The comp interpreter takes a {} sequence of (postfix) operations as \
     command line arguments or a {} argument that specifies the path to a file \
@@ -275,10 +262,7 @@ fn show_help() {
         theme.grey_mouse("https://github.com/usefulmove/comp#readme"),
     );
     println!();
-    println!(
-        "{}",
-        theme.cream_bold("EXAMPLES")
-    );
+    println!("{}", theme.cream_bold("EXAMPLES"));
     println!(
         "    {} {} {}                  {}",
         theme.grey_mouse("comp"),
@@ -322,19 +306,11 @@ fn output_stack(stack: Vec<String>, annotate: bool, monochrome: bool) {
     // color theme
     let theme = cor::Theme::new();
 
-    let mut color_stack_top_closure = BoxedClosure::new(
-        |x| theme.blue_coffee_bold(x)
-    );
-    let mut color_stack_closure = BoxedClosure::new(
-        |x| theme.blue_smurf(x)
-    );
-    let mut color_annotate_closure = BoxedClosure::new(
-        |x| theme.color_blank(x)
-    );
+    let mut color_stack_top_closure = BoxedClosure::new(|x| theme.blue_coffee_bold(x));
+    let mut color_stack_closure = BoxedClosure::new(|x| theme.blue_smurf(x));
+    let mut color_annotate_closure = BoxedClosure::new(|x| theme.color_blank(x));
     if annotate {
-        color_annotate_closure = BoxedClosure::new(
-            |x| theme.charcoal_cream(x)
-        );
+        color_annotate_closure = BoxedClosure::new(|x| theme.charcoal_cream(x));
     }
     if monochrome {
         color_stack_top_closure = BoxedClosure::new(|x| theme.white_bold(x));
@@ -342,25 +318,26 @@ fn output_stack(stack: Vec<String>, annotate: bool, monochrome: bool) {
     }
 
     let len = stack.len();
-    stack.iter()
-        .enumerate()
-        .for_each(|(i, ent)| {
-            let level = len - i;
+    stack.iter().enumerate().for_each(|(i, ent)| {
+        let level = len - i;
 
-            match level {
-                1 => { println!("{}  {}", // top element
-                        (color_annotate_closure.f)(annotate_level(level)),
-                        (color_stack_top_closure.f)(ent),
-                    )
-                }
-                _ => { println!("{}  {}", // all other elements
-                        (color_annotate_closure.f)(annotate_level(level)),
-                        (color_stack_closure.f)(ent),
-                    )
-                }
+        match level {
+            1 => {
+                println!(
+                    "{}  {}", // top element
+                    (color_annotate_closure.f)(annotate_level(level)),
+                    (color_stack_top_closure.f)(ent),
+                )
             }
-        });
-
+            _ => {
+                println!(
+                    "{}  {}", // all other elements
+                    (color_annotate_closure.f)(annotate_level(level)),
+                    (color_stack_closure.f)(ent),
+                )
+            }
+        }
+    });
 }
 
 fn annotate_level(level: usize) -> &'static str {

@@ -1,9 +1,9 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::{fmt, fs};
 use std::num::{ParseFloatError, ParseIntError};
 use std::path::Path;
 use std::process::exit;
+use std::{fmt, fs};
 
 static PERSISTENCE_FILE: &str = ".comp";
 static CONFIG_FILE: &str = "comp.toml";
@@ -15,18 +15,19 @@ pub struct Function {
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
-    pub show_stack_level: bool, // annotate stack level
+    pub show_stack_level: bool,   // annotate stack level
     pub conversion_constant: f64, // configurable constant for a_b conversion
-    pub monochrome: bool, // set output to monochrome
-    pub tip_percentage: f64, // tip conversion constant
-    pub show_warnings: bool, // show warnings
-    pub stack_persistence: bool, // stack persistence
+    pub monochrome: bool,         // set output to monochrome
+    pub tip_percentage: f64,      // tip conversion constant
+    pub show_warnings: bool,      // show warnings
+    pub stack_persistence: bool,  // stack persistence
 }
 
 impl Config {
     // constructor
     fn new() -> Self {
-        Self { // config defaults
+        Self {
+            // config defaults
             show_stack_level: true,
             conversion_constant: 1.,
             monochrome: false,
@@ -76,11 +77,11 @@ impl Interpreter {
     pub fn new() -> Self {
         let mut cint = Self {
             stack: vec![],
-            mem: HashMap::new(), // local interpreter memory
-            ops: vec![], // operations list
-            fns: vec![], // user-defined functions
-            cmdmap: HashMap::new(), // interpreter command map
-            config: Config::new(), // configuration object
+            mem: HashMap::new(),      // local interpreter memory
+            ops: vec![],              // operations list
+            fns: vec![],              // user-defined functions
+            cmdmap: HashMap::new(),   // interpreter command map
+            config: Config::new(),    // configuration object
             theme: cor::Theme::new(), // output format theme
         };
         cint.init();
@@ -102,7 +103,6 @@ impl Interpreter {
     }
 
     fn init(&mut self) {
-
         /* stack manipulation */
         self.build_native("to", Self::c_range); // add range of numbers to stack (generic)
         self.build_native("cls", Self::c_cls); // clear stack
@@ -235,7 +235,6 @@ impl Interpreter {
         /* output */
         self.build_native("peek", Self::c_peek); // peek at top of stack
         self.build_native("print", Self::c_print); // print element on top of stack
-
     }
 
     fn evaluate_op(&mut self, op: &str) {
@@ -251,7 +250,7 @@ impl Interpreter {
             // user-defined function - copy user function ops (fops) into main ops
             for fop in self.fns[index].fops.iter().rev() {
                 self.ops.insert(0, fop.clone());
-             }
+            }
             return;
         }
 
@@ -299,8 +298,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                   self.theme.red_bold("error"),
-                   self.theme.blue_coffee_bold(&element),
+                    self.theme.red_bold("error"),
+                    self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -316,8 +315,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                   self.theme.red_bold("error"),
-                   self.theme.blue_coffee_bold(&element),
+                    self.theme.red_bold("error"),
+                    self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -333,8 +332,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                   self.theme.red_bold("error"),
-                   self.theme.blue_coffee_bold(&element),
+                    self.theme.red_bold("error"),
+                    self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -350,8 +349,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (u)",
-                   self.theme.red_bold("error"),
-                   self.theme.blue_coffee_bold(&element),
+                    self.theme.red_bold("error"),
+                    self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -368,8 +367,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
-                   self.theme.red_bold("error"),
-                   self.theme.blue_coffee_bold(&element),
+                    self.theme.red_bold("error"),
+                    self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -386,8 +385,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_h)",
-                   self.theme.red_bold("error"),
-                   self.theme.blue_coffee_bold(&element),
+                    self.theme.red_bold("error"),
+                    self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -404,8 +403,8 @@ impl Interpreter {
                 eprintln!(
                     "  {}: unknown expression [{}] is not a recognized operation \
                     or valid value (i_b)",
-                   self.theme.red_bold("error"),
-                   self.theme.blue_coffee_bold(&element),
+                    self.theme.red_bold("error"),
+                    self.theme.blue_coffee_bold(&element),
                 );
                 exit(exitcode::USAGE);
             }
@@ -443,8 +442,8 @@ impl Interpreter {
             eprintln!(
                 "  {}: [{}] operation called without at least {min_depth} \
                 element(s) on stack",
-               self.theme.red_bold("error"),
-               self.theme.blue_coffee_bold(command),
+                self.theme.red_bold("error"),
+                self.theme.blue_coffee_bold(command),
             );
             exit(exitcode::USAGE);
         }
@@ -495,8 +494,8 @@ impl Interpreter {
             return;
         }
 
-       // stack empty
-       if self.config.show_warnings {
+        // stack empty
+        if self.config.show_warnings {
             eprintln!(
                 "  {}: [{}] operation called on empty stack",
                 self.theme.yellow_canary_bold("warning"),
@@ -579,16 +578,13 @@ impl Interpreter {
             return;
         }
 
-        self.stack = self.stack[(len-take_count)..len].to_vec();
+        self.stack = self.stack[(len - take_count)..len].to_vec();
     }
 
     fn c_dup(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        self.stack.push(
-            self.stack[self.stack.len()-1]
-                .clone()
-        ); // remove last
+        self.stack.push(self.stack[self.stack.len() - 1].clone()); // remove last
     }
 
     fn c_swap(&mut self, op: &str) {
@@ -634,7 +630,7 @@ impl Interpreter {
     fn c_range(&mut self, op: &str) {
         Self::check_stack_error(self, 3, op);
 
-        let step: f64  = self.pop_stack_f64();
+        let step: f64 = self.pop_stack_f64();
         let end: f64 = self.pop_stack_f64();
         let start: f64 = self.pop_stack_f64();
 
@@ -650,7 +646,6 @@ impl Interpreter {
                 value -= step.abs();
             }
         }
-
     }
 
     fn c_iota(&mut self, op: &str) {
@@ -673,11 +668,7 @@ impl Interpreter {
     }
 
     fn c_flip(&mut self, _op: &str) {
-        self.stack = self.stack
-            .clone()
-            .into_iter()
-            .rev()
-            .collect();
+        self.stack = self.stack.clone().into_iter().rev().collect();
     }
 
     /* ---- memory usage ---------------------------------------------------- */
@@ -712,7 +703,9 @@ impl Interpreter {
     }
 
     fn c_product(&mut self, op: &str) {
-        while self.stack.len() > 1 {self.c_mult(op)}
+        while self.stack.len() > 1 {
+            self.c_mult(op)
+        }
     }
 
     fn c_div(&mut self, op: &str) {
@@ -740,7 +733,7 @@ impl Interpreter {
     }
 
     fn c_pos(&mut self, op: &str) {
-        self.cmdgen_f64(1, op, |a, _| if a < 0. {0.} else {a});
+        self.cmdgen_f64(1, op, |a, _| if a < 0. { 0. } else { a });
     }
 
     fn c_inv(&mut self, op: &str) {
@@ -762,27 +755,20 @@ impl Interpreter {
         let b: f64 = self.pop_stack_f64();
         let a: f64 = self.pop_stack_f64();
 
-        let disc = b*b - 4.*a*c; // discriminant
+        let disc = b * b - 4. * a * c; // discriminant
         match disc < 0. {
             true => {
+                self.stack.push((-b / (2. * a)).to_string()); // r_1 real
+                self.stack.push(((-disc).sqrt() / (2. * a)).to_string()); // r_1 imag
+                self.stack.push((-b / (2. * a)).to_string()); // r_2 real
                 self.stack
-                    .push((-b / (2.*a)).to_string()); // r_1 real
-                self.stack
-                    .push(((-disc).sqrt() / (2.*a)).to_string()); // r_1 imag
-                self.stack
-                    .push((-b / (2.*a)).to_string()); // r_2 real
-                self.stack
-                    .push((-1. * (-disc).sqrt() / (2.*a)).to_string()); // r_2 imag
+                    .push((-1. * (-disc).sqrt() / (2. * a)).to_string()); // r_2 imag
             }
             _ => {
-                self.stack
-                    .push(((-b + disc.sqrt()) / (2.*a)).to_string()); // r_1 real
-                self.stack
-                    .push(0.0.to_string()); // r_1 imag
-                self.stack
-                    .push(((-b - disc.sqrt()) / (2.*a)).to_string()); // r_2 real
-                self.stack
-                    .push(0.0.to_string()); // r_2 imag
+                self.stack.push(((-b + disc.sqrt()) / (2. * a)).to_string()); // r_1 real
+                self.stack.push(0.0.to_string()); // r_1 imag
+                self.stack.push(((-b - disc.sqrt()) / (2. * a)).to_string()); // r_2 real
+                self.stack.push(0.0.to_string()); // r_2 imag
             }
         }
     }
@@ -906,8 +892,12 @@ impl Interpreter {
         while !self.stack.is_empty() {
             let a: f64 = self.pop_stack_f64();
 
-            if a > max {max = a}
-            if a < min {min = a}
+            if a > max {
+                max = a
+            }
+            if a < min {
+                min = a
+            }
         }
 
         self.stack.push((min).to_string());
@@ -923,7 +913,9 @@ impl Interpreter {
 
         let mut sum: f64 = 0.;
         let len: usize = self.stack.len();
-        for _ in 0..len {sum += self.pop_stack_f64()}
+        for _ in 0..len {
+            sum += self.pop_stack_f64()
+        }
 
         self.stack.push((sum / len as f64).to_string());
     }
@@ -955,13 +947,16 @@ impl Interpreter {
         (2..=sq).for_each(|n| {
             if a % n == 0 {
                 divisors.push(n);
-                if n != sq { divisors.push(a/n) }
+                if n != sq {
+                    divisors.push(a / n)
+                }
             }
         });
 
         divisors.sort_unstable();
 
-        divisors.into_iter()
+        divisors
+            .into_iter()
             .for_each(|n| self.stack.push(n.to_string()));
     }
 
@@ -1047,8 +1042,8 @@ impl Interpreter {
         if she.len() < 5 {
             eprintln!(
                 "  {}: argument too short [{}] is not of sufficient length",
-               self.theme.red_bold("error"),
-               self.theme.blue_coffee_bold(&she),
+                self.theme.red_bold("error"),
+                self.theme.blue_coffee_bold(&she),
             );
             exit(exitcode::USAGE);
         }
@@ -1081,7 +1076,8 @@ impl Interpreter {
 
         let a: f64 = self.pop_stack_f64();
 
-        self.stack.push((a * self.config.tip_percentage).to_string());
+        self.stack
+            .push((a * self.config.tip_percentage).to_string());
     }
 
     fn c_conv_const(&mut self, op: &str) {
@@ -1089,7 +1085,8 @@ impl Interpreter {
 
         let a: f64 = self.pop_stack_f64();
 
-        self.stack.push((a * self.config.conversion_constant).to_string());
+        self.stack
+            .push((a * self.config.conversion_constant).to_string());
     }
 
     fn c_conv_const_inv(&mut self, op: &str) {
@@ -1097,22 +1094,22 @@ impl Interpreter {
 
         let a: f64 = self.pop_stack_f64();
 
-        self.stack.push((a / self.config.conversion_constant).to_string());
+        self.stack
+            .push((a / self.config.conversion_constant).to_string());
     }
 
     fn c_ascii(&mut self, _op: &str) {
-        let out: String =
-            (0..=255)
-                .map(|a| (a, a as u8 as char))
-                .filter(|(_val, c)| !c.is_control())
-                .map(|(val, c)| {
-                    format!(
-                        "('{}' {})",
-                        self.theme.blue_coffee_bold(&c.to_string()),
-                        self.theme.grey_mouse(&val.to_string()),
-                    )
-                }) // "('é'  233")
-                .fold(String::new(), |acc, s| acc + &s + "   ");
+        let out: String = (0..=255)
+            .map(|a| (a, a as u8 as char))
+            .filter(|(_val, c)| !c.is_control())
+            .map(|(val, c)| {
+                format!(
+                    "('{}' {})",
+                    self.theme.blue_coffee_bold(&c.to_string()),
+                    self.theme.grey_mouse(&val.to_string()),
+                )
+            }) // "('é'  233")
+            .fold(String::new(), |acc, s| acc + &s + "   ");
 
         println!("{}", out);
     }
@@ -1154,12 +1151,10 @@ impl Interpreter {
         let fn_name: String = self.ops.remove(0);
 
         // create new function instance and assign function name
-        self.fns.push(
-            Function {
-                name: fn_name,
-                fops: vec![],
-            }
-        );
+        self.fns.push(Function {
+            name: fn_name,
+            fops: vec![],
+        });
         let fn_ind: usize = self.fns.len() - 1; // index of new function in function vector
 
         // build function operations list
@@ -1176,12 +1171,10 @@ impl Interpreter {
         }
 
         // create new anonymous function instance
-        self.fns.push(
-            Function {
-                name: String::from("_"),
-                fops: vec![],
-            }
-        );
+        self.fns.push(Function {
+            name: String::from("_"),
+            fops: vec![],
+        });
         let fn_ind: usize = self.fns.len() - 1; // index of new function in function vector
 
         // build anonymous function operations list
@@ -1192,27 +1185,27 @@ impl Interpreter {
     }
 
     fn c_equal(&mut self, op: &str) {
-        let f = |a, b| if a == b {1.} else {0.};
+        let f = |a, b| if a == b { 1. } else { 0. };
         self.cmdgen_f64(2, op, f);
     }
 
     fn c_lessthan(&mut self, op: &str) {
-        let f = |a, b| if a < b {1.} else {0.};
+        let f = |a, b| if a < b { 1. } else { 0. };
         self.cmdgen_f64(2, op, f);
     }
 
     fn c_lessthanorequal(&mut self, op: &str) {
-        let f = |a, b| if a <= b {1.} else {0.};
+        let f = |a, b| if a <= b { 1. } else { 0. };
         self.cmdgen_f64(2, op, f);
     }
 
     fn c_greaterthan(&mut self, op: &str) {
-        let f = |a, b| if a > b {1.} else {0.};
+        let f = |a, b| if a > b { 1. } else { 0. };
         self.cmdgen_f64(2, op, f);
     }
 
     fn c_greaterthanorequal(&mut self, op: &str) {
-        let f = |a, b| if a >= b {1.} else {0.};
+        let f = |a, b| if a >= b { 1. } else { 0. };
         self.cmdgen_f64(2, op, f);
     }
 
@@ -1312,8 +1305,18 @@ impl Interpreter {
         let g = self.pop_stack_u8();
         let r = self.pop_stack_u8();
 
-        self.stack.push(self.output_rgb_dec(cor::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex_bg(cor::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_dec(cor::Color {
+            r,
+            g,
+            b,
+            bold: false,
+        }));
+        self.stack.push(self.output_rgb_hex_bg(cor::Color {
+            r,
+            g,
+            b,
+            bold: false,
+        }));
     }
 
     fn c_rgbh(&mut self, op: &str) {
@@ -1323,8 +1326,18 @@ impl Interpreter {
         let g = self.pop_stack_u8_from_hex();
         let r = self.pop_stack_u8_from_hex();
 
-        self.stack.push(self.output_rgb_dec(cor::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex_bg(cor::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_dec(cor::Color {
+            r,
+            g,
+            b,
+            bold: false,
+        }));
+        self.stack.push(self.output_rgb_hex_bg(cor::Color {
+            r,
+            g,
+            b,
+            bold: false,
+        }));
     }
 
     fn c_rgb_avg(&mut self, op: &str) {
@@ -1336,8 +1349,8 @@ impl Interpreter {
         if a.len() != 6 || b.len() != 6 {
             eprintln!(
                 "  {}: argument is incorrect for [{}] command",
-               self.theme.red_bold("error"),
-               self.theme.blue_coffee_bold(op),
+                self.theme.red_bold("error"),
+                self.theme.blue_coffee_bold(op),
             );
             exit(exitcode::USAGE);
         }
@@ -1350,12 +1363,25 @@ impl Interpreter {
         let b_g = &b[2..4];
         let b_b = &b[4..6];
 
-        let r = ((u16::from_str_radix(a_r, 16).unwrap() + u16::from_str_radix(b_r, 16).unwrap()) / 2) as u8;
-        let g = ((u16::from_str_radix(a_g, 16).unwrap() + u16::from_str_radix(b_g, 16).unwrap()) / 2) as u8;
-        let b = ((u16::from_str_radix(a_b, 16).unwrap() + u16::from_str_radix(b_b, 16).unwrap()) / 2) as u8;
+        let r = ((u16::from_str_radix(a_r, 16).unwrap() + u16::from_str_radix(b_r, 16).unwrap())
+            / 2) as u8;
+        let g = ((u16::from_str_radix(a_g, 16).unwrap() + u16::from_str_radix(b_g, 16).unwrap())
+            / 2) as u8;
+        let b = ((u16::from_str_radix(a_b, 16).unwrap() + u16::from_str_radix(b_b, 16).unwrap())
+            / 2) as u8;
 
-        self.stack.push(self.output_rgb_dec(cor::Color{r, g, b, bold: false}));
-        self.stack.push(self.output_rgb_hex_bg(cor::Color{r, g, b, bold: false}));
+        self.stack.push(self.output_rgb_dec(cor::Color {
+            r,
+            g,
+            b,
+            bold: false,
+        }));
+        self.stack.push(self.output_rgb_hex_bg(cor::Color {
+            r,
+            g,
+            b,
+            bold: false,
+        }));
     }
 
     fn c_rgb_mult(&mut self, op: &str) {
@@ -1380,8 +1406,18 @@ impl Interpreter {
         let gnew = bound(g as f64 * factor);
         let bnew = bound(b as f64 * factor);
 
-        self.stack.push(self.output_rgb_dec(cor::Color{r: rnew, g: gnew, b: bnew, bold: false}));
-        self.stack.push(self.output_rgb_hex_bg(cor::Color{r: rnew, g: gnew, b: bnew, bold: false}));
+        self.stack.push(self.output_rgb_dec(cor::Color {
+            r: rnew,
+            g: gnew,
+            b: bnew,
+            bold: false,
+        }));
+        self.stack.push(self.output_rgb_hex_bg(cor::Color {
+            r: rnew,
+            g: gnew,
+            b: bnew,
+            bold: false,
+        }));
     }
 
     /* ---- higher-order functions ------------------------------------------ */
@@ -1427,10 +1463,7 @@ impl Interpreter {
 
     fn c_print_config(&mut self, _op: &str) {
         // print current configuration
-        println!(
-            "{}",
-            self.config,
-        )
+        println!("{}", self.config,)
     }
 
     /* ---- output ---------------------------------------------------------- */
@@ -1438,10 +1471,7 @@ impl Interpreter {
     fn c_peek(&mut self, op: &str) {
         Self::check_stack_error(self, 1, op);
 
-        println!(
-            "  {}",
-            self.theme.white(&self.stack[self.stack.len() - 1]),
-        );
+        println!("  {}", self.theme.white(&self.stack[self.stack.len() - 1]),);
     }
 
     fn c_print(&mut self, op: &str) {
@@ -1449,10 +1479,7 @@ impl Interpreter {
 
         let out = self.pop_stack_string();
 
-        println!(
-            "  {}",
-            self.theme.grey_mouse(&out),
-        );
+        println!("  {}", self.theme.grey_mouse(&out),);
     }
 
     // support functions -------------------------------------------------------
@@ -1460,10 +1487,12 @@ impl Interpreter {
     fn is_user_function(&self, op: &str) -> Option<usize> {
         // is operator a user defined function?
         if !self.fns.is_empty() {
-           for (i, f) in self.fns.iter().enumerate() {
-               if f.name == op {return Some(i)}
-               // return function index
-           }
+            for (i, f) in self.fns.iter().enumerate() {
+                if f.name == op {
+                    return Some(i);
+                }
+                // return function index
+            }
         }
         None
     }
@@ -1525,12 +1554,12 @@ impl Interpreter {
 
     // load configuration file from home folder
     pub fn load_config(&mut self) {
-    /*
-        println!(
-            "  reading configuration file [{}]",
-            self.theme.blue_coffee_bold(filename),
-        );
-    */
+        /*
+            println!(
+                "  reading configuration file [{}]",
+                self.theme.blue_coffee_bold(filename),
+            );
+        */
 
         // read file contents
         let filename: String = CONFIG_FILE.to_string();
@@ -1634,10 +1663,7 @@ impl Interpreter {
     fn output_rgb_dec(&self, color: cor::Color) -> String {
         format!(
             "{} {} {}",
-            self.theme.color_rgb(
-                &color.r.to_string(),
-                &color,
-            ),
+            self.theme.color_rgb(&color.r.to_string(), &color,),
             self.theme.color_rgb(
                 &color.g.to_string(),
                 &cor::Color {
@@ -1647,10 +1673,7 @@ impl Interpreter {
                     bold: color.bold,
                 },
             ),
-            self.theme.color_rgb(
-                &color.b.to_string(),
-                &color,
-            ),
+            self.theme.color_rgb(&color.b.to_string(), &color,),
         )
     }
 
@@ -1681,9 +1704,7 @@ impl Interpreter {
     pub fn get_stack(&self) -> Vec<String> {
         self.stack.clone()
     }
-
 }
-
 
 /* unit tests --------------------------------------------------------------- */
 
@@ -1941,7 +1962,6 @@ mod unit_test {
 
         assert!(comp.pop_stack_f64() == 1.);
 
-
         comp.ops.push(1.to_string());
         comp.ops.push(2.to_string());
         comp.ops.push("max".to_string());
@@ -1949,7 +1969,6 @@ mod unit_test {
         comp.process_ops();
 
         assert!(comp.pop_stack_f64() == 2.);
-
 
         comp.ops.push(1.to_string());
         comp.ops.push(2.to_string());
@@ -1961,7 +1980,6 @@ mod unit_test {
 
         assert!(comp.pop_stack_f64() == 1.);
 
-
         comp.ops.push(1.to_string());
         comp.ops.push(2.to_string());
         comp.ops.push(3.to_string());
@@ -1971,7 +1989,6 @@ mod unit_test {
         comp.process_ops();
 
         assert!(comp.pop_stack_f64() == 4.);
-
 
         comp.ops.push((-1).to_string());
         comp.ops.push((-5).to_string());
@@ -2017,7 +2034,6 @@ mod unit_test {
 
         assert!(comp.pop_stack_f64() == 0.);
 
-
         comp.ops.push(1.to_string());
         comp.ops.push(2.to_string());
         comp.ops.push(3.to_string());
@@ -2046,7 +2062,6 @@ mod unit_test {
         assert!(comp.pop_stack_u64() == 10);
         assert!(comp.pop_stack_u64() == 10);
 
-
         comp.ops.push((-99).to_string());
         comp.ops.push("sgn".to_string());
         comp.ops.push(109.to_string());
@@ -2058,7 +2073,6 @@ mod unit_test {
         comp.process_ops();
 
         assert!(comp.pop_stack_i64() == 0);
-
 
         comp.ops.push("cls".to_string());
         comp.ops.push(28.to_string());
@@ -2086,7 +2100,6 @@ mod unit_test {
 
         assert!(comp.pop_stack_i64() == 3);
 
-
         comp.ops.push("cls".to_string());
         comp.ops.push(1.to_string());
         comp.ops.push(2.to_string());
@@ -2100,7 +2113,6 @@ mod unit_test {
 
         assert!(comp.pop_stack_i64() == 2);
 
-
         comp.ops.push("cls".to_string());
         comp.ops.push(1.to_string());
         comp.ops.push(2.to_string());
@@ -2113,13 +2125,11 @@ mod unit_test {
 
         assert!(comp.pop_stack_i64() == 1);
 
-
         comp.ops.push("rev".to_string());
 
         comp.process_ops();
 
         assert!(comp.pop_stack_i64() == 5);
-
     }
 
     #[test]
@@ -2134,7 +2144,6 @@ mod unit_test {
 
         assert!(comp.pop_stack_u64() == 2);
 
-
         comp.ops.push(10.to_string());
         comp.ops.push(6.to_string());
         comp.ops.push("nand".to_string());
@@ -2144,7 +2153,6 @@ mod unit_test {
 
         assert!(comp.pop_stack_u64() == 2);
 
-
         comp.ops.push(10.to_string());
         comp.ops.push(6.to_string());
         comp.ops.push("or".to_string());
@@ -2152,7 +2160,6 @@ mod unit_test {
         comp.process_ops();
 
         assert!(comp.pop_stack_u64() == 14);
-
 
         comp.ops.push(10.to_string());
         comp.ops.push(6.to_string());
@@ -2163,7 +2170,6 @@ mod unit_test {
 
         assert!(comp.pop_stack_u64() == 14);
 
-
         comp.ops.push(10.to_string());
         comp.ops.push(6.to_string());
         comp.ops.push("xor".to_string());
@@ -2172,14 +2178,11 @@ mod unit_test {
 
         assert!(comp.pop_stack_u64() == 12);
 
-
         comp.ops.push(341.to_string());
         comp.ops.push("ones".to_string());
 
         comp.process_ops();
 
         assert!(comp.pop_stack_u64() == 5);
-
     }
-
 } // unit_test

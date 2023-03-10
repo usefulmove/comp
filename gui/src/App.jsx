@@ -5,10 +5,15 @@ import "./App.css";
 function App() {
   const [stack, setStack] = useState([]);
 
+  const onEnter = (exp) => {
+    console.log("executing expression: ", exp);
+    setStack(exp.split(" "));
+  };
+
   return (
     <Grid container padding={4} spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h5" className="title">
+        <Typography variant="h4" className="title" sx={{ color: "#000000" }}>
           Corbin
         </Typography>
       </Grid>
@@ -18,14 +23,14 @@ function App() {
           label="expression"
           variant="outlined"
           color="primary"
+          placeholder="Enter an expression"
           sx={{
-            input: { color: "white", fontFamily: "Monospace" },
+            input: { color: "#c8c8c8", fontFamily: "Monospace" },
             width: "100%",
           }}
           focused
           onKeyDown={(e) => {
-            console.log(e);
-            e.key == "Enter" ? setStack(e.target.value.split(" ")) : {};
+            e.key == "Enter" ? onEnter(e.target.value) : {};
           }}
         />
       </Grid>
@@ -41,6 +46,9 @@ function App() {
             {entry}
           </Typography>
         ))}
+        <Typography variant="body2" color="#000000">
+          ( ver. 0.0.1 )
+        </Typography>
       </Grid>
     </Grid>
   );

@@ -1,6 +1,7 @@
+import "./App.css";
 import { useState } from "react";
 import { Grid, Typography, TextField, Button } from "@mui/material";
-import "./App.css";
+import * as R from "../node_modules/ramda/";
 
 function App() {
   const [stack, setStack] = useState([]);

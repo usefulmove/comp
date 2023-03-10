@@ -9,7 +9,7 @@ function App() {
 
   const onEnter = (exp) => {
     console.log("executing expression: ", exp);
-    setStack(exp.split(" "));
+    setStack([exp.split(" ").reduce((sum, op) => sum + parseFloat(op), 0)]);
     setInput("");
   };
 

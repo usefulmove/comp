@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Grid, Typography, TextField, Button } from "@mui/material";
 import "./App.css";
 
 function App() {
+  const [stack, setStack] = useState([]);
+
   return (
     <Grid container padding={4} spacing={3}>
       <Grid item xs={12}>
@@ -20,29 +23,24 @@ function App() {
             width: "100%",
           }}
           focused
+          onKeyDown={(e) => {
+            console.log(e);
+            e.key == "Enter" ? setStack(e.target.value.split(" ")) : {};
+          }}
         />
       </Grid>
       <Grid item xs={12}>
-        <Typography
-          variant="h6"
-          color="#ffffff"
-          sx={{ fontFamily: "Monospace" }}
-          align="left"
-        >
-          0.6180340
-        </Typography>
-        <Typography
-          variant="h6"
-          color="#0080ff"
-          sx={{ fontFamily: "Monospace" }}
-          align="left"
-        >
-          1.6180340
-          <br />
-          1.2345678
-          <br />
-          512
-        </Typography>
+        {[...stack].reverse().map((entry, i) => (
+          <Typography
+            variant="h6"
+            color={i === 0 ? "#ffffff" : "#0080ff"}
+            sx={{ fontFamily: "Monospace" }}
+            align="left"
+            key={i}
+          >
+            {entry}
+          </Typography>
+        ))}
       </Grid>
     </Grid>
   );

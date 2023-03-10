@@ -5,10 +5,12 @@ import * as R from "../node_modules/ramda/";
 
 function App() {
   const [stack, setStack] = useState([]);
+  const [input, setInput] = useState("");
 
   const onEnter = (exp) => {
     console.log("executing expression: ", exp);
     setStack(exp.split(" "));
+    setInput("");
   };
 
   return (
@@ -30,6 +32,8 @@ function App() {
             width: "100%",
           }}
           focused
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             e.key == "Enter" ? onEnter(e.target.value) : {};
           }}
@@ -39,7 +43,7 @@ function App() {
         {[...stack].reverse().map((entry, i) => (
           <Typography
             variant="h6"
-            color={i === 0 ? "#ffffff" : "#0080ff"}
+            color={i === 0 ? "#fff670" : "#0080ff"}
             sx={{ fontFamily: "Monospace" }}
             align="left"
             key={i}

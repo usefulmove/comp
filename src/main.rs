@@ -159,7 +159,7 @@ fn main() {
 
     // process operations list ( ops list was loaded into the interpreter
     // in the match statement above based on command line arguments )
-    interpreter.process_ops();
+    interpreter.evaluate_ops();
 
     /* display stack to user */
     output_stack(

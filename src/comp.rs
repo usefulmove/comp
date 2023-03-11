@@ -90,7 +90,7 @@ impl Interpreter {
     }
 
     // process operations method
-    pub fn process_ops(&mut self) {
+    pub fn evaluate_ops(&mut self) {
         while !self.ops.is_empty() {
             let op: &str = &self.ops.remove(0); // pop first operation
             self.evaluate_op(op);
@@ -1720,7 +1720,7 @@ mod unit_test {
         comp.ops.push("io".to_string());
         comp.ops.push("prod".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_i64() == 40320);
     }
@@ -1769,7 +1769,7 @@ mod unit_test {
         comp.ops.push("round".to_string());
         comp.ops.push("+".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == -0.2);
     }
@@ -1793,7 +1793,7 @@ mod unit_test {
         comp.ops.push((32. * 2.).to_string());
         comp.ops.push("nroot".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == comp.pop_stack_f64());
 
@@ -1814,7 +1814,7 @@ mod unit_test {
         comp.ops.push("/".to_string());
         comp.ops.push("pi".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == comp.pop_stack_f64());
     }
@@ -1838,7 +1838,7 @@ mod unit_test {
         comp.ops.push(4.to_string());
         comp.ops.push("cls".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == 0.);
     }
@@ -1879,7 +1879,7 @@ mod unit_test {
         comp.ops.push("a".to_string());
         comp.ops.push("+".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == std::f64::consts::PI + std::f64::consts::E);
     }
@@ -1900,21 +1900,21 @@ mod unit_test {
         comp.ops.push("gcd".to_string());
         comp.ops.push("prod".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == 1.);
 
         comp.ops.push(20.to_string());
         comp.ops.push("!".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == 2432902008176640000.);
 
         comp.ops.push(20.to_string());
         comp.ops.push("tng".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_i64() == 210);
     }
@@ -1945,7 +1945,7 @@ mod unit_test {
         comp.ops.push("rand".to_string());
         comp.ops.push("max_all".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() <= 2.);
     }
@@ -1958,7 +1958,7 @@ mod unit_test {
         comp.ops.push(2.to_string());
         comp.ops.push("min".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == 1.);
 
@@ -1966,7 +1966,7 @@ mod unit_test {
         comp.ops.push(2.to_string());
         comp.ops.push("max".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == 2.);
 
@@ -1976,7 +1976,7 @@ mod unit_test {
         comp.ops.push(4.to_string());
         comp.ops.push("min_all".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == 1.);
 
@@ -1986,7 +1986,7 @@ mod unit_test {
         comp.ops.push(4.to_string());
         comp.ops.push("max_all".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == 4.);
 
@@ -1995,7 +1995,7 @@ mod unit_test {
         comp.ops.push((-10).to_string());
         comp.ops.push("minmax".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == -1.);
         assert!(comp.pop_stack_f64() == -10.);
@@ -2017,7 +2017,7 @@ mod unit_test {
         comp.ops.push("ft_m".to_string());
         comp.ops.push("m_ft".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == 100.);
     }
@@ -2030,7 +2030,7 @@ mod unit_test {
         comp.ops.push(2.to_string());
         comp.ops.push("avg".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == 0.);
 
@@ -2040,7 +2040,7 @@ mod unit_test {
         comp.ops.push(4.to_string());
         comp.ops.push("avg_all".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_f64() == 2.5);
     }
@@ -2056,7 +2056,7 @@ mod unit_test {
         comp.ops.push(10.1.to_string());
         comp.ops.push("ceil".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_u64() == 11);
         assert!(comp.pop_stack_u64() == 10);
@@ -2070,7 +2070,7 @@ mod unit_test {
         comp.ops.push("sgn".to_string());
         comp.ops.push("sum".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_i64() == 0);
 
@@ -2079,7 +2079,7 @@ mod unit_test {
         comp.ops.push("divs".to_string());
         comp.ops.push("sum".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_i64() == 28);
     }
@@ -2096,7 +2096,7 @@ mod unit_test {
         comp.ops.push(3.to_string());
         comp.ops.push("rotn".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_i64() == 3);
 
@@ -2109,7 +2109,7 @@ mod unit_test {
         comp.ops.push(3.to_string());
         comp.ops.push("rolln".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_i64() == 2);
 
@@ -2121,13 +2121,13 @@ mod unit_test {
         comp.ops.push(5.to_string());
         comp.ops.push("rev".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_i64() == 1);
 
         comp.ops.push("rev".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_i64() == 5);
     }
@@ -2140,7 +2140,7 @@ mod unit_test {
         comp.ops.push(6.to_string());
         comp.ops.push("and".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_u64() == 2);
 
@@ -2149,7 +2149,7 @@ mod unit_test {
         comp.ops.push("nand".to_string());
         comp.ops.push("not".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_u64() == 2);
 
@@ -2157,7 +2157,7 @@ mod unit_test {
         comp.ops.push(6.to_string());
         comp.ops.push("or".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_u64() == 14);
 
@@ -2166,7 +2166,7 @@ mod unit_test {
         comp.ops.push("nor".to_string());
         comp.ops.push("not".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_u64() == 14);
 
@@ -2174,14 +2174,14 @@ mod unit_test {
         comp.ops.push(6.to_string());
         comp.ops.push("xor".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_u64() == 12);
 
         comp.ops.push(341.to_string());
         comp.ops.push("ones".to_string());
 
-        comp.process_ops();
+        comp.evaluate_ops();
 
         assert!(comp.pop_stack_u64() == 5);
     }

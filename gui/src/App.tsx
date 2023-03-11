@@ -3,18 +3,19 @@ import { useState } from "react";
 import { Grid, Typography, TextField, Button } from "@mui/material";
 import * as R from "../node_modules/ramda/";
 
-const evaluateExpr: string = (expr: string[], stck: string[]): string[] => {
-  console.log({expr, stck});
+const evaluateOps: string = (ops: string[], stck: string[]): string[] => {
+  console.log({ ops, stck });
 
-  const out_st: string[] = R.reduce((interimStack: string[], op: string): string => {
+  const out_st: string[] = R.reduce(
+    (interimStack: string[], op: string): string => {
       let rtn: string[] = [];
 
       switch (op) {
         case "+": {
           const [a, b, ...rest] = interimStack;
-          console.log({a, b});
+          console.log({ a, b });
           rtn = [(parseFloat(a) + parseFloat(b)).toString(), ...rest];
-          console.log({rtn});
+          console.log({ rtn });
           break;
         }
         case "-": {
@@ -32,18 +33,23 @@ const evaluateExpr: string = (expr: string[], stck: string[]): string[] => {
           rtn = [(parseFloat(a) / parseFloat(b)).toString(), ...rest];
           break;
         }
+        case "dup": {
+          rtn = [interimStack.at(0), ...interimStack];
+          break;
+        }
         case "sqrt": {
           const [a, ...rest] = interimStack;
           rtn = [Math.sqrt(parseFloat(a)).toString(), ...rest];
           break;
         }
-        default: rtn = [...interimStack, op]; // add to stack
+        default:
+          rtn = [...interimStack, op]; // add to stack
       }
 
       return rtn;
     },
     stck,
-    expr,
+    ops
   );
 
   return out_st;
@@ -53,9 +59,12 @@ function App() {
   const [stack, setStack] = useState([]);
   const [input, setInput] = useState("");
 
+  const exprToOps = (expr: string): string[] =>
+    expr.split(" ").filter((op: string) => op.length > 0);
+
   const onEnter = (expr) => {
     console.log("evaluating expression: ", expr);
-    setStack(evaluateExpr(expr.split(' '), []));
+    setStack(evaluateOps(exprToOps(expr), []));
     setInput("");
   };
 

@@ -143,7 +143,7 @@ fn main() {
                 return;
             }
             _ => {
-                // read operations list input from command line arguments
+                // read expression (operations list) input from command line arguments
                 interpreter.ops = (args[1..]).to_vec();
             }
         };

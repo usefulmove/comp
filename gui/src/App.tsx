@@ -3,11 +3,11 @@ import { useState } from "react";
 import { Grid, Typography, TextField, Button } from "@mui/material";
 import * as R from "../node_modules/ramda/";
 
-const evaluateOps: string = (ops: string[], stck: string[]): string[] => {
+const evaluateOps = (ops: string[], stck: string[]): string[] => {
   console.log({ ops, stck });
 
   const out_st: string[] = R.reduce(
-    (interimStack: string[], op: string): string => {
+    (interimStack: string[], op: string): string[] => {
       let rtn: string[] = [];
 
       switch (op) {

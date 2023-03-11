@@ -56,16 +56,16 @@ const evaluateOps = (ops: string[], stck: string[]): string[] => {
 };
 
 function App() {
-  const [stack, setStack] = useState([]);
-  const [input, setInput] = useState("");
+  const [outputStack, setOutputStack] = useState([]);
+  const [inputField, setInputField] = useState("");
 
   const exprToOps = (expr: string): string[] =>
     expr.split(" ").filter((op: string) => op.length > 0);
 
   const onEnter = (expr) => {
     console.log("evaluating expression: ", expr);
-    setStack(evaluateOps(exprToOps(expr), []));
-    setInput("");
+    setOutputStack(evaluateOps(exprToOps(expr), [])); // evaluate expression and set output stack to result
+    setInputField(""); // clear input field
   };
 
   return (
@@ -87,15 +87,15 @@ function App() {
             width: "100%",
           }}
           focused
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={inputField}
+          onChange={(e) => setInputField(e.target.value)}
           onKeyDown={(e) => {
             e.key == "Enter" ? onEnter(e.target.value) : {};
           }}
         />
       </Grid>
       <Grid item xs={12}>
-        {[...stack].reverse().map((entry, i) => (
+        {[...outputStack].reverse().map((entry, i) => (
           <Typography
             variant="h6"
             color={i === 0 ? "#00c0ff" : "#0080ff"}

@@ -12,34 +12,44 @@ const evaluateOps = (ops: string[], stck: string[]): string[] => {
 
       switch (op) {
         case "+": {
-          const [a, b, ...rest] = interimStack;
-          console.log({ a, b });
-          rtn = [(parseFloat(a) + parseFloat(b)).toString(), ...rest];
-          console.log({ rtn });
+          const b = interimStack.at(-1);
+          const a = interimStack.at(-2);
+          const rest = interimStack.slice(0, -2);
+          rtn = [...rest, (parseFloat(a) + parseFloat(b)).toString()];
           break;
         }
         case "-": {
-          const [a, b, ...rest] = interimStack;
+          const b = interimStack.at(-1);
+          const a = interimStack.at(-2);
+          const rest = interimStack.slice(0, -2);
           rtn = [(parseFloat(a) - parseFloat(b)).toString(), ...rest];
           break;
         }
         case "x": {
-          const [a, b, ...rest] = interimStack;
+          const b = interimStack.at(-1);
+          const a = interimStack.at(-2);
+          const rest = interimStack.slice(0, -2);
           rtn = [(parseFloat(a) * parseFloat(b)).toString(), ...rest];
           break;
         }
         case "/": {
-          const [a, b, ...rest] = interimStack;
+          const b = interimStack.at(-1);
+          const a = interimStack.at(-2);
+          const rest = interimStack.slice(0, -2);
           rtn = [(parseFloat(a) / parseFloat(b)).toString(), ...rest];
           break;
         }
         case "dup": {
-          rtn = [interimStack.at(0), ...interimStack];
+          rtn = [...interimStack, interimStack.at(-1)];
           break;
         }
         case "sqrt": {
-          const [a, ...rest] = interimStack;
-          rtn = [Math.sqrt(parseFloat(a)).toString(), ...rest];
+          console.log({interimStack});
+          const a = interimStack.at(-1);
+          const rest = interimStack.slice(0, -1);
+          console.log({a, rest});
+          rtn = [...rest, Math.sqrt(parseFloat(a)).toString()];
+          console.log({rtn});
           break;
         }
         default:

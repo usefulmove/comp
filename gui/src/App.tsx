@@ -2,65 +2,17 @@ import "./App.css";
 import { useState } from "react";
 import { Grid, Typography, TextField, Button } from "@mui/material";
 import * as R from "../node_modules/ramda/";
+import { Commands } from "./commands";
 
 type Stack = string[];
-
+const Cmd = new Commands();
 
 const evaluateOps = (ops: Stack, stck: Stack): Stack => {
   console.log({ ops, stck });
 
   const out_st: Stack = R.reduce(
-    (interimStack: Stack, op: string): Stack => {
-      let rtn: Stack = [];
-
-      switch (op) {
-        case "+": {
-          const b = interimStack.at(-1);
-          const a = interimStack.at(-2);
-          const rest = interimStack.slice(0, -2);
-          rtn = [...rest, (parseFloat(a) + parseFloat(b)).toString()];
-          break;
-        }
-        case "-": {
-          const b = interimStack.at(-1);
-          const a = interimStack.at(-2);
-          const rest = interimStack.slice(0, -2);
-          rtn = [(parseFloat(a) - parseFloat(b)).toString(), ...rest];
-          break;
-        }
-        case "x": {
-          const b = interimStack.at(-1);
-          const a = interimStack.at(-2);
-          const rest = interimStack.slice(0, -2);
-          rtn = [(parseFloat(a) * parseFloat(b)).toString(), ...rest];
-          break;
-        }
-        case "/": {
-          const b = interimStack.at(-1);
-          const a = interimStack.at(-2);
-          const rest = interimStack.slice(0, -2);
-          rtn = [(parseFloat(a) / parseFloat(b)).toString(), ...rest];
-          break;
-        }
-        case "dup": {
-          rtn = [...interimStack, interimStack.at(-1)];
-          break;
-        }
-        case "sqrt": {
-          console.log({interimStack});
-          const a = interimStack.at(-1);
-          const rest = interimStack.slice(0, -1);
-          console.log({a, rest});
-          rtn = [...rest, Math.sqrt(parseFloat(a)).toString()];
-          console.log({rtn});
-          break;
-        }
-        default:
-          rtn = [...interimStack, op]; // add to stack
-      }
-
-      return rtn;
-    },
+    (interimStack: Stack, op: string): Stack => 
+      Cmd.cmds.has(op) ? Cmd.cmds.get(op)(interimStack) : [...interimStack, op],
     stck,
     ops
   );
@@ -120,7 +72,7 @@ function App() {
           </Typography>
         ))}
         <Typography variant="body2" color="#000000">
-          ( ver. 0.0.1 )
+          ( ver. 0.0.2 )
         </Typography>
       </Grid>
     </Grid>

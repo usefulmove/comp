@@ -5,33 +5,41 @@ import * as R from "../node_modules/ramda/";
 import { Commands } from "./commands";
 
 type Stack = string[];
+type Ops = string[];
+type Op = string;
+type Expr = string;
 const C = new Commands();
 
-const evaluateOps = (ops: Stack, stck: Stack): Stack => {
-  console.log({ ops, stck });
+const evaluateOps =
+  (ops: Ops) =>
+  (stck: Stack): Stack => {
+    console.log({ ops, stck });
 
-  const out_st: Stack = R.reduce(
-    (interimStack: Stack, op: string): Stack =>
-      C.cmds.has(op) ? C.cmds.get(op)(interimStack) : [...interimStack, op],
-    stck,
-    ops
-  );
+    const out_st: Stack = R.reduce(
+      (interimStack: Stack, op: Op): Stack =>
+        C.cmds.has(op) ? C.cmds.get(op)(interimStack) : [...interimStack, op],
+      stck,
+      ops
+    );
 
-  return out_st;
-};
+    return out_st;
+  };
 
 function App() {
   const [outputStack, setOutputStack] = useState([]);
   const [inputField, setInputField] = useState("");
 
-  const exprToOps = (expr: string): Stack =>
-    expr.split(" ").filter((op: string) => op.length > 0);
+  const exprToOps = (expr: Expr): Ops =>
+    expr.split(" ").filter((op: Op) => op.length > 0);
 
-  const onEnter = (expr) => {
+  const onEnter = (expr: Expr) => {
     console.log("evaluating expression: ", expr);
-    setOutputStack(evaluateOps(exprToOps(expr), outputStack)); // evaluate expression and set output stack to result
-    setInputField(""); // clear input field
+    const ops = exprToOps(expr);
+    setOutputStack(evaluateOps(ops)(outputStack)); // evaluate expression and set output stack to result
+    clearInput(); // clear input field
   };
+
+  const clearInput = () => setInputField("");
 
   return (
     <Grid container padding={4} spacing={3}>
@@ -48,7 +56,7 @@ function App() {
           color="primary"
           placeholder="Enter an expression"
           sx={{
-            input: { color: "#c8c8c8", fontFamily: "Monospace" },
+            input: { color: "#fffdd0", fontFamily: "Monospace" },
             width: "100%",
           }}
           focused

@@ -5,14 +5,14 @@ import * as R from "../node_modules/ramda/";
 import { Commands } from "./commands";
 
 type Stack = string[];
-const Cmd = new Commands();
+const C = new Commands();
 
 const evaluateOps = (ops: Stack, stck: Stack): Stack => {
   console.log({ ops, stck });
 
   const out_st: Stack = R.reduce(
     (interimStack: Stack, op: string): Stack => 
-      Cmd.cmds.has(op) ? Cmd.cmds.get(op)(interimStack) : [...interimStack, op],
+      C.cmds.has(op) ? C.cmds.get(op)(interimStack) : [...interimStack, op],
     stck,
     ops
   );

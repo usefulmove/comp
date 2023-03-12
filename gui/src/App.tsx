@@ -11,7 +11,7 @@ const evaluateOps = (ops: Stack, stck: Stack): Stack => {
   console.log({ ops, stck });
 
   const out_st: Stack = R.reduce(
-    (interimStack: Stack, op: string): Stack => 
+    (interimStack: Stack, op: string): Stack =>
       C.cmds.has(op) ? C.cmds.get(op)(interimStack) : [...interimStack, op],
     stck,
     ops
@@ -36,7 +36,7 @@ function App() {
   return (
     <Grid container padding={4} spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" className="title" sx={{ color: "#000000" }}>
+        <Typography variant="h4" className="title" sx={{ color: "#c8c8c8" }}>
           Corbin
         </Typography>
       </Grid>
@@ -61,16 +61,27 @@ function App() {
       </Grid>
       <Grid item xs={12}>
         {[...outputStack].reverse().map((entry, i) => (
-          <Typography
-            variant="h6"
-            color={i === 0 ? "#00c0ff" : "#0080ff"}
-            sx={{ fontFamily: "Monospace" }}
-            align="left"
-            key={i}
-          >
-            {entry}
-          </Typography>
+          <div key={i}>
+            <Typography
+              component="span"
+              color={"#000000"}
+              align="left"
+              sx={{ fontSize: "12px", fontFamily: "Monospace" }}
+            >
+              {i + 1}.{"  "}
+            </Typography>
+            <Typography
+              variant="h6"
+              component="span"
+              color={i === 0 ? "#00b0ff" : "#0080ff"}
+              sx={{ fontFamily: "Monospace" }}
+              align="left"
+            >
+              {entry}
+            </Typography>
+          </div>
         ))}
+        <br />
         <Typography variant="body2" color="#000000">
           ( ver. 0.0.2 )
         </Typography>

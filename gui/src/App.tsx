@@ -73,7 +73,7 @@ function App() {
             <Typography
               variant="h6"
               component="span"
-              color={i === 0 ? "#fff670" : "#0080ff"}
+              color={i === 0 ? "#fffdd0" : "#0080ff"}
               sx={{ fontFamily: "Monospace" }}
               align="left"
             >

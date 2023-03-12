@@ -3,12 +3,15 @@ import { useState } from "react";
 import { Grid, Typography, TextField, Button } from "@mui/material";
 import * as R from "../node_modules/ramda/";
 
-const evaluateOps = (ops: string[], stck: string[]): string[] => {
+type Stack = string[];
+
+
+const evaluateOps = (ops: Stack, stck: Stack): Stack => {
   console.log({ ops, stck });
 
-  const out_st: string[] = R.reduce(
-    (interimStack: string[], op: string): string[] => {
-      let rtn: string[] = [];
+  const out_st: Stack = R.reduce(
+    (interimStack: Stack, op: string): Stack => {
+      let rtn: Stack = [];
 
       switch (op) {
         case "+": {
@@ -69,7 +72,7 @@ function App() {
   const [outputStack, setOutputStack] = useState([]);
   const [inputField, setInputField] = useState("");
 
-  const exprToOps = (expr: string): string[] =>
+  const exprToOps = (expr: string): Stack =>
     expr.split(" ").filter((op: string) => op.length > 0);
 
   const onEnter = (expr) => {

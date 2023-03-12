@@ -29,14 +29,14 @@ function App() {
 
   const onEnter = (expr) => {
     console.log("evaluating expression: ", expr);
-    setOutputStack(evaluateOps(exprToOps(expr), [])); // evaluate expression and set output stack to result
+    setOutputStack(evaluateOps(exprToOps(expr), outputStack)); // evaluate expression and set output stack to result
     setInputField(""); // clear input field
   };
 
   return (
     <Grid container padding={4} spacing={3}>
       <Grid item xs={12}>
-        <Typography variant="h4" className="title" sx={{ color: "#c8c8c8" }}>
+        <Typography variant="h4" className="title" sx={{ color: "#fffdd0" }}>
           Corbin
         </Typography>
       </Grid>
@@ -73,7 +73,7 @@ function App() {
             <Typography
               variant="h6"
               component="span"
-              color={i === 0 ? "#00b0ff" : "#0080ff"}
+              color={i === 0 ? "#fff670" : "#0080ff"}
               sx={{ fontFamily: "Monospace" }}
               align="left"
             >

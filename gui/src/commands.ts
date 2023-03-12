@@ -4,6 +4,7 @@ export class Commands {
   constructor() {
     type Stack = string[];
 
+    this.cmds.set("cls", (stck: Stack): Stack => []);
     this.cmds.set("+", (stck: Stack): Stack => {
       const b = stck.at(-1);
       const a = stck.at(-2);
@@ -33,6 +34,8 @@ export class Commands {
     });
 
     this.cmds.set("dup", (stck: Stack): Stack => [...stck, stck.at(-1)]);
+
+    this.cmds.set("drop", (stck: Stack): Stack => [...stck.slice(0, -1)]);
 
     this.cmds.set("sqrt", (stck: Stack): Stack => {
       const a = stck.at(-1);

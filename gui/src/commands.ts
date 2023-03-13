@@ -65,6 +65,8 @@ export class Commands {
 
     this.cmds.set("pi", (stck: Stack): Stack => [...stck, Math.PI.toString()]);
 
+    this.cmds.set("e", (stck: Stack): Stack => [...stck, Math.E.toString()]);
+
     this.cmds.set("dup", (stck: Stack): Stack => [...stck, stck.at(-1)]);
 
     this.cmds.set("drop", (stck: Stack): Stack => [...stck.slice(0, -1)]);

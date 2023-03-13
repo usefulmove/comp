@@ -1,7 +1,6 @@
 import "./App.css";
 import { useState } from "react";
 import { Grid, Typography, TextField, Button } from "@mui/material";
-import * as R from "../node_modules/ramda/";
 import { Commands } from "./commands";
 
 type Stack = string[];
@@ -9,21 +8,6 @@ type Ops = string[];
 type Op = string;
 type Expr = string;
 const C = new Commands();
-
-const evaluateOps =
-  (ops: Ops) =>
-  (stck: Stack): Stack => {
-    console.log({ ops, stck });
-
-    const out_st: Stack = R.reduce(
-      (interimStack: Stack, op: Op): Stack =>
-        C.cmds.has(op) ? C.cmds.get(op)(interimStack) : [...interimStack, op],
-      stck,
-      ops
-    );
-
-    return out_st;
-  };
 
 function App() {
   const [outputStack, setOutputStack] = useState([]);
@@ -35,7 +19,7 @@ function App() {
   const onEnter = (expr: Expr) => {
     console.log("evaluating expression: ", expr);
     const ops = exprToOps(expr);
-    setOutputStack(evaluateOps(ops)(outputStack)); // evaluate expression and set output stack to result
+    setOutputStack(C.evaluateOps(ops)(outputStack)); // evaluate expression and set output stack to result
     clearInput(); // clear input field
   };
 

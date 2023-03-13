@@ -1,3 +1,5 @@
+import * as R from "../node_modules/ramda/";
+
 type Stack = string[];
 type Op = string;
 
@@ -14,7 +16,24 @@ const getNumber2 = (stck: Stack): [number, number, Stack] => {
 };
 
 export class Commands {
-  public cmds: Map<string, any> = new Map<string, any>();
+  public evaluateOps =
+    (ops: Ops) =>
+    (stck: Stack): Stack => {
+      console.log({ ops, stck });
+
+      const out_st: Stack = R.reduce(
+        (interimStack: Stack, op: Op): Stack =>
+          this.cmds.has(op)
+            ? this.cmds.get(op)(interimStack)
+            : [...interimStack, op],
+        stck,
+        ops
+      );
+
+      return out_st;
+    };
+
+  cmds: Map<string, any> = new Map<string, any>();
 
   constructor() {
     this.cmds.set("cls", (stck: Stack): Stack => []);

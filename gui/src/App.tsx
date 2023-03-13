@@ -91,7 +91,7 @@ function App() {
         ))}
         <br />
         <Typography variant="body2" color="#000000">
-          ( ver. 0.0.2 )
+          ( ver. 0.0.3 )
         </Typography>
       </Grid>
     </Grid>

@@ -11,7 +11,7 @@
 * [Issues][5]
 * [Feature Requests][6]
 
-A streamlined, stack-based interpreter developed in Rust, this interpreter brings to life a high-level, reverse-Polish language, reminiscent of Forth, and draws inspiration from the command interface of the pioneering HP scientific calculators from the 1970s. The postfix language is composed of element lists, with each element representing either a value to be pushed onto the stack or an operation to be performed. For instance, 'comp 3 4 +' adds the values 3 and 4, while 'comp 3 dup x' calculates the square of 3.
+A streamlined, stack-based interpreter developed in Rust. The interpreter brings to life a high-level, reverse-Polish language, reminiscent of Forth, and draws inspiration from the command interface of the pioneering HP scientific calculators from the 1970s. The postfix language is composed of element lists, with each element representing either a value to be pushed onto the stack or an operation to be performed. For instance, 'comp 3 4 +' adds the values 3 and 4, while 'comp 3 dup x' calculates the square of 3.
 
 For more information, see the comp command [usage documentation][1].
 

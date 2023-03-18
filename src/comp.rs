@@ -221,7 +221,8 @@ impl Interpreter {
         self.build_native("rgb", Self::c_rgb); // show RGB color
         self.build_native("rgbh", Self::c_rgbh); // show RGB color (hexadecimal)
         self.build_native("rgb_avg", Self::c_rgb_avg); // calculate average RGB color
-        self.build_native("rgb_mult", Self::c_rgb_mult); // calculate RGB color multiple
+        self.build_native("rgbx", Self::c_rgb_mult); // calculate RGB color multiple
+        self.build_native("rgbhx", Self::c_rgbh_mult); // calculate RGB color multiple (hexidecimal)
 
         /* higher-order functions */
         self.build_native("map", Self::c_map); // map annonymous function to stack
@@ -1385,6 +1386,42 @@ impl Interpreter {
     }
 
     fn c_rgb_mult(&mut self, op: &str) {
+        Self::check_stack_error(self, 4, op);
+
+        let factor = self.pop_stack_f64();
+        let b = self.pop_stack_u8();
+        let g = self.pop_stack_u8();
+        let r = self.pop_stack_u8();
+
+        let bound = |x: f64| -> u8 {
+            if x > 255.0 {
+                255
+            } else if x < 0.0 {
+                0
+            } else {
+                x as u8
+            }
+        };
+
+        let rnew = bound(r as f64 * factor);
+        let gnew = bound(g as f64 * factor);
+        let bnew = bound(b as f64 * factor);
+
+        self.stack.push(self.output_rgb_dec(cor::Color {
+            r: rnew,
+            g: gnew,
+            b: bnew,
+            bold: false,
+        }));
+        self.stack.push(self.output_rgb_hex_bg(cor::Color {
+            r: rnew,
+            g: gnew,
+            b: bnew,
+            bold: false,
+        }));
+    }
+
+    fn c_rgbh_mult(&mut self, op: &str) {
         Self::check_stack_error(self, 4, op);
 
         let factor = self.pop_stack_f64();
